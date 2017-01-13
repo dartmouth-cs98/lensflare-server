@@ -63,37 +63,33 @@ router.delete("/users/:id", function (req, res) {
     });
 });
 
-router.get("/sign-s3", function (req, res) {
-    console.log("About to hit S3");
+router.post("/sign-s3", function (req, res) {
     const s3 = new aws.S3();
-    var return_list = [];
-    console.log(req.body.image_infos);
-    req.body.image_infos.forEach(function (image) {
-        console.log("image is " + image);
-        var imageName = image.name;
-        var fileType = image.type;
-        var s3Params = {
-            Bucket: S3_BUCKET,
-            Key: imageName,
-            Expires: 60,
-            ContentType: fileType,
-            ACL: 'public-read'
-        };
-        s3.getSignedUrl('putObject', s3Params, (err, data) => {
-            if (err) {
-                console.log(err);
-                return res.end();
-            }
-            var returnData = {
-                imageName: imageName,
-                signedRequest: data,
-                url: util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, imageName)
+    var fileName = req.body.image.name;
+    var s3Params = {
+        Bucket: S3_BUCKET,
+        Key: fileName,
+        Expires: 60,
+        ACL: 'public-read'
+    };
+    s3.getSignedUrl('putObject', s3Params, (err, data) => {
+        if (err) {
+            console.log(err);
+            return res.end();
         }
-            return_list.push(returnData);
-            // save it in the DB;
-        });
+        console.log(fileName);
+        var returnData = {
+            fileName: fileName,
+            signedUrl: data,
+            url: util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, fileName)
+        }
+
+        console.log(returnData.signedUrl);
+
+        res.write(JSON.stringify(returnData));
+        // save it in the DB;
+
     });
-    res.write(JSON.stringify(return_list));
     res.end();
 });
 module.exports = router;
