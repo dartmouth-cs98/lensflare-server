@@ -17,23 +17,35 @@ module.exports = function (app, passport) {
     const util = require('util');
     const aws = require('aws-sdk');
 
-    // Homepage Routes
+    // Page Rendering
     app.get('/', function (req, res) {
         res.render('index.ejs', {message: req.flash('loginMessage')});
     });
 
+    app.get('/database', isLoggedIn, function (req, res) {
+        res.render('database.ejs', {
+            user: req.user
+        });
+    });
+    // User Login Routes
+    app.get('/signup', function (req, res) {
+        res.render('signup.ejs', {message: req.flash('signupMessage')});
+    });
+
+    app.get('/logout', function (req, res) {
+        req.logout();
+        res.redirect('/');
+    });
+
+
+
+
+    // Login/ FE Auth
     app.post('/', passport.authenticate('local-login', {
         successRedirect: '/database',
         failureRedirect: '/',
         failureFlash: true
     }));
-
-
-
-    // User Login Routes
-    app.get('/signup', function (req, res) {
-        res.render('signup.ejs', {message: req.flash('signupMessage')});
-    });
 
     app.post('/signup', passport.authenticate('local-signup', {
         successRedirect: '/',
@@ -41,16 +53,6 @@ module.exports = function (app, passport) {
         failureFlash: true
     }));
 
-    app.get('/database', isLoggedIn, function (req, res) {
-        res.render('database.ejs', {
-            user: req.user
-        });
-    });
-
-    app.get('/logout', function (req, res) {
-        req.logout();
-        res.redirect('/');
-    });
 
     // S3 Uploading
     app.post("/sign-s3", function (req, res) {
@@ -84,19 +86,6 @@ module.exports = function (app, passport) {
         res.end();
     });
 
-
-    // app.post('/signup', passport.authenticate('local-signup', {
-    //     successRedirect: '/',
-    //     failureRedirect: '/signup',
-    //     failureFlash: true
-    // }));
-    //
-    //
-    // app.post('/', passport.authenticate('local-login', {
-    //     successRedirect: '/database',
-    //     failureRedirect: '/',
-    //     failureFlash: true
-    // }));
 
 //
 //     // add a new user (as of now, JSON should include all object info)
