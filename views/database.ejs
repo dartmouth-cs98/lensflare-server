@@ -32,29 +32,82 @@
 
 
 <script>
-var museums = ["The MoMA", "Dallas Museum of Art", "DALI Lab"]
-var dummyTitles = ["T-Rex", "Long Neck Thing", "The Sphinx"]
-var dummyText = ["The T-Rex is a scary beast, it will eat you up and gobble you whole, without a second thought for your wellbeing or happiness.",
-                "The long neck giraffe beast is also pretty fucking scary but it's less terrifying that a T-Rex because it prob can't eat you whole or it would choke. It prob also only eats grass.",
-                "The Sphinx will ask you a very difficult riddle; if you are able to figure out the answer to the riddle then you can move on past her forboding glare and into the pyramid."]
+
+// {
+//  name:
+//  email:
+//  password:
+//  museums: {
+//    "ob1": {
+//      "name": "moma",
+//      exhibits: {
+//        "title": "title",
+//        "text": "text",
+//        "url": ""
+//      }
+//    }
+//    "obj2": {
+//      "name": "DALI",
+//      exhibits: {
+//        "title": "title",
+//        "text": "text",
+//        "url": ""
+//      }
+//    }
+//  }
+// }
+var userDoc = {
+  name: <%- JSON.stringify(user.local.name) %>,
+  email: <%- JSON.stringify(user.local.email) %>,
+  password: <%- JSON.stringify(user.local.password) %>,
+  museums: <%- JSON.stringify(user.local.museums) %>
+}
+
+userDoc.museums = [{name: "The MoMA",
+                      exhibits: [
+                        {title:"T-Rex", text:"The T-Rex is a scary beast, it will eat you up and gobble you whole, without a second thought for your wellbeing or happiness.", url: "http://islanublar.jurassicworld.com/media/dinosaurs/tyrannosaurus-rex/tyrannosaurus-rex-info-graphic.png"},
+                        {title:"Diplo", text:"The long neck giraffe beast is also pretty fucking scary but it's less terrifying that a T-Rex because it prob can't eat you whole or it would choke. It prob also only eats grass.", url: "http://f.tqn.com/y/dinosaurs/1/S/N/Q/-/-/diplodocus-carnegi.jpg"},
+                        {title:"Sphinx", text:"The Sphinx will ask you a very difficult riddle; if you are able to figure out the answer to the riddle then you can move on past her forboding glare and into the pyramid.", url: "http://www.guardians.net/egypt/sphinx/images/sphinx-front-wa-2001.jpg"},
+                      ]
+                    },
+                    {name: "Dallas Museum of Art",
+                      exhibits: [
+                        {title:"Eminem", text:"Marshall Bruce Mathers III, known professionally as Eminem, is an American rapper, record producer, and actor.", url: "http://www.rapbasement.com/wp-content/uploads/2016/03/Eminem-Fack-live.jpg"},
+                        {title:"Rihanna", text:"Robyn Rihanna Fenty is a Barbadian singer and songwriter. Born in Saint Michael and raised in Bridgetown, she first entered the music industry by recording demo tapes under the direction of record producer Evan Rogers in 2003.", url: "https://static01.nyt.com/images/2015/10/25/t-magazine/25tmag-11well_rihanna-t_CA0/25tmag-11well_rihanna-t_CA0-articleLarge-v2.jpg"},
+                        {title:"Backstree Boys", text:"The Backstreet Boys are an American vocal group, formed in Orlando, Florida in 1993.", url: "https://upload.wikimedia.org/wikipedia/en/c/c2/Albumus.jpg"},
+                      ]
+                    },
+                    {name: "DALI Lab",
+                      exhibits: [
+                        {title:"3D Printer", text:"This new Generation MakerBot Printer has a 25% Larger Build Volume, and Prints 30% faster than the MakerBot Replicator Desktop.", url: "https://images-na.ssl-images-amazon.com/images/I/81NadegaTkL._SL1500_.jpg"},
+                        {title:"Inkjet Printer", text:"Full functions obtained with Windows XP.", url: "https://images-na.ssl-images-amazon.com/images/I/410AR6QRK9L.jpg"},
+                        {title:"Espresso Machine", text:"Includes Aeroccino Plus milk frother: rapid one touch preparation of hot or cold milk froth; Items sold separately valued at 199", url: "https://images-na.ssl-images-amazon.com/images/I/81XmnHW2NRL._SL1500_.jpg"},
+                      ]
+                    }
+                  ];
+
 var startText= "";
 var currCellRow = -1;
 var currCellCol = -1;
 var active = false;
 
 function loadInit() {
-  for (var museum in museums) {
-    document.getElementById("sidebar").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this)'>" + museums[museum] + "</a><br />"
+  for (var museum in userDoc.museums) {
+    document.getElementById("sidebar").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this," + museum + ")'>" + userDoc.museums[museum].name + "</a><br />"
   }
+
+  document.getElementById("sidebar").innerHTML += "<br />add museum"
+
   var start = {};
-  start.text = museums[0]
-  document.getElementById("db-name").innerHTML = museums[0]
-  loadDatabase(start)
+  start.text = userDoc.museums[0].name
+  document.getElementById("db-name").innerHTML = userDoc.museums[0].name
+  loadDatabase(start, 0)
+
+  console.log(userDoc);
 }
 
-function loadDatabase(museum) {
+function loadDatabase(museum, museumRow) {
   document.getElementById("db-name").innerHTML = museum.text
-
   document.getElementById("db-table").innerHTML = "";
   var table = document.getElementById("db-table");
   var header = table.createTHead();
@@ -64,23 +117,18 @@ function loadDatabase(museum) {
   headerRow.insertCell(2).innerHTML = "Text"
   for (var row = 1; row < 4; row++) {
     var rowV = table.insertRow(row);
-    rowV.insertCell(0).innerHTML = "<img width='auto' height='200px' src='image" + row + ".jpg'>"
-    rowV.insertCell(1).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + (row - 1) + "," + 1 + ")'>edit</button><br />" + dummyTitles[row - 1];
-    rowV.insertCell(2).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + (row - 1) + "," + 2 + ")'>edit</button><br />" + dummyText[row - 1];
-    //  + museum.text +  "
-
+    rowV.insertCell(0).innerHTML = "<img height='auto' width='250px' src='" + userDoc.museums[museumRow].exhibits[row - 1].url + "'>"
+    rowV.insertCell(1).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + museumRow + "," + (row - 1) + "," + 1 + ")'>edit</button><br />" + userDoc.museums[museumRow].exhibits[row - 1].title;
+    rowV.insertCell(2).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + museumRow + "," + (row - 1) + "," + 2 + ")'>edit</button><br />" + userDoc.museums[museumRow].exhibits[row - 1].text;
 
     rowV.cells[0].style.backgroundColor = "#f0f0ff";
     rowV.cells[1].style.width = "175px";
     rowV.cells[2].style.backgroundColor = "#f0f0ff";
 
-    // for (var column = 0; column < 3; column++) {
-    //   rowV.insertCell(column).innerHTML = "r" + row + "c" + column
-    // }
   }
 }
 
-function edit(row, col) {
+function edit(museumRow, row, col) {
   if (currCellRow != -1) {
     cancel(currCellRow, currCellCol)
   }
@@ -89,25 +137,26 @@ function edit(row, col) {
   var cell = table.rows[row + 1].cells[col];
   startText = cell.innerText;
   startText = startText.slice(4, startText.length);
-  cell.innerHTML = "<button class='edit-button' type='button' onclick='save(" + row + "," + col + ")'>done</button> <button class='edit-button' type='button' onclick='cancel(" + row + "," + col + ")'>cancel</button><textarea class='input-text' rows='5' id='input-box' value=''>" + startText + "</textarea>";
+  cell.innerHTML = "<button class='edit-button' type='button' onclick='save(" + museumRow + "," + row + "," + col + ")'>done</button> <button class='edit-button' type='button' onclick='cancel(" + row + "," + col + ")'>cancel</button><textarea class='input-text' rows='5' id='input-box' value=''>" + startText + "</textarea>";
   currCellRow = row;
   currCellCol = col;
 }
 
-function save(row, col) {
+function save(museumRow, row, col) {
   active = false;
   var table = document.getElementById("db-table");
   var cell = table.rows[row + 1].cells[col];
   var inputBox = document.getElementById('input-box')
-  dummyTitles[row] = inputBox.value;
-  dummyTitles[row].replace(/\n/g, "<br />")
-  cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + row + "," + col + ")'>edit</button><br />" + dummyTitles[row];
+  if (col == 1) userDoc.museums[museumRow].exhibits[row].title = inputBox.value
+  else userDoc.museums[museumRow].exhibits[row].text = inputBox.value
+  if (col == 1) cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + museumRow + "," + row + "," + col + ")'>edit</button><br />" + userDoc.museums[museumRow].exhibits[row].title;
+  else cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + museumRow + "," + row + "," + col + ")'>edit</button><br />" + userDoc.museums[museumRow].exhibits[row].text;
 }
 
 function cancel(row, col) {
   var table = document.getElementById("db-table");
   var cell = table.rows[row + 1].cells[col];
-  if (active) cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + row + "," + col + ")'>edit</button><br />" + startText;
+  if (active) cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + museumRow + "," + row + "," + col + ")'>edit</button><br />" + startText;
 }
 
 // function logout() {
