@@ -17,7 +17,7 @@
 <body onload="loadInit()">
   <div id="sidebar" class="sidebar">
     <div class="museums-title">Lensflare</div>
-    Welcome, <%= user.local.name %><br /><br />
+    Welcome, <%= user.local.name %>!<br /><br />
   </div>
   <!-- <a style="cursor: pointer" onclick="logout()"> -->
   <div class="logout-button"><form action="/logout" method="get">
@@ -81,7 +81,7 @@ userDoc.museums = [{name: "The MoMA",
                       exhibits: [
                         {title:"3D Printer", text:"This new Generation MakerBot Printer has a 25% Larger Build Volume, and Prints 30% faster than the MakerBot Replicator Desktop.", url: "https://images-na.ssl-images-amazon.com/images/I/81NadegaTkL._SL1500_.jpg"},
                         {title:"Inkjet Printer", text:"Full functions obtained with Windows XP.", url: "https://images-na.ssl-images-amazon.com/images/I/410AR6QRK9L.jpg"},
-                        {title:"Espresso Machine", text:"Includes Aeroccino Plus milk frother: rapid one touch preparation of hot or cold milk froth; Items sold separately valued at 199", url: "https://images-na.ssl-images-amazon.com/images/I/81XmnHW2NRL._SL1500_.jpg"},
+                        {title:"Espresso Machine", text:"Includes Aeroccino Plus milk frother: rapid one touch preparation of hot or cold milk froth; Items sold separately valued at 199. Easy insertion and ejection of capsules; For use with Espresso coffee capsules only<br />Compact brewing unit technology; Fast preheating time: 25 seconds; 19 Bar high pressure pump<br />Removable 24 ounce water tank; Folding cup tray accommodates tall recipe glasses; Used capsule container holds 9-11 used capsules", url: "https://images-na.ssl-images-amazon.com/images/I/81XmnHW2NRL._SL1500_.jpg"},
                       ]
                     }
                   ];
@@ -96,7 +96,7 @@ function loadInit() {
     document.getElementById("sidebar").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this," + museum + ")'>" + userDoc.museums[museum].name + "</a><br />"
   }
 
-  document.getElementById("sidebar").innerHTML += "<br />add museum"
+  document.getElementById("sidebar").innerHTML += "<div style='font-size:12px; text-align:center'>add new</div>"
 
   var start = {};
   start.text = userDoc.museums[0].name
@@ -130,14 +130,14 @@ function loadDatabase(museum, museumRow) {
 
 function edit(museumRow, row, col) {
   if (currCellRow != -1) {
-    cancel(currCellRow, currCellCol)
+    cancel(museumRow, currCellRow, currCellCol)
   }
   active = true;
   var table = document.getElementById("db-table");
   var cell = table.rows[row + 1].cells[col];
   startText = cell.innerText;
   startText = startText.slice(4, startText.length);
-  cell.innerHTML = "<button class='edit-button' type='button' onclick='save(" + museumRow + "," + row + "," + col + ")'>done</button> <button class='edit-button' type='button' onclick='cancel(" + row + "," + col + ")'>cancel</button><textarea class='input-text' rows='5' id='input-box' value=''>" + startText + "</textarea>";
+  cell.innerHTML = "<button class='edit-button' type='button' onclick='save(" + museumRow + "," + row + "," + col + ")'>done</button> <button class='edit-button' type='button' onclick='cancel(" + museumRow + "," + row + "," + col + ")'>cancel</button><textarea class='input-text' rows='5' id='input-box' value=''>" + startText + "</textarea>";
   currCellRow = row;
   currCellCol = col;
 }
@@ -149,19 +149,16 @@ function save(museumRow, row, col) {
   var inputBox = document.getElementById('input-box')
   if (col == 1) userDoc.museums[museumRow].exhibits[row].title = inputBox.value
   else userDoc.museums[museumRow].exhibits[row].text = inputBox.value
+  console.log(row + ", " + col);
   if (col == 1) cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + museumRow + "," + row + "," + col + ")'>edit</button><br />" + userDoc.museums[museumRow].exhibits[row].title;
   else cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + museumRow + "," + row + "," + col + ")'>edit</button><br />" + userDoc.museums[museumRow].exhibits[row].text;
 }
 
-function cancel(row, col) {
+function cancel(museumRow, row, col) {
   var table = document.getElementById("db-table");
   var cell = table.rows[row + 1].cells[col];
+  console.log(row + ", " + col);
   if (active) cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + museumRow + "," + row + "," + col + ")'>edit</button><br />" + startText;
 }
-
-// function logout() {
-//   window.location.href = "index.html"
-//   window.alert("Logout successful");
-// }
 
 </script>
