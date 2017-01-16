@@ -1,12 +1,3 @@
-<!-- <p>
-    <strong>id</strong>: <%= user._id %><br>
-    <strong>name</strong>: <%= user.local.name %><br>
-    <strong>email</strong>: <%= user.local.email %><br>
-    <strong>username</strong>: <%= user.local.username %><br>
-    <strong>password</strong>: <%= user.local.password %>
-</p> -->
-
-
 <!DOCTYPE html>
 <head>
   <meta charset="utf-8">
@@ -19,11 +10,9 @@
     <div class="museums-title">Lensflare</div>
     Welcome, <%= user.local.name %>!<br /><br />
   </div>
-  <!-- <a style="cursor: pointer" onclick="logout()"> -->
   <div class="logout-button"><form action="/logout" method="get">
     <button class="logout" type="submit" value="logout">logout</button>
   </form></div>
-  <!-- </a> -->
   <div id="db-name" class="db-title"></div>
   <div id="content" class="db-content">
     <table id="db-table" class="db-table"></div>
@@ -33,29 +22,6 @@
 
 <script>
 
-// {
-//  name:
-//  email:
-//  password:
-//  museums: {
-//    "ob1": {
-//      "name": "moma",
-//      exhibits: {
-//        "title": "title",
-//        "text": "text",
-//        "url": ""
-//      }
-//    }
-//    "obj2": {
-//      "name": "DALI",
-//      exhibits: {
-//        "title": "title",
-//        "text": "text",
-//        "url": ""
-//      }
-//    }
-//  }
-// }
 var userDoc = {
   name: <%- JSON.stringify(user.local.name) %>,
   email: <%- JSON.stringify(user.local.email) %>,
@@ -96,7 +62,7 @@ function loadInit() {
     document.getElementById("sidebar").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this," + museum + ")'>" + userDoc.museums[museum].name + "</a><br />"
   }
 
-  document.getElementById("sidebar").innerHTML += "<div style='font-size:12px; text-align:center'>add new</div>"
+  document.getElementById("sidebar").innerHTML += "<div style='font-size:12px; text-align:center'><a style='cursor: pointer;' onclick='addDatabase()'>add new</a></div>"
 
   var start = {};
   start.text = userDoc.museums[0].name
@@ -159,6 +125,12 @@ function cancel(museumRow, row, col) {
   var cell = table.rows[row + 1].cells[col];
   console.log(row + ", " + col);
   if (active) cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + museumRow + "," + row + "," + col + ")'>edit</button><br />" + startText;
+}
+
+function addDatabase() {
+  document.getElementById("db-name").innerHTML = "<input class='db-name-entry' id='db-name-entry' type='text' value='New item'><button class='db-name-save-button'>save</button>"
+  document.getElementById("db-name-entry").focus();
+  document.getElementById("db-table").innerHTML = "Enter the new item's name above and then start setup via HoloLens!";
 }
 
 </script>
