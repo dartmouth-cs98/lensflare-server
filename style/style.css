@@ -54,6 +54,16 @@
   padding-bottom: 5px;
 }
 
+.db-name-save-button {
+  background: inherit;
+  font-weight: 300;
+  color: #4d6bff;
+  font-size: 15px;
+  padding-bottom: 5px;
+  border: none;
+  cursor: pointer;
+}
+
 .sidebar {
   /*background-color: #f0f0f0;*/
     background-color: #ffffff;

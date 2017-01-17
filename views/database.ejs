@@ -69,12 +69,17 @@ function loadInit() {
   document.getElementById("db-name").innerHTML = userDoc.museums[0].name
   loadDatabase(start, 0)
 
-  console.log(userDoc);
 }
 
 function loadDatabase(museum, museumRow) {
   document.getElementById("db-name").innerHTML = museum.text
   document.getElementById("db-table").innerHTML = "";
+
+  if (userDoc.museums[museumRow].exhibits.length == 0) {
+    document.getElementById("db-table").innerHTML = "There appears to be no photos taken - start setup via HoloLens!";
+    return;
+  }
+
   var table = document.getElementById("db-table");
   var header = table.createTHead();
   var headerRow = header.insertRow(0);
@@ -128,9 +133,36 @@ function cancel(museumRow, row, col) {
 }
 
 function addDatabase() {
-  document.getElementById("db-name").innerHTML = "<input class='db-name-entry' id='db-name-entry' type='text' value='New item'><button class='db-name-save-button'>save</button>"
+  document.getElementById("db-name").innerHTML = "<input class='db-name-entry' id='db-name-entry' type='text' value=''><button class='db-name-save-button' onclick='saveNewDatabase()'>save</button>"
   document.getElementById("db-name-entry").focus();
   document.getElementById("db-table").innerHTML = "Enter the new item's name above and then start setup via HoloLens!";
+}
+
+function saveNewDatabase() {
+  var dbName = document.getElementById("db-name-entry").value;
+  if (dbName == "") {
+    document.getElementById("db-table").innerHTML = "<div style='color:red'>Please enter a name for the new entry and try again.</div>"
+    return;
+  }
+  userDoc.museums.push({name: dbName,
+                        exhibits: []
+                      })
+  reloadSidebar();
+
+  var newDB = {};
+  newDB.text = dbName;
+  loadDatabase(newDB, userDoc.museums.length - 1);
+}
+
+function reloadSidebar() {
+
+  document.getElementById("sidebar").innerHTML = "<div class=\"museums-title\">Lensflare</div>Welcome, <%= user.local.name %>!<br /><br />"
+  for (var museum in userDoc.museums) {
+    document.getElementById("sidebar").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this," + museum + ")'>" + userDoc.museums[museum].name + "</a><br />"
+  }
+
+  document.getElementById("sidebar").innerHTML += "<div style='font-size:12px; text-align:center'><a style='cursor: pointer;' onclick='addDatabase()'>add new</a></div>"
+
 }
 
 </script>
