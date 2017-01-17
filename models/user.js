@@ -23,15 +23,15 @@ userSchema.methods.validPassword = function (password) {
 };
 
 userSchema.statics.getUser = function (email, cb) {
-  return this.find({ email: new RegExp(email, 'i')}, cb);
+  return this.find({ 'local.email': new RegExp(str, 'i') }, cb);
 };
 
 userSchema.statics.getSpaces = function (email, cb) {
-  return this.find({ email: new RegExp(email, 'i') }, 'spaces -_id', cb);
+  return this.find({ 'local.email': new RegExp(email, 'i') }, 'spaces -_id', cb);
 };
 
 userSchema.statics.removeUser = function (email, cb) {
-  return this.findOneAndRemove({ email: new RegExp(email, 'i') }, cb);
+  return this.findOneAndRemove({ 'local.email': new RegExp(email, 'i') }, cb);
 };
 
 userSchema.statics.updateName = function(email, name) {
