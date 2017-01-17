@@ -8,8 +8,8 @@ var itemSchema = mongoose.Schema({
 });
 itemSchema.plugin(uniqueValidator);
 
-itemSchema.methods.getItem = function (cb) {
-  return this.model('Item').find({ url: this.url }, cb);
+itemSchema.methods.getItem = function (url, cb) {
+  return this.model('Item').find({ url: new RegExp(url, 'i') }, cb);
 };
 
 itemSchema.methods.updateTitle = function(title) {

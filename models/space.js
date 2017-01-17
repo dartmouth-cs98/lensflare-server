@@ -7,12 +7,12 @@ var spaceSchema = mongoose.Schema({
 });
 spaceSchema.plugin(uniqueValidator);
 
-spaceSchema.methods.getSpace = function (cb) {
-  return this.model('Space').find({ name: this.name }, cb);
+spaceSchema.methods.getSpace = function (name, cb) {
+  return this.model('Space').find({ name: new RegExp(name, 'i') }, cb);
 };
 
-spaceSchema.methods.getItems = function (cb) {
-  return this.model('Space').find({ name: this.name }, 'items -_id', cb);
+spaceSchema.methods.getItems = function (name, cb) {
+  return this.model('Space').find({ name: new RegExp(name, 'i') }, 'items -_id', cb);
 };
 
 spaceSchema.methods.updateName = function(name) {
@@ -30,7 +30,7 @@ spaceSchema.methods.updateName = function(name) {
   }
 };
 
-userSchema.methods.addItem = function(item) {
+spaceSchema.methods.addItem = function(item) {
   this.model('Space').getSpace(function (err, space) {
     if (err) throw err;
     space.items.push(item);
@@ -38,7 +38,7 @@ userSchema.methods.addItem = function(item) {
   });
 };
 
-userSchema.methods.removeItem = function(item) {
+spaceSchema.methods.removeItem = function(item) {
   this.model('Space').getSpace(function (err, space) {
     if (err) throw err;
     space.items.pull(item);

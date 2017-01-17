@@ -22,16 +22,16 @@ userSchema.methods.validPassword = function (password) {
   return bcrypt.compareSync(password, this.local.password);
 };
 
-userSchema.methods.getUser = function (cb) {
-  return this.model('User').find({ email: this.email }, cb);
+userSchema.methods.getUser = function (email, cb) {
+  return this.model('User').find({ email: new RegExp(email, 'i')}, cb);
 };
 
-userSchema.methods.getSpaces = function (cb) {
-  return this.model('User').find({ email: this.email }, 'spaces -_id', cb);
+userSchema.methods.getSpaces = function (email, cb) {
+  return this.model('User').find({ email: new RegExp(email, 'i') }, 'spaces -_id', cb);
 };
 
-userSchema.methods.removeUser = function (cb) {
-  return this.model('User').findOneAndRemove({ email: this.email }, cb);
+userSchema.methods.removeUser = function (email, cb) {
+  return this.model('User').findOneAndRemove({ email: new RegExp(email, 'i') }, cb);
 };
 
 userSchema.methods.updateName = function(name) {
