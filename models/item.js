@@ -8,14 +8,14 @@ var itemSchema = mongoose.Schema({
 });
 itemSchema.plugin(uniqueValidator);
 
-itemSchema.methods.getItem = function (url, cb) {
-  return this.model('Item').find({ url: new RegExp(url, 'i') }, cb);
+itemSchema.statics.getItem = function (url, cb) {
+  return this.find({ url: new RegExp(url, 'i') }, cb);
 };
 
-itemSchema.methods.updateTitle = function(title) {
+itemSchema.statics.updateTitle = function(url, title) {
   // currently set to silently fail to update if empty string provided
   if (title.length > 0) {
-    this.model('Item').getItem(function (err, item) {
+    this.getItem(url, function (err, item) {
       if (err) throw err;
       item.title = title;
       item.save(done);
@@ -23,10 +23,10 @@ itemSchema.methods.updateTitle = function(title) {
   }
 };
 
-itemSchema.methods.updateText = function(text) {
+itemSchema.statics.updateText = function(url, text) {
   // currently set to silently fail to update if empty string provided
   if (text.length > 0) {
-    this.model('Item').getItem(function (err, item) {
+    this.getItem(url, function (err, item) {
       if (err) throw err;
       item.text = text;
       item.save(done);

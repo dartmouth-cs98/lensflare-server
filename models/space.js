@@ -7,20 +7,20 @@ var spaceSchema = mongoose.Schema({
 });
 spaceSchema.plugin(uniqueValidator);
 
-spaceSchema.methods.getSpace = function (name, cb) {
-  return this.model('Space').find({ name: new RegExp(name, 'i') }, cb);
+spaceSchema.statics.getSpace = function (name, cb) {
+  return this.find({ name: new RegExp(name, 'i') }, cb);
 };
 
-spaceSchema.methods.getItems = function (name, cb) {
-  return this.model('Space').find({ name: new RegExp(name, 'i') }, 'items -_id', cb);
+spaceSchema.statics.getItems = function (name, cb) {
+  return this.find({ name: new RegExp(name, 'i') }, 'items -_id', cb);
 };
 
-spaceSchema.methods.updateName = function(name) {
+spaceSchema.statics.updateName = function(oldName, newName) {
   // currently set to silently fail to update if empty string provided
   if (name.length > 0) {
-    this.model('Space').getSpace(function (err, space) {
+    this.getSpace(oldName, function (err, space) {
       if (err) throw err;
-      space.name = name;
+      space.name = newName;
 
       // uniqueValidator should have this line throw an error if name is not unique
       space.save(function (err) { 
@@ -30,16 +30,16 @@ spaceSchema.methods.updateName = function(name) {
   }
 };
 
-spaceSchema.methods.addItem = function(item) {
-  this.model('Space').getSpace(function (err, space) {
+spaceSchema.statics.addItem = function(name, item) {
+  this.getSpace(name, function (err, space) {
     if (err) throw err;
     space.items.push(item);
     space.save(done);
   });
 };
 
-spaceSchema.methods.removeItem = function(item) {
-  this.model('Space').getSpace(function (err, space) {
+spaceSchema.methods.removeItem = function(name, item) {
+  this.getSpace(name, function (err, space) {
     if (err) throw err;
     space.items.pull(item);
     space.save(done);

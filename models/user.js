@@ -22,22 +22,22 @@ userSchema.methods.validPassword = function (password) {
   return bcrypt.compareSync(password, this.local.password);
 };
 
-userSchema.methods.getUser = function (email, cb) {
-  return this.model('User').find({ email: new RegExp(email, 'i')}, cb);
+userSchema.statics.getUser = function (email, cb) {
+  return this.find({ email: new RegExp(email, 'i')}, cb);
 };
 
-userSchema.methods.getSpaces = function (email, cb) {
-  return this.model('User').find({ email: new RegExp(email, 'i') }, 'spaces -_id', cb);
+userSchema.statics.getSpaces = function (email, cb) {
+  return this.find({ email: new RegExp(email, 'i') }, 'spaces -_id', cb);
 };
 
-userSchema.methods.removeUser = function (email, cb) {
-  return this.model('User').findOneAndRemove({ email: new RegExp(email, 'i') }, cb);
+userSchema.statics.removeUser = function (email, cb) {
+  return this.findOneAndRemove({ email: new RegExp(email, 'i') }, cb);
 };
 
-userSchema.methods.updateName = function(name) {
+userSchema.statics.updateName = function(email, name) {
   // currently set to silently fail to update if empty string provided
   if (name.length > 0) {
-    this.model('User').getUser(function (err, user) {
+    this.getUser(email, function (err, user) {
       if (err) throw err;
       user.local.name = name;
       user.save(done);
@@ -45,16 +45,16 @@ userSchema.methods.updateName = function(name) {
   }
 };
 
-userSchema.methods.addSpace = function(space) {
-  this.model('User').getUser(function (err, user) {
+userSchema.statics.addSpace = function(email, space) {
+  this.getUser(email, function (err, user) {
     if (err) throw err;
     user.local.spaces.push(space);
     user.save(done);
   });
 };
 
-userSchema.methods.removeSpace = function(space) {
-  this.model('User').getUser(function (err, user) {
+userSchema.statics.removeSpace = function(email, space) {
+  this.getUser(email, function (err, user) {
     if (err) throw err;
     user.local.spaces.pull(space);
     user.save(done);
