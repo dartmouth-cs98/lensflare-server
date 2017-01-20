@@ -44,7 +44,7 @@ app.use(flash());
 
 
 
-var server = app.listen(process.env.PORT || 5000, function () {
+var server = app.listen(process.env.PORT || 4000, function () {
     var port = server.address().port;
     console.log("App now running on port", port);
 });
@@ -71,5 +71,3 @@ require('./routes/routes.js')(app, passport);
 //     });
 // });
 //
-
-

@@ -1,6 +1,8 @@
 module.exports = function (app, passport) {
     const S3_BUCKET = process.env.S3_BUCKET;
 
+    var userModel = require("../models/user");
+
     function handleError(res, reason, message, code) {
         console.log("ERROR: " + reason);
         res.status(code || 500).json({"error": message});
@@ -27,6 +29,7 @@ module.exports = function (app, passport) {
             user: req.user
         });
     });
+
     // User Login Routes
     app.get('/signup', function (req, res) {
         res.render('signup.ejs', {message: req.flash('signupMessage')});
@@ -36,9 +39,6 @@ module.exports = function (app, passport) {
         req.logout();
         res.redirect('/');
     });
-
-
-
 
     // Login/ FE Auth
     app.post('/', passport.authenticate('local-login', {
@@ -53,6 +53,11 @@ module.exports = function (app, passport) {
         failureFlash: true
     }));
 
+
+    app.post('/save', function (req, res) {
+      console.log()
+        userModel.updateSpaces(req.user)
+    });
 
     // S3 Uploading
     app.post("/sign-s3", function (req, res) {

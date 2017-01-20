@@ -73,6 +73,7 @@ function loadInit() {
   console.log(<%- JSON.stringify(user.local.spaces) %>)
   console.log(userDoc.spaces);
 
+  curl -X POST -H "Content-Type: application/json" -d '{"username": "test@test.com","password": "password"}' "http://localhost:5000/signup"
 
 }
 
