@@ -1,5 +1,5 @@
 var mongoose = require('mongoose');
-var models = require('./models/schema');
+var User = require('./models/user');
 var router = require('express').Router();
 
 var uri = 'mongodb://lensflare:L3nsflar3@lensflare-shard-00-00-5bldu.mongodb.net:27017/,lensflare-shard-00-01-5bldu.mongodb.net:27017,lensflare-shard-00-02-5bldu.mongodb.net:27017/lensflare?ssl=true&replicaSet=Lensflare-shard-0&authSource=admin';
@@ -66,6 +66,7 @@ router.delete('/users/:id', function(req, res) {
   });
 });
 
+/*
 // Creating one user.
 var user = new models.User ({
   name: 'test',
@@ -76,4 +77,9 @@ var user = new models.User ({
 user.save(function (err) {
   if (err) throw err;
   console.log ('User saved successfully!');
+});
+*/
+User.getUser('nick', function (err, user) {
+  if (err) console.log(user);
+  console.log(user);
 });
