@@ -1,6 +1,10 @@
-var LocalStrategy = require('passport-local').Strategy;
 
+var ExtractJwt = require('passport-jwt').ExtractJwt;
+var JwtStrategy = require('passport-jwt').Strategy;
+var LocalStrategy = require('passport-local').Strategy;
 var User = require('../models/user');
+var dotenv = require('dotenv');
+dotenv.config({silent: true});
 
 module.exports = function(passport) {
   passport.serializeUser(function(user, done) {
@@ -51,6 +55,21 @@ module.exports = function(passport) {
   },
   function(req, email, password, done) {
     User.findOne({ 'local.email' : email }, function(err, user) {
+      if (err) return done(err);
+      if (!user) return done(null, false, req.flash('loginMessage', 'User not found.'));
+      if (!user.validPassword(password)) return done(null, false, req.flash('loginMessage', "Incorrect password."));
+
+      return done(null, user);
+    });
+  }));
+
+  passport.use('jwt-login', new JwtStrategy({
+    jwtFromRequest: ExtractJwt.fromHeader('authorization'),
+    secretOrKey: "lensflare"
+  },
+  function(req, email, password, done) {
+    User.findOne({ 'local.email' : email }, function(err, user) {
+      console.log("here")
       if (err) return done(err);
       if (!user) return done(null, false, req.flash('loginMessage', 'User not found.'));
       if (!user.validPassword(password)) return done(null, false, req.flash('loginMessage', "Incorrect password."));

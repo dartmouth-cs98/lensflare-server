@@ -3,6 +3,8 @@ module.exports = function (app, passport) {
 
     var userModel = require("../models/user");
 
+    var jwt = require('jwt-simple')
+
     function handleError(res, reason, message, code) {
         console.log("ERROR: " + reason);
         res.status(code || 500).json({"error": message});
@@ -16,6 +18,18 @@ module.exports = function (app, passport) {
         res.redirect('/');
     }
 
+    const requireAuth = passport.authenticate('jwt-login', {
+        session: false
+    });
+    const requireLogin = passport.authenticate('local-login', {
+        session: false
+    });
+
+    function tokenForUser(user) {
+      const timestamp = new Date().getTime();
+      return jwt.encode({sub: user.id, iat: timestamp}, "lensflare");
+    }
+
     const util = require('util');
     const aws = require('aws-sdk');
 
@@ -24,7 +38,7 @@ module.exports = function (app, passport) {
         res.render('index.ejs', {message: req.flash('loginMessage')});
     });
 
-    app.get('/database', isLoggedIn, function (req, res) {
+    app.get('/database', requireAuth, function (req, res) {
         res.render('database.ejs', {
             user: req.user
         });
@@ -41,11 +55,19 @@ module.exports = function (app, passport) {
     });
 
     // Login/ FE Auth
+    app.post('/jwt', requireLogin, function(req, res) {
+        res.send({token: tokenForUser(req.user)});
+        res.redirect('/database');
+    });
+
+
     app.post('/', passport.authenticate('local-login', {
         successRedirect: '/database',
         failureRedirect: '/',
         failureFlash: true
-    }));
+    }), function(req, res) {
+        res.send({token: tokenForUser(req.user)})
+    });
 
     app.post('/signup', passport.authenticate('local-signup', {
         successRedirect: '/',

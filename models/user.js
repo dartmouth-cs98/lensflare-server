@@ -1,7 +1,6 @@
 var mongoose = require('mongoose');
 var uniqueValidator = require('mongoose-unique-validator');
 var bcrypt = require('bcrypt-nodejs');
-
 var Space = require('./space.js');
 
 var userSchema = mongoose.Schema({
@@ -12,6 +11,9 @@ var userSchema = mongoose.Schema({
     spaces: { type: Array, 'default': [] }
   }
 });
+
+
+
 userSchema.plugin(uniqueValidator);
 
 userSchema.methods.generateHash = function (password) {
