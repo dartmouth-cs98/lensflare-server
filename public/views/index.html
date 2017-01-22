@@ -1,0 +1,28 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <link href="style/style.css" rel="stylesheet" type="text/css">
+    <link href="https://fonts.googleapis.com/css?family=Raleway:300,900" rel="stylesheet">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+    <script src="actions/actions.js"></script>
+</head>
+
+
+<body>
+<div class="login-box" id="login-box">
+    <div class="title">Lensflare</div>
+    <br/>
+    Email:<br/><input class="text-box" id="email" type="text"></input><br/>
+    Password:<br/><input class="text-box" id="password" type="password"></input>
+    <br/>
+    <div style="color:red; font-size:12px">
+        <!-- <% if (message.length > 0) { %>
+          <%= message %>
+        <% } %> -->
+    </div>
+    <br/>
+    <button class="login-button" onclick="signIn()">Submit</button>
+    <br/><br/>
+    <a href="signup" style="font-size:11px; text-decoration:none; color:black;">create an account</a>
+</div>
+</body>

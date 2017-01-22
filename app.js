@@ -28,8 +28,13 @@ mongoose.connection.on('connected', function () {
 
 require('./config/passport');
 
-app.use(express.static(__dirname + '/style'));
-app.use(express.static(__dirname + '/assets'));
+// app.use(express.static(__dirname + '/public/style'));
+// app.use(express.static(__dirname + '/public/assets'));
+// app.use(express.static(__dirname + '/public/actions'));
+// app.use(express.static(__dirname + '/public/views'));
+
+app.use(express.static(path.join(__dirname, '/public')));
+
 
 app.use(morgan('dev'));
 app.use(cookieParser());
@@ -37,10 +42,10 @@ app.use(bodyParser());
 
 app.set('view engine', 'ejs');
 
-app.use(session({secret: 'lensflare'}));
-app.use(passport.initialize());
-app.use(passport.session());
-app.use(flash());
+// app.use(session({secret: 'lensflare'}));
+// app.use(passport.initialize());
+// app.use(passport.session());
+// app.use(flash());
 
 app.use(express.static(path.join(__dirname, '/views/index.html')));
 

@@ -5,28 +5,36 @@ import passport from 'passport';
 import LocalStrategy from 'passport-local';
 import {Strategy as JwtStrategy, ExtractJwt} from 'passport-jwt';
 import User from '../models/user';
-const localOptions = {usernameField: 'email'};
+const localOptions = {usernameField: 'email', passwordField: "password"};
 const jwtOptions = {
     jwtFromRequest: ExtractJwt.fromHeader('authorization'),
     secretOrKey: process.env.API_SECRET,
 };
 
 
-export const requireAuth = passport.authenticate('jwt', {session: false});
-export const requireSignin = passport.authenticate('local', {
-    session: false,
-    failureFlash: true,
-    failureRedirect: '/',
-    successRedirect: '/database'
-});
+passport.use("jwt", new JwtStrategy(jwtOptions, (payload, done) => {
+    // See if the user ID in the payload exists in our database
+    // If it does, call 'done' with that other
+    // otherwise, call done without a user object
+    User.findById(payload.sub, (err, user) => {
+        if (err) {
+            done(err, false);
+        } else if (user) {
+            done(null, user);
+        } else {
+            done(null, false);
+        }
+    });
+}));
 
-
-const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
+passport.use("local", new LocalStrategy(localOptions, (email, password, done) => {
+    console.log("Attempting Local Login");
     // Verify this email and password, call done with the user
     // if it is the correct email and password
     // otherwise, call done with false
     User.findOne({'local.email': email}, (err, user) => {
         if (err) {
+            console.log("Got an error when looking for User");
             return done(err);
         }
 
@@ -50,40 +58,30 @@ const localLogin = new LocalStrategy(localOptions, (email, password, done) => {
             }
         });
     });
+}));
+
+export const requireAuth = passport.authenticate('jwt', {
+    session: false
+});
+export const requireLogin = passport.authenticate('local', {
+    session: false
 });
 
-const jwtLogin = new JwtStrategy(jwtOptions, (payload, done) => {
-    // See if the user ID in the payload exists in our database
-    // If it does, call 'done' with that other
-    // otherwise, call done without a user object
-    User.findById(payload.sub, (err, user) => {
-        if (err) {
-            done(err, false);
-        } else if (user) {
-            done(null, user);
-        } else {
-            done(null, false);
-        }
-    });
-});
 
-passport.use('jwt-login', new JwtStrategy({
-        jwtFromRequest: ExtractJwt.fromHeader('authorization'),
-        secretOrKey: "lensflare"
-    },
-    function (req, email, password, done) {
-        User.findOne({'local.email': email}, function (err, user) {
-            console.log("here")
-            if (err) return done(err);
-            if (!user) return done(null, false, req.flash('loginMessage', 'User not found.'));
-            if (!user.validPassword(password)) return done(null, false, req.flash('loginMessage', "Incorrect password."));
-
-            return done(null, user);
-        });
-    }));
-
-passport.use(jwtLogin);
-passport.use(localLogin);
+// passport.use('jwt-login', new JwtStrategy({
+//         jwtFromRequest: ExtractJwt.fromHeader('authorization'),
+//         secretOrKey: "lensflare"
+//     },
+//     function (req, email, password, done) {
+//         User.findOne({'local.email': email}, function (err, user) {
+//             console.log("here")
+//             if (err) return done(err);
+//             if (!user) return done(null, false, req.flash('loginMessage', 'User not found.'));
+//             if (!user.validPassword(password)) return done(null, false, req.flash('loginMessage', "Incorrect password."));
+//
+//             return done(null, user);
+//         });
+//     }));
 
 
 // module.exports = function (passport) {

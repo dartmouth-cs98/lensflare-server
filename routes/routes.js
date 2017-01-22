@@ -1,32 +1,25 @@
 import * as UserController from '../controllers/user_controller';
-import {requireAuth, requireSignin} from '../config/passport';
+import {requireAuth, requireLogin} from '../config/passport';
 
 module.exports = function (app, passport) {
     var userModel = require("../models/user");
 
     var jwt = require('jwt-simple');
     var path = require('path');
-
-    function handleError(res, reason, message, code) {
-        console.log("ERROR: " + reason);
-        res.status(code || 500).json({"error": message});
-    }
-
-    function isLoggedIn(req, res, next) {
-
-        if (req.isAuthenticated())
-            return next();
-    }
-
+    //
+    // function handleError(res, reason, message, code) {
+    //     console.log("ERROR: " + reason);
+    //     res.status(code || 500).json({"error": message});
+    // }
+    //
+    // function isLoggedIn(req, res, next) {
+    //     if (req.isAuthenticated())
+    //         return next();
+    // }
 
     const S3_BUCKET = process.env.S3_BUCKET;
 
-    const requireAuth = passport.authenticate('jwt-login', {
-        session: false
-    });
-    const requireLogin = passport.authenticate('local-login', {
-        session: false
-    });
+
 
     function tokenForUser(user) {
         const timestamp = new Date().getTime();
@@ -36,11 +29,10 @@ module.exports = function (app, passport) {
     const util = require('util');
     const aws = require('aws-sdk');
 
-
     // Page Rendering
-    // app.get('/', function (req, res) {
-    //     res.sendFile(path.join(__dirname  + '/../views/index.html'));
-    // });
+    app.get('/', function (req, res) {
+        res.sendFile(path.join(__dirname + '/../public/views/index.html'));
+    });
 
     app.get('/database', requireAuth, function (req, res) {
         res.render('database.ejs', {
@@ -61,23 +53,13 @@ module.exports = function (app, passport) {
 
     //--------------------------------------------------------------------------------------------
 
-    app.post('/', requireSignin, UserController.signin);
     app.post('/signup', UserController.signup);
 
     // Login/ FE Auth
     app.post('/jwt', requireLogin, function (req, res) {
+        console.log("I am in the endpoint");
         res.send({token: tokenForUser(req.user)});
-        // res.redirect('/database');
     });
-
-    //
-    // app.post('/', passport.authenticate('local-login', {
-    //     successRedirect: '/database',
-    //     failureRedirect: '/',
-    //     failureFlash: true
-    // }), function (req, res) {
-    //     res.send({token: tokenForUser(req.user)})
-    // });
 
     app.post('/signup', passport.authenticate('local-signup', {
         successRedirect: '/',
