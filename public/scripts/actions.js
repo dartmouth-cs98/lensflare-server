@@ -6,16 +6,15 @@ function signIn() {
         'email': email,
         'password': password
     }).then((res) => {
-        // console.log(res);
 
-        // console.log("Token is: " + res.data.token);
+        // get the JWT
         localStorage.setItem("token", res.data.token);
+
+        // set request header
+        // make request
         window.location.href = "/database";
 
 
-        // get the JWT
-        // set request header
-        // make request
 
     }).catch((err) => {
 
@@ -53,4 +52,7 @@ function signUp() {
 
 }
 
-
+function logout() {
+  localStorage.removeItem('token');
+  window.location.href = "/";
+}

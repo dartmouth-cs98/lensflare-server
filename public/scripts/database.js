@@ -3,13 +3,13 @@ var currCellRow = -1;
 var currCellCol = -1;
 var active = false;
 
-var userDoc = {};
+var userDoc = {
+  // name=
+};
 
-console.log(localStorage.getItem("token"));
 if (!localStorage.getItem("token")) {
     window.location.href = "/";
 }
-
 
 userDoc.spaces = [{
     name: "The MoMA",
