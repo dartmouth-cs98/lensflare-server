@@ -22,11 +22,11 @@ mongoose.connection.on('error', function (err) {
     console.log(JSON.stringify(err, null, 4));
     process.exit(1);
 });
-mongoose.connection.on('connected', function() {
+mongoose.connection.on('connected', function () {
     console.log('Successfully connected.');
 });
 
-require('./config/passport')(passport);
+require('./config/passport');
 
 app.use(express.static(__dirname + '/style'));
 app.use(express.static(__dirname + '/assets'));
@@ -37,11 +37,10 @@ app.use(bodyParser());
 
 app.set('view engine', 'ejs');
 
-app.use(session({ secret: 'lensflare' }));
+app.use(session({secret: 'lensflare'}));
 app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
-
 
 
 var server = app.listen(process.env.PORT || 5000, function () {
@@ -49,7 +48,6 @@ var server = app.listen(process.env.PORT || 5000, function () {
     console.log("App now running on port", port);
 });
 
-var routes = require('./routes/routes');
 
 require('./routes/routes.js')(app, passport);
 

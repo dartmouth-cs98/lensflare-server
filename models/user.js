@@ -13,8 +13,18 @@ var userSchema = mongoose.Schema({
 });
 
 
-
 userSchema.plugin(uniqueValidator);
+
+
+userSchema.methods.comparePassword = function comparePassword(candidatePassword, callback) {
+    bcrypt.compare(candidatePassword, this.local.password, (err, isMatch) => {
+        if (err) {
+            return callback(err);
+        }
+
+        callback(null, isMatch);
+    });
+};
 
 userSchema.methods.generateHash = function (password) {
   return bcrypt.hashSync(password, bcrypt.genSaltSync(8), null);
@@ -96,5 +106,25 @@ userSchema.statics.removeSpace = function(email, space) {
     user.save(done);
   });
 }
+
+userSchema.pre("save", function beforeUserSave(next) {
+    const user = this;
+    if (!user.isModified('password')) return next();
+    bcrypt.genSalt(10, (err, salt) => {
+        if (err) {
+            return next(err);
+        }
+        // hash (encrypt) our password using the salt
+        bcrypt.hash(user.password, salt, null, (err, hash) => {
+            if (err) {
+                return next(err);
+            }
+            // overwrite plain text password with encrypted password
+            user.password = hash;
+            return next();
+        });
+    });
+
+});
 
 module.exports = mongoose.model('User', userSchema);
