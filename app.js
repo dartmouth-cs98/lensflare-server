@@ -42,6 +42,8 @@ app.use(passport.initialize());
 app.use(passport.session());
 app.use(flash());
 
+app.use(express.static(path.join(__dirname, '/views/index.html')));
+
 
 var server = app.listen(process.env.PORT || 5000, function () {
     var port = server.address().port;

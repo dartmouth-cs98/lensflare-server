@@ -1,4 +1,3 @@
-var User = require('../models/user');
 var dotenv = require('dotenv');
 dotenv.config({silent: true});
 //lets import some stuff

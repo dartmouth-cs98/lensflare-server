@@ -12,10 +12,7 @@ var userSchema = mongoose.Schema({
   }
 });
 
-
 userSchema.plugin(uniqueValidator);
-
-
 userSchema.methods.comparePassword = function comparePassword(candidatePassword, callback) {
     bcrypt.compare(candidatePassword, this.local.password, (err, isMatch) => {
         if (err) {
