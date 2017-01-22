@@ -30,7 +30,7 @@ require('./config/passport');
 
 // app.use(express.static(__dirname + '/public/style'));
 // app.use(express.static(__dirname + '/public/assets'));
-// app.use(express.static(__dirname + '/public/actions'));
+// app.use(express.static(__dirname + '/public/scripts'));
 // app.use(express.static(__dirname + '/public/views'));
 
 app.use(express.static(path.join(__dirname, '/public')));

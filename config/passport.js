@@ -27,6 +27,38 @@ passport.use("jwt", new JwtStrategy(jwtOptions, (payload, done) => {
     });
 }));
 
+
+passport.use('local-signup', new LocalStrategy({
+        nameField: 'name',
+        emailField: 'email',
+        passwordField: 'password',
+        passReqToCallback: true
+    },
+    function (req, email, password, done) {
+        process.nextTick(function () {
+            User.findOne({'local.email': email}, function (err, user) {
+                if (err) return done(err);
+
+                if (user) {
+                    return done(null, false, req.flash('signupMessage', 'That email is already being used for a user account.'));
+                }
+
+                else {
+                    var newUser = new User();
+                    newUser.local.name = req.param('name');
+                    newUser.local.email = email;
+                    newUser.local.password = newUser.generateHash(password);
+
+                    newUser.save(function (err) {
+                        if (err) throw err;
+                        return done(null, newUser);
+                    });
+
+                }
+            });
+        });
+    }));
+
 passport.use("local", new LocalStrategy(localOptions, (email, password, done) => {
     console.log("Attempting Local Login");
     // Verify this email and password, call done with the user
@@ -95,36 +127,7 @@ export const requireLogin = passport.authenticate('local', {
 //         });
 //     });
 //
-//     passport.use('local-signup', new LocalStrategy({
-//             nameField: 'name',
-//             emailField: 'email',
-//             passwordField: 'password',
-//             passReqToCallback: true
-//         },
-//         function (req, email, password, done) {
-//             process.nextTick(function () {
-//                 User.findOne({'local.email': email}, function (err, user) {
-//                     if (err) return done(err);
-//
-//                     if (user) {
-//                         return done(null, false, req.flash('signupMessage', 'That email is already being used for a user account.'));
-//                     }
-//
-//                     else {
-//                         var newUser = new User();
-//                         newUser.local.name = req.param('name');
-//                         newUser.local.email = email;
-//                         newUser.local.password = newUser.generateHash(password);
-//
-//                         newUser.save(function (err) {
-//                             if (err) throw err;
-//                             return done(null, newUser);
-//                         });
-//
-//                     }
-//                 });
-//             });
-//         }));
+
 //
 //     passport.use('local-login', new LocalStrategy({
 //             usernameField: 'email',

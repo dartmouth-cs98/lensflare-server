@@ -20,7 +20,6 @@ module.exports = function (app, passport) {
     const S3_BUCKET = process.env.S3_BUCKET;
 
 
-
     function tokenForUser(user) {
         const timestamp = new Date().getTime();
         return jwt.encode({sub: user.id, iat: timestamp}, "lensflare");
@@ -34,17 +33,16 @@ module.exports = function (app, passport) {
         res.sendFile(path.join(__dirname + '/../public/views/index.html'));
     });
 
-    app.get('/database', requireAuth, function (req, res) {
-        res.render('database.ejs', {
-            user: req.user
-        });
-    });
-
-    // User Login Routes
     app.get('/signup', function (req, res) {
-        res.render('signup.ejs', {message: req.flash('signupMessage')});
+        res.sendFile(path.join(__dirname + '/../public/views/signup.html'));
     });
 
+    app.get('/database', function (req, res) {
+        res.sendFile(path.join(__dirname + '/../public/views/database.html'));
+    });
+
+
+    // Does this work?? who knows
     app.get('/logout', function (req, res) {
         req.logout();
         res.redirect('/');
@@ -60,12 +58,6 @@ module.exports = function (app, passport) {
         console.log("I am in the endpoint");
         res.send({token: tokenForUser(req.user)});
     });
-
-    app.post('/signup', passport.authenticate('local-signup', {
-        successRedirect: '/',
-        failureRedirect: '/signup',
-        failureFlash: true
-    }));
 
 
     app.post('/save', function (req, res) {
