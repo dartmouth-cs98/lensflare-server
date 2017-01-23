@@ -2,7 +2,7 @@ import * as UserController from '../controllers/user_controller';
 import {requireAuth, requireLogin} from '../config/passport';
 
 module.exports = function (app, passport) {
-    var userModel = require("../models/user");
+    var UserModel = require("../models/user");
 
     var jwt = require('jwt-simple');
     var path = require('path');
@@ -41,6 +41,18 @@ module.exports = function (app, passport) {
         res.sendFile(path.join(__dirname + '/../public/views/database.html'));
     });
 
+    app.get('/getSpaces', function (req, res) {
+      console.log(res.body)
+
+      UserModel.getSpaces("nick@moolenijzer.com", function(err, user) {
+        res.send(user);
+      });
+    });
+
+    // UserModel.getSpaces("nick@moolenijzer.com", function(err, spaces) {
+    //   console.log('here');
+    //     console.log(spaces);
+    // }
 
     // Does this work?? who knows
     app.get('/logout', function (req, res) {
@@ -55,14 +67,15 @@ module.exports = function (app, passport) {
 
     // Login/ FE Auth
     app.post('/jwt', requireLogin, function (req, res) {
-        console.log("I am in the endpoint");
+        // console.log(req.user);
+            // console.log(req);
         res.send({token: tokenForUser(req.user)});
     });
 
 
     app.post('/save', function (req, res) {
-        console.log()
-        userModel.updateSpaces(req.user)
+        // console.log(req)
+        UserModel.updateSpaces("nick@moolenijzer.com", req.body)
     });
 
 

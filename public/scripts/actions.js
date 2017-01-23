@@ -58,12 +58,15 @@ function signUp() {
 }
 
 function getDB() {
-  axios.get('/allDB').then(function(resp) {
-    console.log(resp);
+  axios.get('/getSpaces').then(function(resp) {
+    console.log("HERE");
+    console.log(resp.request.response);
+    displayData(resp.request.response);
   }).catch(function(error) {
     console.log(error);
   });
 }
+
 
 function checkAll() {
   document.getElementById("errors").innerHTML = ""

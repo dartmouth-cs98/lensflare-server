@@ -59,7 +59,7 @@ passport.use('local-signup', new LocalStrategy({
         });
     }));
 
-passport.use("local", new LocalStrategy(localOptions, (email, password, done) => {
+passport.use('local', new LocalStrategy(localOptions, (email, password, done) => {
     console.log("Attempting Local Login");
     // Verify this email and password, call done with the user
     // if it is the correct email and password
