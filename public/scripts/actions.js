@@ -9,12 +9,11 @@ function signIn() {
 
         // get the JWT
         localStorage.setItem("token", res.data.token);
+        localStorage.setItem("email", res.data.email);
 
         // set request header
         // make request
         window.location.href = "/database";
-
-
 
     }).catch((err) => {
 
@@ -38,13 +37,10 @@ function signUp() {
           'password': password,
           'name': name
       }).then((res) => {
-          localStorage.setItem("token", res.data.token);
-          window.location.href = "/database";
+
+          window.location.href = "/";
 
           console.log("Signup Complete");
-          // get the JWT
-          // set request header
-          // make request
 
       }).catch((err) => {
 
@@ -58,19 +54,16 @@ function signUp() {
 }
 
 function loadSpaces() {
-  axios.get('/getSpaces').then(function(resp) {
-    console.log("HERE");
-    console.log(resp.request.response);
+  axios.get('/getSpaces', { params: { email: localStorage.getItem("email") } }).then(function(resp) {
     displayData(resp.request.response);
   }).catch(function(error) {
     console.log(error);
   });
 }
 
-function saveSpaces(spaces) {
-  axios.post('/save', spaces).then(function(resp) {
-    console.log("saved");
-    console.log(resp.request.response);
+function saveSpaces(userDoc) {
+  axios.post('/saveSpaces', userDoc).then(function(resp) {
+    console.log("Data saved");
   }).catch(function(error) {
     console.log(error);
   });
@@ -127,5 +120,6 @@ function checkEmail() {
 
 function logout() {
   localStorage.removeItem('token');
+  localStorage.removeItem('email');
   window.location.href = "/";
 }

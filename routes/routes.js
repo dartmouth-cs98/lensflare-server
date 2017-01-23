@@ -42,17 +42,10 @@ module.exports = function (app, passport) {
     });
 
     app.get('/getSpaces', function (req, res) {
-      console.log(res.body)
-
-      UserModel.getSpaces("nick@moolenijzer.com", function(err, user) {
+      UserModel.getSpaces(req.query.email, function(err, user) {
         res.send(user);
       });
     });
-
-    // UserModel.getSpaces("nick@moolenijzer.com", function(err, spaces) {
-    //   console.log('here');
-    //     console.log(spaces);
-    // }
 
     // Does this work?? who knows
     app.get('/logout', function (req, res) {
@@ -67,15 +60,12 @@ module.exports = function (app, passport) {
 
     // Login/ FE Auth
     app.post('/jwt', requireLogin, function (req, res) {
-        // console.log(req.user);
-            // console.log(req);
-        res.send({token: tokenForUser(req.user)});
+        res.send({email: req.user.local.email, email: req.user.local.email, token: tokenForUser(req.user)});
     });
 
 
-    app.post('/save', function (req, res) {
-        // console.log(req)
-        UserModel.updateSpaces("nick@moolenijzer.com", req.body)
+    app.post('/saveSpaces', function (req, res) {
+        UserModel.updateSpaces(req.body.email, req.body.spaces)
     });
 
 

@@ -3,7 +3,10 @@ var currCellRow = -1;
 var currCellCol = -1;
 var active = false;
 
-var userDoc = {};
+var userDoc = {
+  name: localStorage.getItem("name"),
+  email: localStorage.getItem("email")
+};
 
 if (!localStorage.getItem("token")) {
     window.location.href = "/";
@@ -11,6 +14,8 @@ if (!localStorage.getItem("token")) {
 
 function displayData(user) {
   userDoc = JSON.parse(user).local;
+
+  document.getElementById("space-links").innerHTML = "Welcome, " + userDoc.name + "!<br /><br />";
 
   for (var space in userDoc.spaces) {
       document.getElementById("space-links").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this," + space + ")'>" + userDoc.spaces[space].name + "</a><br />"
@@ -81,7 +86,7 @@ function save(spaceRow, row, col) {
 
     if (col == 1) cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + col + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].title;
     else cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + col + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].text;
-    saveSpaces(userDoc.spaces);
+    saveSpaces(userDoc);
 }
 
 function cancel(spaceRow, row, col) {
