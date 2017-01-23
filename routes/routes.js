@@ -63,7 +63,6 @@ module.exports = function (app, passport) {
         res.send({email: req.user.local.email, email: req.user.local.email, token: tokenForUser(req.user)});
     });
 
-
     app.post('/saveSpaces', function (req, res) {
         UserModel.updateSpaces(req.body.email, req.body.spaces)
     });

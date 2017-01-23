@@ -92,7 +92,7 @@ function save(spaceRow, row, col) {
 function cancel(spaceRow, row, col) {
     var table = document.getElementById("db-table");
     var cell = table.rows[row + 1].cells[col];
-    console.log(row + ", " + col);
+    
     if (active) cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + col + ")'>edit</button><br />" + startText;
 }
 
@@ -118,6 +118,7 @@ function saveNewSpace() {
     var newDB = {};
     newDB.text = dbName;
     loadDatabase(newDB, userDoc.spaces.length - 1);
+    saveSpaces(userDoc);
 }
 
 function reloadSidebar() {
