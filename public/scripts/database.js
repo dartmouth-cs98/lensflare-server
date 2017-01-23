@@ -92,12 +92,12 @@ function save(spaceRow, row, col) {
 function cancel(spaceRow, row, col) {
     var table = document.getElementById("db-table");
     var cell = table.rows[row + 1].cells[col];
-    
+
     if (active) cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + col + ")'>edit</button><br />" + startText;
 }
 
 function addSpace() {
-    document.getElementById("db-name").innerHTML = "<input class='db-name-entry' id='db-name-entry' type='text' value=''><form action='/save' method='post'><button class='db-name-save-button' onclick='saveNewSpace()'>save</button></form>"
+    document.getElementById("db-name").innerHTML = "<input class='db-name-entry' id='db-name-entry' type='text' value=''><button class='db-name-save-button' onclick='saveNewSpace()'>save</button>"
     document.getElementById("db-name-entry").focus();
     document.getElementById("db-table").innerHTML = "Enter the new item's name above and then start setup via HoloLens!";
 }
@@ -123,7 +123,7 @@ function saveNewSpace() {
 
 function reloadSidebar() {
 
-    document.getElementById("space-links").innerHTML = "";
+    document.getElementById("space-links").innerHTML = "Welcome, " + userDoc.name + "!<br /><br />";
 
     for (var space in userDoc.spaces) {
         document.getElementById("space-links").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this," + space + ")'>" + userDoc.spaces[space].name + "</a><br />"
