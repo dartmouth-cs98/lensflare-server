@@ -57,7 +57,7 @@ function signUp() {
 
 }
 
-function getDB() {
+function loadSpaces() {
   axios.get('/getSpaces').then(function(resp) {
     console.log("HERE");
     console.log(resp.request.response);
@@ -67,6 +67,14 @@ function getDB() {
   });
 }
 
+function saveSpaces(spaces) {
+  axios.post('/save', spaces).then(function(resp) {
+    console.log("saved");
+    console.log(resp.request.response);
+  }).catch(function(error) {
+    console.log(error);
+  });
+}
 
 function checkAll() {
   document.getElementById("errors").innerHTML = ""

@@ -55,26 +55,19 @@ userSchema.statics.updateName = function(email, name) {
 };
 
 userSchema.statics.getSpaces = function(email, cb) {
-    console.log("EMAIL: " + email);
-  // //
   this.findOne({ 'local.email': email}, function (err, user) {
     cb(err, user)
   });
 };
 
 userSchema.statics.updateSpaces = function(email, spaces) {
-    console.log("EMAIL: " + email);
-      console.log("SPACES: " + spaces);
-  // //
   this.findOne({ 'local.email': email}, function (err, user) {
     if (err) throw err;
-    console.log("USER: " + user);
 
     user.local.spaces = spaces;
 
     user.save(function(err) {
       if (err) throw err;
-      console.log("saved");
     });
   });
 };
