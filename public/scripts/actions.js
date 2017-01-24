@@ -96,9 +96,9 @@ function loadMessage(message) {
   document.getElementById("db-messages").style.opacity = "0";
   var opacity = 0;
   var fadeInDone = false;
-
-  clearInterval(fadeInInterval);
-  clearInterval(fadeOutInterval);
+  // 
+  // clearInterval(fadeInInterval);
+  // clearInterval(fadeOutInterval);
 
   var fadeInInterval = setInterval(function() {
     document.getElementById("db-messages").style.opacity = "" + opacity;
