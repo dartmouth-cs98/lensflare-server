@@ -49,12 +49,12 @@ function signUp() {
 
 function loadSpaces() {
   axios.get('/getSpaces', {
-      params: {
-        email: localStorage.getItem('email')
-      },
-      headers: {
-        authorization: localStorage.getItem('token')
-      }
+    params: {
+      email: localStorage.getItem('email')
+    },
+    headers: {
+      authorization: localStorage.getItem('token')
+    }
   }).then(function(resp) {
       displayData(resp.request.response);
   }).catch(function(error) {
@@ -64,8 +64,11 @@ function loadSpaces() {
 
 function saveSpaces(userDoc) {
   axios.post('/saveSpaces', {
-    userDoc,
-    authorization: localStorage.getItem('token')
+    userDoc: userDoc
+  }, {
+    headers: {
+      authorization: localStorage.getItem('token')
+    }
   }).then(function(resp) {
     console.log("Data saved");
   }).catch(function(error) {
@@ -139,11 +142,7 @@ function loadMockData() {
     spaces: spaces,
     email: localStorage.getItem("email")
   }
-  axios.post('/saveSpaces', userDoc).then(function(resp) {
-    console.log("Data saved");
-  }).catch(function(error) {
-    console.log(error);
-  });
+  saveSpaces(userDoc);
 
 }
 
