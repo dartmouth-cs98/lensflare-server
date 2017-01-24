@@ -14,8 +14,7 @@ if (!localStorage.getItem("token")) {
 
 function displayData(user) {
   userDoc = JSON.parse(user).local;
-  console.log("HERE")
-  console.log(userDoc);
+
   document.getElementById("space-links").innerHTML = "Welcome, " + userDoc.name + "!<br /><br />";
 
   for (var space in userDoc.spaces) {

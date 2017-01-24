@@ -95,10 +95,9 @@ userSchema.statics.addItem = function(email, spaceName, url) {
 
     for (var space in user.local.spaces) {
       if (user.local.spaces[space].name == spaceName) {
-        console.log(user.local.spaces[space].name);
         user.local.spaces[space].items.push(new Item({
-          title: "[enter title]",
-          text: "[enter text]",
+          title: "[add title]",
+          text: "[add text]",
           url: url
         }));
       }
