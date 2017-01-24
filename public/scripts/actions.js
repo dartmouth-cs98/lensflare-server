@@ -6,20 +6,16 @@ function signIn() {
         'email': email,
         'password': password
     }).then((res) => {
-
         // get the JWT
         localStorage.setItem("token", res.data.token);
         localStorage.setItem("email", res.data.email);
-
         // set request header
         // make request
         window.location.href = "/database";
 
     }).catch((err) => {
-
         // alert the failure to the user
         console.log(err);
-
         document.getElementById("message").innerHTML = "Authentication failed: " + err;
     })
 
@@ -43,10 +39,8 @@ function signUp() {
           console.log("Signup Complete");
 
       }).catch((err) => {
-
-          console.log(err);
           // alert the failure to the user
-          console.log("Authentication Failed");
+          console.log(err);
           document.getElementById("message").innerHTML = "Signup failed: " + err;
       })
     }
@@ -54,17 +48,25 @@ function signUp() {
 }
 
 function loadSpaces() {
-  console.log(localStorage.getItem("email"))
-  axios.get('/getSpaces', { params: { email: localStorage.getItem("email") } }).then(function(resp) {
-    console.log(resp.request.response)
-    displayData(resp.request.response);
+  axios.get('/getSpaces', {
+      params: {
+        email: localStorage.getItem('email')
+      },
+      headers: {
+        authorization: localStorage.getItem('token')
+      }
+  }).then(function(resp) {
+      displayData(resp.request.response);
   }).catch(function(error) {
-    console.log(error);
+      console.log(error);
   });
 }
 
 function saveSpaces(userDoc) {
-  axios.post('/saveSpaces', userDoc).then(function(resp) {
+  axios.post('/saveSpaces', {
+    userDoc,
+    authorization: localStorage.getItem('token')
+  }).then(function(resp) {
     console.log("Data saved");
   }).catch(function(error) {
     console.log(error);
@@ -72,7 +74,6 @@ function saveSpaces(userDoc) {
 }
 
 function loadMockData() {
-
   var spaces = [{
       name: "The MoMA",
       items: [
@@ -145,6 +146,13 @@ function loadMockData() {
   });
 
 }
+
+/*
+ *
+ * Sign up checking functions below
+ *
+ *
+ */
 
 function checkAll() {
   document.getElementById("errors").innerHTML = ""

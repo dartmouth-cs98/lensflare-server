@@ -5,65 +5,35 @@ import passport from 'passport';
 import LocalStrategy from 'passport-local';
 import {Strategy as JwtStrategy, ExtractJwt} from 'passport-jwt';
 import User from '../models/user';
-const localOptions = {usernameField: 'email', passwordField: "password"};
+const localOptions = {
+  usernameField: 'email',
+  passwordField: "password"
+};
 const jwtOptions = {
-    jwtFromRequest: ExtractJwt.fromHeader('authorization'),
-    secretOrKey: process.env.API_SECRET,
+  jwtFromRequest: ExtractJwt.fromHeader('authorization'),
+  secretOrKey: process.env.API_SECRET
 };
 
+passport.use(new JwtStrategy(jwtOptions,
+  function (payload, done) {
 
-passport.use("jwt", new JwtStrategy(jwtOptions, (payload, done) => {
-    // See if the user ID in the payload exists in our database
-    // If it does, call 'done' with that other
-    // otherwise, call done without a user object
     User.findById(payload.sub, (err, user) => {
         if (err) {
-            done(err, false);
+            return done(err, false);
         } else if (user) {
-            done(null, user);
+            return done(null, user);
         } else {
-            done(null, false);
+            return done(null, false);
         }
     });
 }));
 
 
-passport.use('local-signup', new LocalStrategy({
-        nameField: 'name',
-        emailField: 'email',
-        passwordField: 'password',
-        passReqToCallback: true
-    },
-    function (req, email, password, done) {
-        process.nextTick(function () {
-            User.findOne({'local.email': email}, function (err, user) {
-                if (err) return done(err);
-
-                if (user) {
-                    return done(null, false, req.flash('signupMessage', 'That email is already being used for a user account.'));
-                }
-
-                else {
-                    var newUser = new User();
-                    newUser.local.name = req.param('name');
-                    newUser.local.email = email;
-                    newUser.local.password = newUser.generateHash(password);
-
-                    newUser.save(function (err) {
-                        if (err) throw err;
-                        return done(null, newUser);
-                    });
-
-                }
-            });
-        });
-    }));
-
-passport.use('local', new LocalStrategy(localOptions, (email, password, done) => {
+passport.use(new LocalStrategy(localOptions, (email, password, done) => {
     console.log("Attempting Local Login");
-    // Verify this email and password, call done with the user
     // if it is the correct email and password
-    // otherwise, call done with false
+
+    // Verify this email and password, call done with the user
     User.findOne({'local.email': email}, (err, user) => {
         if (err) {
             console.log("Got an error when looking for User");
@@ -71,19 +41,18 @@ passport.use('local', new LocalStrategy(localOptions, (email, password, done) =>
         }
 
         if (!user) {
-            console.log("could not find user");
+            console.log("Could not find user - try again");
             return done(null, false);
         }
 
         // compare passwords - is `password` equal to user.password?
         user.comparePassword(password, (err, isMatch) => {
-            console.log("Comparing Password");
-
             if (err) {
-                console.log("I have an error");
+                console.log("Error: " + err);
                 done(err);
             } else if (!isMatch) {
-                console.log("Password Does Not Match");
+                // otherwise, call done with false
+                console.log("Passwords do not match");
                 done(null, false);
             } else {
                 done(null, user);
@@ -91,6 +60,38 @@ passport.use('local', new LocalStrategy(localOptions, (email, password, done) =>
         });
     });
 }));
+
+passport.use('local-signup', new LocalStrategy({
+    nameField: 'name',
+    emailField: 'email',
+    passwordField: 'password',
+    passReqToCallback: true
+},
+function (req, email, password, done) {
+    process.nextTick(function () {
+        User.findOne({'local.email': email}, function (err, user) {
+            if (err) return done(err);
+
+            if (user) {
+                return done(null, false, req.flash('signupMessage', 'That email is already being used for a user account.'));
+            }
+
+            else {
+                var newUser = new User();
+                newUser.local.name = req.param('name');
+                newUser.local.email = email;
+                newUser.local.password = newUser.generateHash(password);
+
+                newUser.save(function (err) {
+                    if (err) throw err;
+                    return done(null, newUser);
+                });
+
+            }
+        });
+    });
+}));
+
 
 export const requireAuth = passport.authenticate('jwt', {
     session: false

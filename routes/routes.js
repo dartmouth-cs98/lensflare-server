@@ -19,10 +19,9 @@ module.exports = function (app, passport) {
 
     const S3_BUCKET = process.env.S3_BUCKET;
 
-
     function tokenForUser(user) {
         const timestamp = new Date().getTime();
-        return jwt.encode({sub: user.id, iat: timestamp}, "lensflare");
+        return jwt.encode({sub: user.id, iat: timestamp}, process.env.API_SECRET);
     }
 
     const util = require('util');
@@ -41,7 +40,7 @@ module.exports = function (app, passport) {
         res.sendFile(path.join(__dirname + '/../public/views/database.html'));
     });
 
-    app.get('/getSpaces', function (req, res) {
+    app.get('/getSpaces', requireAuth, function (req, res) {
       UserModel.getSpaces(req.query.email, function(err, user) {
         res.send(user);
       });
@@ -64,6 +63,7 @@ module.exports = function (app, passport) {
     });
 
     app.post('/saveSpaces', function (req, res) {
+      console.log(req);
         UserModel.updateSpaces(req.body.email, req.body.spaces)
     });
 
