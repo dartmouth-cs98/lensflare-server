@@ -35,7 +35,6 @@ function signUp() {
       }).then((res) => {
 
           window.location.href = "/";
-
           console.log("Signup Complete");
 
       }).catch((err) => {
@@ -70,8 +69,7 @@ function saveSpaces(userDoc) {
       authorization: localStorage.getItem('token')
     }
   }).then(function(resp) {
-    window.alert("Save successful!");
-    console.log("Data saved");
+    loadMessage("Saved successfully")
   }).catch(function(error) {
     console.log(error);
   });
@@ -87,11 +85,39 @@ function addItemTest() {
       authorization: localStorage.getItem('token')
     }
   }).then(function(resp) {
-    window.alert("Save successful!");
-    console.log("Data saved");
+    loadMessage("Saved successfully")
   }).catch(function(error) {
     console.log(error);
   });
+}
+
+function loadMessage(message) {
+  document.getElementById("db-messages").innerHTML = message;
+  document.getElementById("db-messages").style.opacity = "0";
+  var opacity = 0;
+  var fadeInDone = false;
+
+  clearInterval(fadeInInterval);
+  clearInterval(fadeOutInterval);
+
+  var fadeInInterval = setInterval(function() {
+    document.getElementById("db-messages").style.opacity = "" + opacity;
+    opacity += 0.01;
+    if (opacity > 1.5) {
+      fadeInDone = true;
+      clearInterval(fadeInInterval);
+    }
+  }, 10);
+
+  fadeOutInterval = setInterval(function() {
+    if (fadeInDone) {
+      document.getElementById("db-messages").style.opacity = "" + opacity;
+      opacity -= 0.01;
+      if (opacity < 0) {
+        clearInterval(fadeOutInterval);
+      }
+    }
+  }, 10);
 }
 
 function loadMockData() {
