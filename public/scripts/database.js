@@ -14,6 +14,7 @@ if (!localStorage.getItem("token")) {
 
 function displayData(user) {
   userDoc = JSON.parse(user).local;
+  console.log("HERE")
   console.log(userDoc);
   document.getElementById("space-links").innerHTML = "Welcome, " + userDoc.name + "!<br /><br />";
 
@@ -47,7 +48,7 @@ function loadDatabase(space, spaceRow) {
     headerRow.insertCell(1).innerHTML = "Title"
     headerRow.insertCell(2).innerHTML = "Text"
     headerRow.insertCell(3).innerHTML = "Media"
-    for (var row = 1; row < 4; row++) {
+    for (var row = 1; row <= userDoc.spaces[spaceRow].items.length; row++) {
         var rowV = table.insertRow(row);
         rowV.insertCell(0).innerHTML = "<img height='auto' width='250px' src='" + userDoc.spaces[spaceRow].items[row - 1].url + "'>"
         rowV.insertCell(1).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 1 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].title;

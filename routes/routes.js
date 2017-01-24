@@ -3,6 +3,7 @@ import {requireAuth, requireLogin} from '../config/passport';
 
 module.exports = function (app, passport) {
     var UserModel = require("../models/user");
+    var SpaceModel = require("../models/space");
 
     var jwt = require('jwt-simple');
     var path = require('path');
@@ -64,6 +65,11 @@ module.exports = function (app, passport) {
 
     app.post('/saveSpaces', requireAuth, function (req, res) {
         UserModel.updateSpaces(req.body.userDoc.email, req.body.userDoc.spaces);
+        res.send();
+    });
+
+    app.post('/saveItem', requireAuth, function (req, res) {
+        UserModel.addItem(req.body.email, req.body.space, req.body.url);
         res.send();
     });
 

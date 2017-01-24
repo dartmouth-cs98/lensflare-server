@@ -77,6 +77,23 @@ function saveSpaces(userDoc) {
   });
 }
 
+function addItemTest() {
+  axios.post('/saveItem', {
+    email: localStorage.getItem('email'),
+    url: "http://dartmouth.edu/sites/default/files/styles/header_image/public/2009-1035500133.jpg?itok=LlpoUNH9",
+    space: "The MoMA"
+  }, {
+    headers: {
+      authorization: localStorage.getItem('token')
+    }
+  }).then(function(resp) {
+    window.alert("Save successful!");
+    console.log("Data saved");
+  }).catch(function(error) {
+    console.log(error);
+  });
+}
+
 function loadMockData() {
   var spaces = [{
       name: "The MoMA",

@@ -2,6 +2,7 @@ var mongoose = require('mongoose');
 var uniqueValidator = require('mongoose-unique-validator');
 var bcrypt = require('bcrypt-nodejs');
 var Space = require('./space.js');
+var Item = require('./item')
 
 var userSchema = mongoose.Schema({
   local: {
@@ -32,7 +33,7 @@ userSchema.methods.validPassword = function (password) {
 };
 
 userSchema.statics.getUser = function (email, cb) {
-  return this.find({ 'local.email': new RegExp(str, 'i') }, cb);
+  return this.find({ 'local.email': new RegExp(email, 'i') }, cb);
 };
 
 // userSchema.statics.getSpaces = function (email, cb) {
@@ -77,6 +78,30 @@ userSchema.statics.addSpace = function(email, space) {
     if (err) throw err;
     user.local.spaces.push(space);
     user.save(done);
+  });
+};
+
+userSchema.statics.addItem = function(email, spaceName, url) {
+  this.findOne({ 'local.email': email }, function (err, user) {
+    if (err) throw err;
+
+    for (var space in user.local.spaces) {
+      if (user.local.spaces[space].name == spaceName) {
+        console.log(user.local.spaces[space].name);
+        user.local.spaces[space].items.push(new Item({
+          title: "[enter title]",
+          text: "[enter text]",
+          url: url
+        }));
+      }
+    }
+
+    user.markModified('local.spaces')
+
+    user.save(function (err) {
+      if (err) throw err;
+    });
+
   });
 };
 

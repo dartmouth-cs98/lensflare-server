@@ -1,5 +1,7 @@
 var mongoose = require('mongoose');
 var uniqueValidator = require('mongoose-unique-validator');
+var Item = require('./item')
+var User = require('./user')
 
 var spaceSchema = mongoose.Schema({
   name: { type: String, required: true, unique: true },
@@ -23,18 +25,29 @@ spaceSchema.statics.updateName = function(oldName, newName) {
       space.name = newName;
 
       // uniqueValidator should have this line throw an error if name is not unique
-      space.save(function (err) { 
+      space.save(function (err) {
         console.log(err); // PLACEHOLDER
       });
     });
   }
 };
 
-spaceSchema.statics.addItem = function(name, item) {
-  this.getSpace(name, function (err, space) {
+spaceSchema.statics.addItem = function(email, spaceName, url) {
+  User.getUser(email, function (err, user) {
     if (err) throw err;
-    space.items.push(item);
-    space.save(done);
+    for (var space in user.local.spaces) {
+      if (space.name == spaceName) {
+        console.log("HERE");
+        space.items.push({
+          url: url,
+          title: "",
+          text: ""
+        });
+        user.save(function (err) {
+          console.log(err); // PLACEHOLDER
+        });
+      }
+    }
   });
 };
 
@@ -43,7 +56,7 @@ spaceSchema.methods.removeItem = function(name, item) {
     if (err) throw err;
     space.items.pull(item);
     space.save(done);
-  }); 
+  });
 }
 
 module.exports = mongoose.model('Space', spaceSchema);
