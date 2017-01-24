@@ -1,3 +1,6 @@
+var fadeInInterval;
+var fadeOutInterval;
+
 function signIn() {
     var email = document.getElementById("email").value;
     var password = document.getElementById("password").value;
@@ -96,11 +99,11 @@ function loadMessage(message) {
   document.getElementById("db-messages").style.opacity = "0";
   var opacity = 0;
   var fadeInDone = false;
-  // 
-  // clearInterval(fadeInInterval);
-  // clearInterval(fadeOutInterval);
 
-  var fadeInInterval = setInterval(function() {
+  if (typeof fadeInInterval != 'undefined') clearInterval(fadeInInterval);
+  if (typeof fadeInInterval != 'undefined') clearInterval(fadeOutInterval);
+
+  fadeInInterval = setInterval(function() {
     document.getElementById("db-messages").style.opacity = "" + opacity;
     opacity += 0.01;
     if (opacity > 1.5) {
