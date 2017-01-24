@@ -70,6 +70,7 @@ function saveSpaces(userDoc) {
       authorization: localStorage.getItem('token')
     }
   }).then(function(resp) {
+    window.alert("Save successful!");
     console.log("Data saved");
   }).catch(function(error) {
     console.log(error);

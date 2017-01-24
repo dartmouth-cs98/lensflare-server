@@ -41,7 +41,6 @@ module.exports = function (app, passport) {
     });
 
     app.get('/getSpaces', requireAuth, function (req, res) {
-        console.log(req.headers)
       UserModel.getSpaces(req.query.email, function(err, user) {
         res.send(user);
       });
@@ -65,6 +64,7 @@ module.exports = function (app, passport) {
 
     app.post('/saveSpaces', requireAuth, function (req, res) {
         UserModel.updateSpaces(req.body.userDoc.email, req.body.userDoc.spaces);
+        res.send();
     });
 
 
