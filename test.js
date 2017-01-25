@@ -2,7 +2,7 @@ var mongoose = require('mongoose');
 var User = require('./models/user');
 var router = require('express').Router();
 
-var uri = 'mongodb://lensflare:L3nsflar3@lensflare-shard-00-00-5bldu.mongodb.net:27017/,lensflare-shard-00-01-5bldu.mongodb.net:27017,lensflare-shard-00-02-5bldu.mongodb.net:27017/lensflare?ssl=true&replicaSet=Lensflare-shard-0&authSource=admin';
+var uri = 'mongodb://lensflare:L3nsflar3@ds117849.mlab.com:17849/lensflare';
 
 mongoose.Promise = global.Promise;
 var db = mongoose.connect(uri);
