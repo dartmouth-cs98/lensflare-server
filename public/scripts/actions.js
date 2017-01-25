@@ -72,9 +72,9 @@ function saveSpaces(userDoc) {
       authorization: localStorage.getItem('token')
     }
   }).then(function(resp) {
-    loadMessage("Saved successfully")
+    loadMessage(true, "saved successfully")
   }).catch(function(error) {
-    console.log(error);
+    loadMessage(false, "error saving - try again")
   });
 }
 
@@ -88,13 +88,15 @@ function addItemTest() {
       authorization: localStorage.getItem('token')
     }
   }).then(function(resp) {
-    loadMessage("Saved successfully")
+    loadMessage(true, "saved successfully")
   }).catch(function(error) {
-    console.log(error);
+    loadMessage(false, "error saving - try again")
   });
 }
 
-function loadMessage(message) {
+function loadMessage(success, message) {
+  if (!success) document.getElementById("db-messages").style.backgroundColor = "#ff7f7f"
+
   document.getElementById("db-messages").innerHTML = message;
   document.getElementById("db-messages").style.opacity = "0";
   var opacity = 0;
