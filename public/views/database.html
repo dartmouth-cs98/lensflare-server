@@ -2,22 +2,22 @@
 <head>
   <meta charset="utf-8">
   <link href="style/style.css" rel="stylesheet" type="text/css">
+
+  <script src="scripts/libraries/three.min.js"></script>
+
   <script src="scripts/actions.js"></script>
   <script src="scripts/database.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <link href="https://fonts.googleapis.com/css?family=Raleway:300,900" rel="stylesheet">
 </head>
 
-
 <body onload="loadSpaces()">
   <div id="db-messages" class="db-messages"></div>
   <div id="sidebar" class="sidebar">
     <div class="spaces-title">Lensflare</div>
-
     <div id="space-links"></div>
-
-        <button onclick="loadMockData()" value="logout">loadMockData</button>
-        <button onclick="addItemTest()" value="logout">add item test</button>
+    <button onclick="loadMockData()" value="logout">loadMockData</button>
+    <button onclick="addItemTest()" value="logout">add item test</button>
   </div>
 
   <div class="logout-button">

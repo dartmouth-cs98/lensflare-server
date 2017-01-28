@@ -2,6 +2,9 @@ var startText = "";
 var currCellRow = -1;
 var currCellCol = -1;
 var active = false;
+var meshes = [];
+var renderers = [];
+var scenes = [];
 
 var userDoc = {
   name: localStorage.getItem("name"),
@@ -52,14 +55,16 @@ function loadDatabase(space, spaceRow) {
         rowV.insertCell(0).innerHTML = "<img height='auto' width='250px' src='" + userDoc.spaces[spaceRow].items[row - 1].url + "'>"
         rowV.insertCell(1).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 1 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].title;
         rowV.insertCell(2).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].text;
-        rowV.insertCell(3).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 3 + ")'>edit</button><br />[add URL]";
+        rowV.insertCell(3).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 3 + ")'>edit</button><br />";
 
         rowV.cells[0].style.backgroundColor = "#f0f0ff";
         rowV.cells[1].style.width = "175px";
         rowV.cells[2].style.backgroundColor = "#f0f0ff";
         rowV.cells[3].style.width = "100px";
-
+        rowV.cells[3].setAttribute("name", "mesh");
     }
+
+    loadMeshes();
 }
 
 function edit(spaceRow, row, col) {
@@ -130,5 +135,49 @@ function reloadSidebar() {
     }
 
     document.getElementById("space-links").innerHTML += "<div style='font-size:12px; text-align:center'><a style='cursor: pointer;' onclick='addSpace()'>add new</a></div>"
+}
+
+
+function loadMeshes() {
+
+  var cells = document.getElementsByName('mesh');
+
+  for (var i = 0; i < cells.length; i++) {
+    var scene = new THREE.Scene();
+
+    var camera = new THREE.PerspectiveCamera(35, 1, 1, 10000);
+    camera.position.z = 1000;
+    scene.userData.camera = camera;
+
+    var geometry = new THREE.BoxGeometry(200, 200, 200);
+    var material = new THREE.MeshBasicMaterial( {color: 0xff0000, wireframe: true} );
+
+    var mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+    var renderer = new THREE.WebGLRenderer({ alpha: true });
+    renderer.setSize(100, 100);
+    renderer.setClearColor(0xffffff, 0);
+
+    cells[i].appendChild(renderer.domElement);
+
+    renderers.push(renderer);
+    scenes.push(scene);
+    meshes.push(mesh);
+  }
+
+  animate();
+}
+
+function animate() {
+  requestAnimationFrame( animate );
+
+  for (var i in meshes) {
+    var mesh = meshes[i];
+    mesh.rotation.x += 0.01;
+    mesh.rotation.y += 0.02;
+
+    renderers[i].render(scenes[i], scenes[i].userData.camera)
+  }
 
 }
