@@ -7,16 +7,6 @@ module.exports = function (app, passport) {
 
     var jwt = require('jwt-simple');
     var path = require('path');
-    //
-    // function handleError(res, reason, message, code) {
-    //     console.log("ERROR: " + reason);
-    //     res.status(code || 500).json({"error": message});
-    // }
-    //
-    // function isLoggedIn(req, res, next) {
-    //     if (req.isAuthenticated())
-    //         return next();
-    // }
 
     const S3_BUCKET = process.env.S3_BUCKET;
 
@@ -42,9 +32,9 @@ module.exports = function (app, passport) {
     });
 
     app.get('/getSpaces', requireAuth, function (req, res) {
-      UserModel.getSpaces(req.query.email, function(err, user) {
-        res.send(user);
-      });
+        UserModel.getSpaces(req.query.email, function (err, user) {
+            res.send(user);
+        });
     });
 
     // Does this work?? who knows
@@ -63,98 +53,50 @@ module.exports = function (app, passport) {
         res.send({email: req.user.local.email, token: tokenForUser(req.user)});
     });
 
-    app.post('/saveSpaces', requireAuth, function (req, res) {
+    // needs auth
+    // fe call
+    app.post('/saveSpaces', function (req, res) {
         UserModel.updateSpaces(req.body.userDoc.email, req.body.userDoc.spaces);
         res.send();
     });
 
-    app.post('/saveItem', requireAuth, function (req, res) {
-        UserModel.addItem(req.body.email, req.body.space, req.body.url);
+    // backend
+    // needs auth
+    app.post('/saveItem', function (req, res) {
+        UserModel.addItem(req.body.userId, req.body.spaceId, req.body.url);
         res.send();
     });
 
 
     // S3 Uploading
     app.post("/sign-s3", function (req, res) {
-        console.log("Generating Signed URL");
         const s3 = new aws.S3();
-        var fileName = req.body.image.name;
-        var s3Params = {
-            Bucket: S3_BUCKET,
-            Key: fileName,
-            Expires: 60,
-            ACL: 'public-read'
-        };
-        s3.getSignedUrl('putObject', s3Params, (err, data) => {
-            if (err) {
-                console.log(err);
-                return res.end();
-            }
-            console.log(fileName);
-            var returnData = {
-                fileName: fileName,
-                signedUrl: data,
-                url: util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, fileName)
-            }
-
-            console.log(returnData.signedUrl);
-
-            res.write(JSON.stringify(returnData));
-            // save it in the DB;
-
+        var files = req.body.files;
+        var returnData = {files: []};
+        // create space if doesn't exist
+        files.forEach((file) => {
+            s3.getSignedUrl('putObject',
+                {
+                    Bucket: S3_BUCKET,
+                    Key: file.fileName,
+                    Expires: 60,
+                    ACL: 'public-read'
+                },
+                (err, data) => {
+                    if (err) {
+                        console.log(err);
+                        return res.end();
+                    }
+                    returnData.files.push({
+                        fileName: file.fileName,
+                        signedUrl: data,
+                        url: util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, file.fileName)
+                    });
+                    UserModel.addItem(req.body.email, req.body.space, util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, file.fileName));
+                });
         });
+        res.write(JSON.stringify(returnData));
         res.end();
     });
 
-
-//
-//     // add a new user (as of now, JSON should include all object info)
-//     app.post("/users", function (req, res) {
-//         var newUser = req.body;
-//         newUser.createDate = new Date();
-//
-//         // sanitize input
-//         db.collection(USERS_COLLECTION).insertOne(newContact, function (err, doc) {
-//             if (err) {
-//                 handleError(res, err.message, "Failed to create new user.");
-//             } else {
-//                 res.status(201).json(doc.ops[0]);
-//             }
-//         });
-//
-//     });
-//
-// // get all users - will include display text?
-//     app.get("/users", function (req, res) {
-//         db.collection(USERS_COLLECTION).find({}).toArray(function (err, docs) {
-//             if (err) {
-//                 handleError(res, err.message, "Failed to get users.");
-//             } else {
-//                 res.status(200).json(docs);
-//             }
-//         });
-//     });
-//
-// // Get a full user structure by ID
-//     app.get("/users/:id", function (req, res) {
-//         db.collection(USERS_COLLECTION).findOne({_id: new ObjectID(req.params.id)}, function (err, doc) {
-//             if (err) {
-//                 handleError(res, err.message, "Failed to get user");
-//             } else {
-//                 res.status(200).json(doc);
-//             }
-//         });
-//     });
-//
-// // delete a user
-//     app.delete("/users/:id", function (req, res) {
-//         db.collection(USERS_COLLECTION).deleteOne({_id: new ObjectID(req.params.id)}, function (err, result) {
-//             if (err) {
-//                 handleError(res, err.message, "Failed to delete contact");
-//             } else {
-//                 res.status(204).end();
-//             }
-//         });
-//     });
-
-}
+};
