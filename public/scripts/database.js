@@ -51,6 +51,7 @@ function loadDatabase(space, spaceRow) {
 
     if (userDoc.spaces[spaceRow].items.length == 0) {
         document.getElementById("db-table").innerHTML = "There appears to be no photos taken - start setup via HoloLens!";
+        scenes = [];
         return;
     }
 
@@ -60,13 +61,14 @@ function loadDatabase(space, spaceRow) {
     headerRow.insertCell(0).innerHTML = "Image"
     headerRow.insertCell(1).innerHTML = "Title"
     headerRow.insertCell(2).innerHTML = "Text"
-    headerRow.insertCell(3).innerHTML = "Media"
+    headerRow.insertCell(3).innerHTML = "Mesh"
     for (var row = 1; row <= userDoc.spaces[spaceRow].items.length; row++) {
         var rowV = table.insertRow(row);
         rowV.insertCell(0).innerHTML = "<img height='auto' width='250px' src='" + userDoc.spaces[spaceRow].items[row - 1].url + "'>"
         rowV.insertCell(1).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 1 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].title;
         rowV.insertCell(2).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].text;
-        rowV.insertCell(3).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 3 + ")'>edit</button><br />";
+        rowV.insertCell(3);
+        // .innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 3 + ")'>edit</button><br />";
 
         rowV.cells[0].style.backgroundColor = "#f0f0ff";
         rowV.cells[1].style.width = "175px";
@@ -76,6 +78,7 @@ function loadDatabase(space, spaceRow) {
         rowV.cells[3].style.background = "none"
     }
 
+    scenes = [];
     loadMeshes();
 }
 
@@ -153,6 +156,7 @@ function reloadSidebar() {
 function loadMeshes() {
 
   var cells = document.getElementsByName('mesh');
+
   for (var i = 0; i < cells.length; i++) {
     var cell = cells[i];
 
@@ -162,8 +166,15 @@ function loadMeshes() {
     camera.position.z = 1000;
     scene.userData.camera = camera;
 
+    var loader = new THREE.JSONLoader();
+    // loader.load("link", function(geometry) {
+    //   var material = new THREE.MeshBasicMaterial( {color: 0x4d6bff, wireframe: true} );
+    //   var mesh = new THREE.Mesh(geometry, material);
+    //   scene.add(mesh);
+    // })
+
     var geometry = new THREE.BoxGeometry(200, 200, 200);
-    var material = new THREE.MeshBasicMaterial( {color: 0xff0000, wireframe: true} );
+    var material = new THREE.MeshBasicMaterial( {color: 0x4d6bff, wireframe: true} );
 
     var mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
@@ -191,8 +202,8 @@ function animate() {
 
     var rect = cell.getBoundingClientRect();
 
-    renderer.setViewport(0, renderer.domElement.clientHeight - rect.bottom, 100, 100);
-    renderer.setScissor(0, renderer.domElement.clientHeight - rect.bottom, 100, 100);
+    renderer.setViewport(0, renderer.domElement.clientHeight - rect.bottom + rect.height - 100, 100, 100);
+    renderer.setScissor(0, renderer.domElement.clientHeight - rect.bottom + rect.height - 100, 100, 100);
 
     renderer.render(scenes[i], scenes[i].userData.camera)
   }
