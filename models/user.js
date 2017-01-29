@@ -82,6 +82,7 @@ userSchema.statics.addSpace = function(email, space) {
 };
 
 userSchema.statics.addItem = function(email, spaceName, url) {
+    console.log(email + '    ' + spaceName + "   "   + url);
   this.findOne({ 'local.email': email }, function (err, user) {
     if (err) throw err;
 
