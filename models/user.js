@@ -34,12 +34,12 @@ userSchema.methods.validPassword = function (password) {
 
 // necessary to use email to find user initially on login
 userSchema.statics.getUser = function (email, cb) {
-  return this.find({ 'local.email': new RegExp(email, 'i') }, cb);
+  return this.findOne({ 'local.email': new RegExp(email, 'i') }, cb);
 };
 
-// userSchema.statics.getSpaces = function (email, cb) {
-//   return this.find({ 'local.email': new RegExp(email, 'i') }, 'spaces -_id', cb);
-// };
+userSchema.statics.getSpaces = function (email, cb) {
+  return this.findOne({ 'local.email': new RegExp(email, 'i') }, 'spaces -_id', cb);
+};
 
 userSchema.statics.removeUser = function (userID, cb) {
   return this.findOneAndRemove({ '_id': userID }, cb);
@@ -58,14 +58,23 @@ userSchema.statics.updateName = function(userID, name) {
   }
 };
 
-userSchema.statics.getSpaces = function(email, cb) {
-  this.findOne({ 'local.email': email }, function (err, user) {
-    cb(err, user)
+// userSchema.statics.getSpaces = function(email, cb) {
+//   this.findOne({ 'local.email': email }, function (err, user) {
+//     cb(err, user)
+//   });
+// };
+
+userSchema.statics.hasSpace = function(email, space) {
+  this.getUser(email, function(err, user) {
+    // check by space.name instead?
+    user.spaces.some(function (space) {
+      return friend.equals(space); // compares by ObjectID
+    });
   });
 };
 
 userSchema.statics.updateSpaces = function(email, spaces) {
-  this.findOne({ 'local.email': email}, function (err, user) {
+  this.getUser(email, function (err, user) {
     if (err) throw err;
 
     user.local.spaces = spaces;
@@ -76,10 +85,12 @@ userSchema.statics.updateSpaces = function(email, spaces) {
   });
 };
 
-userSchema.statics.addSpace = function(email, spaceName) {
-  var space = new Space({
-    name: spaceName
-  });
+userSchema.statics.addSpace = function(email, space) {
+  // for if we want to pass spaceName instead
+  // var space = new Space({ 
+  //   name: spaceName
+  // });
+
   this.getUser(email, function (err, user) {
     if (err) throw err;
     user.local.spaces.push(space);
@@ -90,8 +101,8 @@ userSchema.statics.addSpace = function(email, spaceName) {
 };
 
 userSchema.statics.addItem = function(email, spaceName, url) {
-    console.log(email + '    ' + spaceName + "   "   + url);
-  this.findOne({ 'local.email': email }, function (err, user) {
+  console.log(email + '    ' + spaceName + "   "   + url);
+  this.getUser(email, function (err, user) {
     if (err) throw err;
 
     for (var space in user.local.spaces) {

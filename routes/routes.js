@@ -38,6 +38,7 @@ module.exports = function (app, passport) {
     });
 
     // Does this work?? who knows
+    // need 1 for comment conversations
     app.get('/logout', function (req, res) {
         req.logout();
         res.redirect('/');
@@ -55,10 +56,20 @@ module.exports = function (app, passport) {
 
     // needs auth
     // fe call
+    // route for doing bulk updates to a user's set of spaces
     app.post('/saveSpaces', function (req, res) {
         UserModel.updateSpaces(req.body.userDoc.email, req.body.userDoc.spaces);
         res.send();
     });
+
+    // route for adding a new space to a user's set of spaces
+    // app.post('/addSpace', function (req, res) {
+    //     var newSpace = new Space({
+    //       name: req.body.spaceName
+    //     });
+    //     UserModel.addSpace(req.body.userDoc.email, newSpace);
+    //     res.send();
+    // });
 
     // backend
     // needs auth
@@ -69,11 +80,17 @@ module.exports = function (app, passport) {
 
 
     // S3 Uploading
+    // assumes access to the relevant Space object
     app.post("/sign-s3", function (req, res) {
         const s3 = new aws.S3();
         var files = req.body.files;
         var returnData = {files: []};
-        // create space if doesn't exist
+
+        // associate the space with the user if not already
+        if (!UserModel.hasSpace(req.body.email, req.body.space)) { // check this
+            UserModel.addSpace(req.body.email, req.body.space);
+        }
+
         files.forEach((file) => {
             s3.getSignedUrl('putObject',
                 {
