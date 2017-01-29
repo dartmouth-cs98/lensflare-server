@@ -15,12 +15,17 @@ if (!localStorage.getItem("token")) {
     window.location.href = "/";
 }
 
+window.addEventListener('resize', function() {
+  "use strict";
+  canvas.style.left = (window.innerWidth - 120) + "px";
+})
+
 function displayData(user) {
   canvas =  document.getElementById("c");
-
   renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
-  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setSize(100, window.innerHeight);
   renderer.setClearColor(0xffffff, 0);
+  canvas.style.left = (window.innerWidth - 120) + "px";
 
   userDoc = JSON.parse(user).local;
 
@@ -37,7 +42,7 @@ function displayData(user) {
   document.getElementById("db-name").innerHTML = userDoc.spaces[0].name
   loadDatabase(start, 0)
 
-  console.log(userDoc);
+  animate();
 }
 
 function loadDatabase(space, spaceRow) {
@@ -163,40 +168,18 @@ function loadMeshes() {
     var mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
 
-    var sceneDiv = document.createElement("div");
-    sceneDiv.class = "scene";
-    cell.style.zIndex = 20;
-
     scene.userData.element = cell;
-    // cell.appendChild(renderer.domElement)
 
     scenes.push(scene);
-  }
-
-  // document.getElementById('content').appendChild(renderer.domElement)
-  animate();
-}
-
-function updateSize() {
-
-  var width = canvas.clientWidth;
-  var height = canvas.clientHeight;
-
-  if ( canvas.width !== width || canvas.height != height ) {
-
-    renderer.setSize( width, height, false );
-
   }
 
 }
 
 function animate() {
 
-	updateSize();
-
-	renderer.setScissorTest( false );
-	renderer.clear();
-	renderer.setScissorTest( true );
+  renderer.setScissorTest(false);
+  renderer.clear();
+  renderer.setScissorTest(true);
 
   for (var i in scenes) {
     var mesh = scenes[i].children[0];
@@ -207,16 +190,13 @@ function animate() {
     var cell = scenes[i].userData.element;
 
     var rect = cell.getBoundingClientRect();
-    // renderer.setViewport(0, 0, 100, 100);
-    // renderer.setViewport(600 + i*100, 600, 100, 100);
-    // renderer.setScissor(600 + i*100, 600, 100, 100);
-    renderer.setViewport(rect.left, renderer.domElement.clientHeight - rect.bottom, 100, 100);
-    renderer.setScissor(rect.left, renderer.domElement.clientHeight - rect.bottom, 100, 100);
+
+    renderer.setViewport(0, renderer.domElement.clientHeight - rect.bottom, 100, 100);
+    renderer.setScissor(0, renderer.domElement.clientHeight - rect.bottom, 100, 100);
 
     renderer.render(scenes[i], scenes[i].userData.camera)
   }
 
-
-  requestAnimationFrame( animate );
+  requestAnimationFrame(animate);
 
 }

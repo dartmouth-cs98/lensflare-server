@@ -167,6 +167,12 @@
   text-decoration: underline;
 }
 
+#c {
+  position: fixed;
+  width: 100px;
+  height: 100%;
+}
+
 body {
   font-family: 'Raleway', sans-serif;
   margin-right:0px;
