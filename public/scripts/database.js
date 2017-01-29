@@ -2,9 +2,9 @@ var startText = "";
 var currCellRow = -1;
 var currCellCol = -1;
 var active = false;
-var meshes = [];
-var renderers = [];
+var renderer;
 var scenes = [];
+var canvas;
 
 var userDoc = {
   name: localStorage.getItem("name"),
@@ -16,6 +16,12 @@ if (!localStorage.getItem("token")) {
 }
 
 function displayData(user) {
+  canvas =  document.getElementById("c");
+
+  renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+  renderer.setSize(window.innerWidth, window.innerHeight);
+  renderer.setClearColor(0xffffff, 0);
+
   userDoc = JSON.parse(user).local;
 
   document.getElementById("space-links").innerHTML = "Welcome, " + userDoc.name + "!<br /><br />";
@@ -62,6 +68,7 @@ function loadDatabase(space, spaceRow) {
         rowV.cells[2].style.backgroundColor = "#f0f0ff";
         rowV.cells[3].style.width = "100px";
         rowV.cells[3].setAttribute("name", "mesh");
+        rowV.cells[3].style.background = "none"
     }
 
     loadMeshes();
@@ -141,8 +148,9 @@ function reloadSidebar() {
 function loadMeshes() {
 
   var cells = document.getElementsByName('mesh');
-
   for (var i = 0; i < cells.length; i++) {
+    var cell = cells[i];
+
     var scene = new THREE.Scene();
 
     var camera = new THREE.PerspectiveCamera(35, 1, 1, 10000);
@@ -155,29 +163,60 @@ function loadMeshes() {
     var mesh = new THREE.Mesh(geometry, material);
     scene.add(mesh);
 
-    var renderer = new THREE.WebGLRenderer({ alpha: true });
-    renderer.setSize(100, 100);
-    renderer.setClearColor(0xffffff, 0);
+    var sceneDiv = document.createElement("div");
+    sceneDiv.class = "scene";
+    cell.style.zIndex = 20;
 
-    cells[i].appendChild(renderer.domElement);
+    scene.userData.element = cell;
+    // cell.appendChild(renderer.domElement)
 
-    renderers.push(renderer);
     scenes.push(scene);
-    meshes.push(mesh);
   }
 
+  // document.getElementById('content').appendChild(renderer.domElement)
   animate();
 }
 
-function animate() {
-  requestAnimationFrame( animate );
+function updateSize() {
 
-  for (var i in meshes) {
-    var mesh = meshes[i];
+  var width = canvas.clientWidth;
+  var height = canvas.clientHeight;
+
+  if ( canvas.width !== width || canvas.height != height ) {
+
+    renderer.setSize( width, height, false );
+
+  }
+
+}
+
+function animate() {
+
+	updateSize();
+
+	renderer.setScissorTest( false );
+	renderer.clear();
+	renderer.setScissorTest( true );
+
+  for (var i in scenes) {
+    var mesh = scenes[i].children[0];
+
     mesh.rotation.x += 0.01;
     mesh.rotation.y += 0.02;
 
-    renderers[i].render(scenes[i], scenes[i].userData.camera)
+    var cell = scenes[i].userData.element;
+
+    var rect = cell.getBoundingClientRect();
+    // renderer.setViewport(0, 0, 100, 100);
+    // renderer.setViewport(600 + i*100, 600, 100, 100);
+    // renderer.setScissor(600 + i*100, 600, 100, 100);
+    renderer.setViewport(rect.left, renderer.domElement.clientHeight - rect.bottom, 100, 100);
+    renderer.setScissor(rect.left, renderer.domElement.clientHeight - rect.bottom, 100, 100);
+
+    renderer.render(scenes[i], scenes[i].userData.camera)
   }
+
+
+  requestAnimationFrame( animate );
 
 }

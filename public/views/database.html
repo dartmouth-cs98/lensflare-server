@@ -9,9 +9,26 @@
   <script src="scripts/database.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <link href="https://fonts.googleapis.com/css?family=Raleway:300,900" rel="stylesheet">
+  <style>
+
+    #c {
+      position: fixed;
+      left: 0px;
+      width: 100%;
+      height: 100%;
+    }
+
+  </style>
+  <title>three.js webgl - multiple elements</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
 </head>
 
 <body onload="loadSpaces()">
+
+  <canvas id="c"></canvas>
+
   <div id="db-messages" class="db-messages"></div>
   <div id="sidebar" class="sidebar">
     <div class="spaces-title">Lensflare</div>
