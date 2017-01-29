@@ -32,6 +32,7 @@ userSchema.methods.validPassword = function (password) {
   return bcrypt.compareSync(password, this.local.password);
 };
 
+// necessary to use email to find user initially on login
 userSchema.statics.getUser = function (email, cb) {
   return this.find({ 'local.email': new RegExp(email, 'i') }, cb);
 };
@@ -40,23 +41,25 @@ userSchema.statics.getUser = function (email, cb) {
 //   return this.find({ 'local.email': new RegExp(email, 'i') }, 'spaces -_id', cb);
 // };
 
-userSchema.statics.removeUser = function (email, cb) {
-  return this.findOneAndRemove({ 'local.email': new RegExp(email, 'i') }, cb);
+userSchema.statics.removeUser = function (userID, cb) {
+  return this.findOneAndRemove({ '_id': userID }, cb);
 };
 
-userSchema.statics.updateName = function(email, name) {
+userSchema.statics.updateName = function(userID, name) {
   // currently set to silently fail to update if empty string provided
   if (name.length > 0) {
-    this.getUser(email, function (err, user) {
+    this.getUser(userID, function (err, user) {
       if (err) throw err;
       user.local.name = name;
-      user.save(done);
+      user.save(function (err) {
+        if (err) throw err;
+      });
     });
   }
 };
 
 userSchema.statics.getSpaces = function(email, cb) {
-  this.findOne({ 'local.email': email}, function (err, user) {
+  this.findOne({ 'local.email': email }, function (err, user) {
     cb(err, user)
   });
 };
@@ -73,11 +76,16 @@ userSchema.statics.updateSpaces = function(email, spaces) {
   });
 };
 
-userSchema.statics.addSpace = function(email, space) {
+userSchema.statics.addSpace = function(email, spaceName) {
+  var space = new Space({
+    name: spaceName
+  });
   this.getUser(email, function (err, user) {
     if (err) throw err;
     user.local.spaces.push(space);
-    user.save(done);
+    user.save(function (err) {
+      if (err) throw err;
+    });
   });
 };
 
@@ -88,10 +96,9 @@ userSchema.statics.addItem = function(email, spaceName, url) {
 
     for (var space in user.local.spaces) {
       if (user.local.spaces[space].name == spaceName) {
-        console.log(user.local.spaces[space].name);
         user.local.spaces[space].items.push(new Item({
-          title: "[enter title]",
-          text: "[enter text]",
+          title: "[add title]",
+          text: "[add text]",
           url: url
         }));
       }
@@ -110,7 +117,9 @@ userSchema.statics.removeSpace = function(email, space) {
   this.getUser(email, function (err, user) {
     if (err) throw err;
     user.local.spaces.pull(space);
-    user.save(done);
+    user.save(function (err) {
+      if (err) throw err;
+    });
   });
 }
 

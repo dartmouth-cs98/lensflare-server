@@ -43,7 +43,7 @@ spaceSchema.statics.addItem = function(email, spaceName, url) {
           title: "",
           text: ""
         });
-        user.save(function (err) {
+        space.save(function (err) {
           console.log(err); // PLACEHOLDER
         });
       }
@@ -55,7 +55,9 @@ spaceSchema.methods.removeItem = function(name, item) {
   this.getSpace(name, function (err, space) {
     if (err) throw err;
     space.items.pull(item);
-    space.save(done);
+    space.save(function (err) {
+      if (err) throw err;
+    });
   });
 }
 

@@ -2,20 +2,29 @@
 <head>
   <meta charset="utf-8">
   <link href="style/style.css" rel="stylesheet" type="text/css">
+
+  <script src="scripts/libraries/three.min.js"></script>
+
   <script src="scripts/actions.js"></script>
   <script src="scripts/database.js"></script>
   <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
   <link href="https://fonts.googleapis.com/css?family=Raleway:300,900" rel="stylesheet">
+  <title>three.js webgl - multiple elements</title>
+  <meta charset="utf-8">
+  <meta name="viewport" content="width=device-width, user-scalable=no, minimum-scale=1.0, maximum-scale=1.0">
+
 </head>
 
 <body onload="loadSpaces()">
+
+  <canvas id="c" style="z-index: 0"></canvas>
+
+  <div id="db-messages" class="db-messages"></div>
   <div id="sidebar" class="sidebar">
     <div class="spaces-title">Lensflare</div>
-
     <div id="space-links"></div>
-
-        <button onclick="loadMockData()" value="logout">loadMockData</button>
-            <button onclick="addItemTest()" value="logout">add item test</button>
+    <button onclick="loadMockData()" value="logout">loadMockData</button>
+    <button onclick="addItemTest()" value="logout">add item test</button>
   </div>
 
   <div class="logout-button">
@@ -23,6 +32,6 @@
   </div>
   <div id="db-name" class="db-title"></div>
   <div id="content" class="db-content">
-    <table id="db-table" class="db-table"/>
+    <table id="db-table" class="db-table"style="z-index: 10"/>
   </div>
 </body>

@@ -2,6 +2,9 @@ var startText = "";
 var currCellRow = -1;
 var currCellCol = -1;
 var active = false;
+var renderer;
+var scenes = [];
+var canvas;
 
 var userDoc = {
   name: localStorage.getItem("name"),
@@ -12,10 +15,20 @@ if (!localStorage.getItem("token")) {
     window.location.href = "/";
 }
 
+window.addEventListener('resize', function() {
+  "use strict";
+  canvas.style.left = (window.innerWidth - 120) + "px";
+})
+
 function displayData(user) {
+  canvas =  document.getElementById("c");
+  renderer = new THREE.WebGLRenderer({ canvas: canvas, alpha: true });
+  renderer.setSize(100, window.innerHeight);
+  renderer.setClearColor(0xffffff, 0);
+  canvas.style.left = (window.innerWidth - 120) + "px";
+
   userDoc = JSON.parse(user).local;
-  console.log("HERE")
-  console.log(userDoc);
+
   document.getElementById("space-links").innerHTML = "Welcome, " + userDoc.name + "!<br /><br />";
 
   for (var space in userDoc.spaces) {
@@ -29,7 +42,7 @@ function displayData(user) {
   document.getElementById("db-name").innerHTML = userDoc.spaces[0].name
   loadDatabase(start, 0)
 
-  console.log(userDoc);
+  animate();
 }
 
 function loadDatabase(space, spaceRow) {
@@ -53,14 +66,17 @@ function loadDatabase(space, spaceRow) {
         rowV.insertCell(0).innerHTML = "<img height='auto' width='250px' src='" + userDoc.spaces[spaceRow].items[row - 1].url + "'>"
         rowV.insertCell(1).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 1 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].title;
         rowV.insertCell(2).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].text;
-        rowV.insertCell(3).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 3 + ")'>edit</button><br />[add URL]";
+        rowV.insertCell(3).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 3 + ")'>edit</button><br />";
 
         rowV.cells[0].style.backgroundColor = "#f0f0ff";
         rowV.cells[1].style.width = "175px";
         rowV.cells[2].style.backgroundColor = "#f0f0ff";
         rowV.cells[3].style.width = "100px";
-
+        rowV.cells[3].setAttribute("name", "mesh");
+        rowV.cells[3].style.background = "none"
     }
+
+    loadMeshes();
 }
 
 function edit(spaceRow, row, col) {
@@ -131,5 +147,56 @@ function reloadSidebar() {
     }
 
     document.getElementById("space-links").innerHTML += "<div style='font-size:12px; text-align:center'><a style='cursor: pointer;' onclick='addSpace()'>add new</a></div>"
+}
+
+
+function loadMeshes() {
+
+  var cells = document.getElementsByName('mesh');
+  for (var i = 0; i < cells.length; i++) {
+    var cell = cells[i];
+
+    var scene = new THREE.Scene();
+
+    var camera = new THREE.PerspectiveCamera(35, 1, 1, 10000);
+    camera.position.z = 1000;
+    scene.userData.camera = camera;
+
+    var geometry = new THREE.BoxGeometry(200, 200, 200);
+    var material = new THREE.MeshBasicMaterial( {color: 0xff0000, wireframe: true} );
+
+    var mesh = new THREE.Mesh(geometry, material);
+    scene.add(mesh);
+
+    scene.userData.element = cell;
+
+    scenes.push(scene);
+  }
+
+}
+
+function animate() {
+
+  renderer.setScissorTest(false);
+  renderer.clear();
+  renderer.setScissorTest(true);
+
+  for (var i in scenes) {
+    var mesh = scenes[i].children[0];
+
+    mesh.rotation.x += 0.01;
+    mesh.rotation.y += 0.02;
+
+    var cell = scenes[i].userData.element;
+
+    var rect = cell.getBoundingClientRect();
+
+    renderer.setViewport(0, renderer.domElement.clientHeight - rect.bottom, 100, 100);
+    renderer.setScissor(0, renderer.domElement.clientHeight - rect.bottom, 100, 100);
+
+    renderer.render(scenes[i], scenes[i].userData.camera)
+  }
+
+  requestAnimationFrame(animate);
 
 }
