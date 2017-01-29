@@ -37,10 +37,6 @@ userSchema.statics.getUser = function (email, cb) {
   return this.findOne({ 'local.email': new RegExp(email, 'i') }, cb);
 };
 
-userSchema.statics.getSpaces = function (email, cb) {
-  return this.findOne({ 'local.email': new RegExp(email, 'i') }, 'spaces -_id', cb);
-};
-
 userSchema.statics.removeUser = function (userID, cb) {
   return this.findOneAndRemove({ '_id': userID }, cb);
 };
@@ -58,11 +54,11 @@ userSchema.statics.updateName = function(userID, name) {
   }
 };
 
-// userSchema.statics.getSpaces = function(email, cb) {
-//   this.findOne({ 'local.email': email }, function (err, user) {
-//     cb(err, user)
-//   });
-// };
+userSchema.statics.getSpaces = function(email, cb) {
+  this.findOne({ 'local.email': email }, function (err, user) {
+    cb(err, user)
+  });
+};
 
 userSchema.statics.hasSpace = function(email, space) {
   this.getUser(email, function(err, user) {
