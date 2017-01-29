@@ -83,7 +83,7 @@ userSchema.statics.updateSpaces = function(email, spaces) {
 
 userSchema.statics.addSpace = function(email, space) {
   // for if we want to pass spaceName instead
-  // var space = new Space({ 
+  // var space = new Space({
   //   name: spaceName
   // });
 

@@ -74,7 +74,8 @@ module.exports = function (app, passport) {
     // backend
     // needs auth
     app.post('/saveItem', function (req, res) {
-        UserModel.addItem(req.body.userId, req.body.spaceId, req.body.url);
+      UserModel.addItem(req.body.email, req.body.space, req.body.url);
+        // UserModel.addItem(req.body.userId, req.body.spaceId, req.body.url);
         res.send();
     });
 
