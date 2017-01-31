@@ -37,14 +37,16 @@ module.exports = function (app, passport) {
         });
     });
 
-    // Does this work?? who knows
-    // need 1 for comment conversations
+    app.get('/getSpace', requireAuth, function (req, res) {
+        UserModel.getSpace(req.query.email, req.query.spaceName, function (err, space) {
+            res.send(space);
+        });
+    });
+
     app.get('/logout', function (req, res) {
         req.logout();
         res.redirect('/');
     });
-
-
     //--------------------------------------------------------------------------------------------
 
     app.post('/signup', UserController.signup);
@@ -74,8 +76,15 @@ module.exports = function (app, passport) {
     // backend
     // needs auth
     app.post('/saveItem', function (req, res) {
-      UserModel.addItem(req.body.email, req.body.space, req.body.url);
+        UserModel.addItem(req.body.email, req.body.space, req.body.url);
         // UserModel.addItem(req.body.userId, req.body.spaceId, req.body.url);
+        res.send();
+    });
+
+
+    app.post('/clearSpace', function (req, res) {
+        console.log(req.body);
+        UserModel.removeSpace(req.body.params.email, req.body.params.space);
         res.send();
     });
 
