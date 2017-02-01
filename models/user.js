@@ -108,11 +108,10 @@ userSchema.statics.updateSpaces = function (email, spaces) {
     });
 };
 
-userSchema.statics.addSpace = function (email, space) {
-    // for if we want to pass spaceName instead
-    // var space = new Space({
-    //   name: spaceName
-    // });
+userSchema.statics.addSpace = function (email, spaceName) {
+    var space = new Space({
+      name: spaceName
+    });
 
     this.getUser(email, function (err, user) {
         if (err) throw err;
