@@ -92,14 +92,15 @@ module.exports = function (app, passport) {
     // S3 Uploading
     // assumes access to the relevant Space object
     app.post("/sign-s3", function (req, res) {
+        console.log("In Signed s3 endpoint")
         const s3 = new aws.S3();
         var files = req.body.files;
         var returnData = {files: []};
-
         // associate the space with the user if not already
         if (!UserModel.hasSpace(req.body.email, req.body.space)) { // check this
             UserModel.addSpace(req.body.email, req.body.space);
         }
+        console.log("About to generate Signed URLS")
 
         files.forEach((file) => {
             s3.getSignedUrl('putObject',
@@ -122,6 +123,8 @@ module.exports = function (app, passport) {
                     UserModel.addItem(req.body.email, req.body.space, util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, file.fileName));
                 });
         });
+        console.log("Done generating Signed URLS")
+
         res.write(JSON.stringify(returnData));
         res.end();
     });
