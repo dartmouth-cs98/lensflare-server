@@ -97,6 +97,7 @@ module.exports = function (app, passport) {
         var files = req.body.files;
         var returnData = {files: []};
         // associate the space with the user if not already
+
         if (!UserModel.hasSpace(req.body.email, req.body.space)) { // check this
             UserModel.addSpace(req.body.email, req.body.space);
         }

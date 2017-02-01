@@ -72,13 +72,28 @@ userSchema.statics.getSpace = function (email, spaceName, cb) {
     });
 };
 
-userSchema.statics.hasSpace = function (email, space) {
+// userSchema.statics.hasSpace = function (email, searchSpace) {
+//     console.log("In Has space");
+//     this.getUser(email, function (err, user) {
+//         // check by space.name instead?
+//         user.local.spaces.some(function (space) {
+//             console.log(space);
+//             return space.equals(searchSpace); // compares by ObjectID
+//         });
+//     });
+// };
+
+userSchema.statics.hasSpace = function (email, spaceName) {
     this.getUser(email, function (err, user) {
-        // check by space.name instead?
-        user.local.spaces.some(function (space) {
-            return friend.equals(space); // compares by ObjectID
-        });
+        if (err) throw err;
+
+        for (var i in user.local.spaces) {
+            if (user.local.spaces[i].name == spaceName) {
+                return true;
+            }
+        }
     });
+    return false;
 };
 
 userSchema.statics.updateSpaces = function (email, spaces) {
