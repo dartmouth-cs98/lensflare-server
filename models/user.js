@@ -75,7 +75,7 @@ userSchema.statics.getSpace = function (email, spaceName, cb) {
 userSchema.statics.hasSpace = function (email, space) {
     this.getUser(email, function (err, user) {
         // check by space.name instead?
-        user.spaces.some(function (space) {
+        user.local.spaces.some(function (space) {
             return friend.equals(space); // compares by ObjectID
         });
     });
