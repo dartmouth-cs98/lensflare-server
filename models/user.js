@@ -84,7 +84,7 @@ userSchema.statics.getSpace = function (email, spaceName, cb) {
 // };
 
 userSchema.statics.hasSpace = function (email, spaceName) {
-    this.getUser(email, function (err, user) {
+    return this.getUser(email, function (err, user) {
         if (err) throw err;
 
         for (var i in user.local.spaces) {
@@ -92,8 +92,8 @@ userSchema.statics.hasSpace = function (email, spaceName) {
                 return true;
             }
         }
+        return false;
     });
-    return false;
 };
 
 userSchema.statics.updateSpaces = function (email, spaces) {
