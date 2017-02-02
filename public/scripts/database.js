@@ -5,6 +5,7 @@ var active = false;
 var renderer;
 var scenes = [];
 var canvas;
+var readyForAnimation = false;
 
 var userDoc = {
   name: localStorage.getItem("name"),
@@ -69,7 +70,7 @@ function loadDatabase(space, spaceRow) {
         rowV.insertCell(2).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].text;
         rowV.insertCell(3);
         // .innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 3 + ")'>edit</button><br />";
-
+        
         rowV.cells[0].style.backgroundColor = "#f0f0ff";
         rowV.cells[1].style.width = "175px";
         rowV.cells[2].style.backgroundColor = "#f0f0ff";
@@ -117,6 +118,7 @@ function cancel(spaceRow, row, col) {
 }
 
 function addSpace() {
+    scenes = [];
     document.getElementById("db-name").innerHTML = "<input class='db-name-entry' id='db-name-entry' type='text' value=''><button class='db-name-save-button' onclick='saveNewSpace()'>save</button>"
     document.getElementById("db-name-entry").focus();
     document.getElementById("db-table").innerHTML = "Enter the new item's name above and then start setup via HoloLens!";
@@ -166,11 +168,17 @@ function loadMeshes() {
     camera.position.z = 1000;
     scene.userData.camera = camera;
 
-    var loader = new THREE.JSONLoader();
-    // loader.load("link", function(geometry) {
+    // camera.position.z = 15;
+    // scene.userData.camera = camera;
+    //
+    // var loader = new THREE.JSONLoader();
+    // loader.load("scripts/mclaren.json", function(geometry) {
     //   var material = new THREE.MeshBasicMaterial( {color: 0x4d6bff, wireframe: true} );
     //   var mesh = new THREE.Mesh(geometry, material);
     //   scene.add(mesh);
+    //   scene.userData.element = cell;
+    //   scenes.push(scene);
+    //   readyForAnimation = true;
     // })
 
     var geometry = new THREE.BoxGeometry(200, 200, 200);
@@ -180,13 +188,14 @@ function loadMeshes() {
     scene.add(mesh);
 
     scene.userData.element = cell;
-
     scenes.push(scene);
   }
 
 }
 
 function animate() {
+
+  // if (!readyForAnimation) return;
 
   renderer.setScissorTest(false);
   renderer.clear();
