@@ -33,7 +33,7 @@ function displayData(user) {
     document.getElementById("space-links").innerHTML = "Welcome, " + userDoc.name + "!<br /><br />";
 
     for (var space in userDoc.spaces) {
-        document.getElementById("space-links").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this," + space + ")'>" + userDoc.spaces[space].name + "</a> <button onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'>x</button> <br/>"
+        document.getElementById("space-links").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this," + space + ")'>" + userDoc.spaces[space].name + "</a><button class='delete-space-button' onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'>x</button><br/>"
     }
 
     document.getElementById("space-links").innerHTML += "<div style='font-size:12px; text-align:center'><a style='cursor: pointer;' onclick='addSpace()'>add new space</a></div>"
@@ -121,7 +121,7 @@ function cancel(spaceRow, row, col) {
 
 function addSpace() {
     scenes = [];
-    document.getElementById("db-name").innerHTML = "<input class='db-name-entry' id='db-name-entry' type='text' value=''><button class='db-name-save-button' onclick='saveNewSpace()'>save</button>"
+    document.getElementById("db-name").innerHTML = "<input class='db-name-entry' maxlength='18' id='db-name-entry' type='text' value=''><button class='db-name-save-button' onclick='saveNewSpace()'>save</button>"
     document.getElementById("db-name-entry").focus();
     document.getElementById("db-table").innerHTML = "Enter the new item's name above and then start setup via HoloLens!";
 }
