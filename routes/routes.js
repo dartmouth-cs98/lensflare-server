@@ -37,6 +37,12 @@ module.exports = function (app, passport) {
         });
     });
 
+    app.get('/getSpacesUnauth', function (req, res) {
+        UserModel.getSpaces("nick@moolenijzer.com", function (err, user) {
+            res.send(user);
+        });
+    });
+
     app.get('/getSpace', requireAuth, function (req, res) {
         UserModel.getSpace(req.query.email, req.query.spaceName, function (err, space) {
             res.send(space);
