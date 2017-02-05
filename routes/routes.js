@@ -38,7 +38,7 @@ module.exports = function (app, passport) {
     });
 
     app.get('/getSpacesUnauth', function (req, res) {
-        UserModel.getSpaces("nick@moolenijzer.com", function (err, user) {
+        UserModel.getSpaces(req.query.email, function (err, user) {
             res.send(user);
         });
     });
