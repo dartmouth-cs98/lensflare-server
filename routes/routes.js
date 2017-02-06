@@ -37,6 +37,12 @@ module.exports = function (app, passport) {
         });
     });
 
+    app.get('/getSpacesUnauth', function (req, res) {
+        UserModel.getSpaces(req.query.email, function (err, user) {
+            res.send(user);
+        });
+    });
+
     app.get('/getSpace', requireAuth, function (req, res) {
         UserModel.getSpace(req.query.email, req.query.spaceName, function (err, space) {
             res.send(space);
@@ -102,7 +108,8 @@ module.exports = function (app, passport) {
             UserModel.addSpace(req.body.email, req.body.space);
         }
         console.log("About to generate Signed URLS")
-
+        console.log(req.body);
+        console.log(req.body.files);
         files.forEach((file) => {
             s3.getSignedUrl('putObject',
                 {
@@ -125,7 +132,7 @@ module.exports = function (app, passport) {
                 });
         });
         console.log("Done generating Signed URLS")
-
+        console.log(returnData);
         res.write(JSON.stringify(returnData));
         res.end();
     });

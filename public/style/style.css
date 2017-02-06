@@ -84,7 +84,7 @@
 
 .sidebar {
   /*background-color: #f0f0f0;*/
-    background-color: #ffffff;
+  background-color: #ffffff;
   position: fixed;
   width: 190px;
   border-right: 1px solid #4d6bff;
@@ -156,6 +156,26 @@
   border: 1px solid #dbe1ff;
   border-radius: 4px;
   resize: none;
+}
+
+.delete-space-button {
+  background-color: inherit;
+  border: none;
+  font-family: 'Raleway', sans-serif;
+  font-size: 18px;
+  position: fixed;
+  left: 180px;
+}
+
+.test-button {
+  background-color: inherit;
+  border: none;
+  font-family: 'Raleway', sans-serif;
+  font-size: 13px;
+}
+
+.delete-space-button:hover {
+  cursor: pointer;
 }
 
 .login-button:hover {
