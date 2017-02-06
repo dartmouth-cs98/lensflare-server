@@ -73,6 +73,7 @@ function loadDatabase(space, spaceRow) {
         rowV.insertCell(3);
         // .innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 3 + ")'>edit</button><br />";
 
+        rowV.style.height = "100px";
         rowV.cells[0].style.backgroundColor = "#f0f0ff";
         rowV.cells[1].style.width = "175px";
         rowV.cells[2].style.backgroundColor = "#f0f0ff";
@@ -150,7 +151,7 @@ function reloadSidebar() {
     document.getElementById("space-links").innerHTML = "Welcome, " + userDoc.name + "!<br /><br />";
 
     for (var space in userDoc.spaces) {
-        document.getElementById("space-links").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this," + space + ")'>" + userDoc.spaces[space].name + "</a> <br />"
+        document.getElementById("space-links").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this," + space + ")'>" + userDoc.spaces[space].name + "</a><button class='delete-space-button' onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'>x</button><br/>"
     }
 
     document.getElementById("space-links").innerHTML += "<div style='font-size:12px; text-align:center'><a style='cursor: pointer;' onclick='addSpace()'>add new</a></div>"
