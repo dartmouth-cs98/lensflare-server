@@ -108,7 +108,7 @@ module.exports = function (app, passport) {
             UserModel.addSpace(req.body.email, req.body.space);
         }
         console.log("About to generate Signed URLS")
-
+        console.log(req.body);
         files.forEach((file) => {
             s3.getSignedUrl('putObject',
                 {
