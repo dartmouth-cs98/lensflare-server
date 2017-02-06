@@ -109,6 +109,7 @@ module.exports = function (app, passport) {
         }
         console.log("About to generate Signed URLS")
         console.log(req.body);
+        console.log(req.body.files);
         files.forEach((file) => {
             s3.getSignedUrl('putObject',
                 {
@@ -131,7 +132,7 @@ module.exports = function (app, passport) {
                 });
         });
         console.log("Done generating Signed URLS")
-
+        console.log(returnData);
         res.write(JSON.stringify(returnData));
         res.end();
     });
