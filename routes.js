@@ -69,7 +69,6 @@ router.post("/sign-s3", function (req, res) {
     var s3Params = {
         Bucket: S3_BUCKET,
         Key: fileName,
-        type: 'POST',
         Expires: 60,
         ACL: 'public-read'
     };
