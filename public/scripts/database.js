@@ -75,6 +75,7 @@ function loadDatabase(space, spaceRow) {
 
         rowV.style.height = "100px";
         rowV.cells[0].style.backgroundColor = "#f0f0ff";
+        rowV.cells[0].style.width = "175px";
         rowV.cells[1].style.width = "175px";
         rowV.cells[2].style.backgroundColor = "#f0f0ff";
         rowV.cells[3].style.width = "100px";
