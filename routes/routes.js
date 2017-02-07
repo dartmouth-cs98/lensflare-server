@@ -136,12 +136,14 @@ module.exports = function (app, passport) {
                 });
         });
 
-        UserModel.addItems(req.body.email, req.body.space, itemList);
+        UserModel.addItems(req.body.email, req.body.space, itemList, returnData, (rData) => {
+            res.write(JSON.stringify(rData));
+            res.end();
+        });
 
         console.log("Done generating Signed URLS")
         console.log(returnData);
-        res.write(JSON.stringify(returnData));
-        res.end();
+
     });
 
 };

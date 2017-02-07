@@ -122,7 +122,7 @@ userSchema.statics.addSpace = function (email, spaceName) {
     });
 };
 
-userSchema.statics.addItems = function (email, spaceName, urls) {
+userSchema.statics.addItems = function (email, spaceName, urls, returnData, cb) {
     this.getUser(email, function (err, user) {
         for (var i in urls) {
             var url = urls[i];
@@ -156,6 +156,7 @@ userSchema.statics.addItems = function (email, spaceName, urls) {
             // console.log(err);
             if (err) throw err;
         });
+        cb(returnData);
     });
 };
 
