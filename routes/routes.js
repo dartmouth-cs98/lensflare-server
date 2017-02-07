@@ -123,6 +123,7 @@ module.exports = function (app, passport) {
                         console.log(err);
                         return res.end();
                     }
+                    file.fileName = util.format('%s%s', file.fileName, Math.random());
                     returnData.files.push({
                         fileName: file.fileName,
                         signedUrl: data,

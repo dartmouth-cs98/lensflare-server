@@ -4,7 +4,7 @@ var uniqueValidator = require('mongoose-unique-validator');
 var itemSchema = mongoose.Schema({
   title: { type: String, required: true },
   text: { type: String, required: true },
-  url: { type: String, required: true, unique: true }
+  url: { type: String, required: true}
 });
 itemSchema.plugin(uniqueValidator);
 
