@@ -111,11 +111,10 @@ module.exports = function (app, passport) {
         console.log(req.body);
         console.log(req.body.files);
         files.forEach((file) => {
-            var random = Math.random();
             s3.getSignedUrl('putObject',
                 {
                     Bucket: S3_BUCKET,
-                    Key: util.format('%s%s', file.fileName, random),
+                    Key: file.fileName,
                     Expires: 60,
                     ACL: 'public-read'
                 },
@@ -127,7 +126,7 @@ module.exports = function (app, passport) {
                     returnData.files.push({
                         fileName: file.fileName,
                         signedUrl: data,
-                        url: util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, util.format('%s%s', file.fileName, random))
+                        url: util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, file.fileName)
                     });
                     UserModel.addItem(req.body.email, req.body.space, util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, file.fileName));
                 });
