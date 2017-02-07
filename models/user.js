@@ -124,7 +124,8 @@ userSchema.statics.addSpace = function (email, spaceName) {
 
 userSchema.statics.addItems = function (email, spaceName, urls) {
     this.getUser(email, function (err, user) {
-        for (var url in urls) {
+        for (var i in urls) {
+            var url = urls[i];
             console.log("Saving " + url);
             if (err) throw err;
             for (var space in user.local.spaces) {
