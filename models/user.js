@@ -153,10 +153,12 @@ userSchema.statics.addItems = function (email, spaceName, urls, returnData, cb) 
 
         user.markModified('local.spaces')
         user.save(function (err) {
-            // console.log(err);
-            if (err) throw err;
+            if (err) {
+                cb(returnData);
+                throw err;
+            }
+            cb(returnData);
         });
-        cb(returnData);
     });
 };
 
