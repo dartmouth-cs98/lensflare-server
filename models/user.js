@@ -110,7 +110,7 @@ userSchema.statics.updateSpaces = function (email, spaces) {
 
 userSchema.statics.addSpace = function (email, spaceName) {
     var space = new Space({
-      name: spaceName
+        name: spaceName
     });
 
     this.getUser(email, function (err, user) {
@@ -125,23 +125,40 @@ userSchema.statics.addSpace = function (email, spaceName) {
 userSchema.statics.addItem = function (email, spaceName, url) {
     console.log(email + '    ' + spaceName + "   " + url);
     this.getUser(email, function (err, user) {
+        var modified = false;
         if (err) throw err;
-
         for (var space in user.local.spaces) {
+            var alreadyThere = false;
             if (user.local.spaces[space].name == spaceName) {
-                user.local.spaces[space].items.push(new Item({
-                    title: "[add title]",
-                    text: "[add text]",
-                    url: url
-                }));
+                console.log(user.local.spaces[space].name + "Space Items: ");
+                for (var i in user.local.spaces[space].items) {
+                    console.log("THe URL is: " + user.local.spaces[space].items[i].url);
+                    if (user.local.spaces[space].items[i].url == url) {
+                        console.log("found duplicate " + url);
+                        alreadyThere = true;
+                        break;
+                    }
+                }
+                if (!alreadyThere) {
+                    modified = true;
+                    user.local.spaces[space].items.push(new Item({
+                        title: "[add title]",
+                        text: "[add text]",
+                        url: url
+                    }));
+                }
             }
         }
 
-        user.markModified('local.spaces')
+        if (modified) {
+            user.markModified('local.spaces')
 
-        user.save(function (err) {
-            if (err) throw err;
-        });
+            user.save(function (err) {
+                // console.log(err);
+                if (err) throw err;
+            });
+        }
+
 
     });
 };
