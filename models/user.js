@@ -122,44 +122,40 @@ userSchema.statics.addSpace = function (email, spaceName) {
     });
 };
 
-userSchema.statics.addItem = function (email, spaceName, url) {
-    console.log(email + '    ' + spaceName + "   " + url);
+userSchema.statics.addItems = function (email, spaceName, urls) {
     this.getUser(email, function (err, user) {
-        var modified = false;
-        if (err) throw err;
-        for (var space in user.local.spaces) {
-            var alreadyThere = false;
-            if (user.local.spaces[space].name == spaceName) {
-                console.log(user.local.spaces[space].name + "Space Items: ");
-                for (var i in user.local.spaces[space].items) {
-                    console.log("THe URL is: " + user.local.spaces[space].items[i].url);
-                    if (user.local.spaces[space].items[i].url == url) {
-                        console.log("found duplicate " + url);
-                        alreadyThere = true;
-                        break;
+        for (var url in urls) {
+            console.log("Saving " + url);
+            if (err) throw err;
+            for (var space in user.local.spaces) {
+                var alreadyThere = false;
+                if (user.local.spaces[space].name == spaceName) {
+                    console.log(user.local.spaces[space].name + "Space Items: ");
+                    for (var i in user.local.spaces[space].items) {
+                        console.log("THe URL is: " + user.local.spaces[space].items[i].url);
+                        if (user.local.spaces[space].items[i].url == url) {
+                            console.log("found duplicate " + url);
+                            alreadyThere = true;
+                            break;
+                        }
                     }
-                }
-                if (!alreadyThere) {
-                    modified = true;
-                    user.local.spaces[space].items.push(new Item({
-                        title: "[add title]",
-                        text: "[add text]",
-                        url: url
-                    }));
+                    if (!alreadyThere) {
+                        user.local.spaces[space].items.push(new Item({
+                            title: "[add title]",
+                            text: "[add text]",
+                            url: url
+                        }));
+                    }
                 }
             }
         }
 
-        if (modified) {
-            user.markModified('local.spaces')
+        user.markModified('local.spaces')
 
-            user.save(function (err) {
-                // console.log(err);
-                if (err) throw err;
-            });
-        }
-
-
+        user.save(function (err) {
+            // console.log(err);
+            if (err) throw err;
+        });
     });
 };
 

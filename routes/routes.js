@@ -110,6 +110,8 @@ module.exports = function (app, passport) {
         console.log("About to generate Signed URLS")
         console.log(req.body);
         console.log(req.body.files);
+
+        var itemList = [];
         files.forEach((file) => {
             s3.getSignedUrl('putObject',
                 {
@@ -128,9 +130,14 @@ module.exports = function (app, passport) {
                         signedUrl: data,
                         url: util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, file.fileName)
                     });
-                    UserModel.addItem(req.body.email, req.body.space, util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, file.fileName));
+                    itemList.push(util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, file.fileName));
+
+                    // UserModel.addItem(req.body.email, req.body.space, util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, file.fileName));
                 });
         });
+
+        UserModel.addItems(req.body.email, req.body.space, itemList);
+
         console.log("Done generating Signed URLS")
         console.log(returnData);
         res.write(JSON.stringify(returnData));
