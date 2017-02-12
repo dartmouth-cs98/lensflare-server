@@ -98,11 +98,13 @@ function saveSpaces(userDoc) {
 function generateQR(spaceName) {
   document.getElementById('qr-popover').innerHTML = "QR Code<button class='qr-close-button' type='button' onclick='closeQR()'>X</button><br />";
   document.getElementById('qr-popover').style.display = 'block';
+  document.getElementById('overlay').style.display = 'block';
   var qrCode = new QRCode(document.getElementById('qr-popover'), "{ space: '" + spaceName + "', token: '" + localStorage.getItem('token') + "' }");
 }
 
 function closeQR() {
   document.getElementById('qr-popover').style.display = 'none';
+  document.getElementById('overlay').style.display = 'none';
 }
 
 function loadMessage(success, message) {
