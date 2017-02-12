@@ -50,18 +50,20 @@ function signUp() {
 }
 
 function clearSpace(spaceName) {
-    console.log(spaceName);
-    axios.post('/clearSpace', {
-        params: {
-            email: localStorage.getItem('email'),
-            space: spaceName
-        },
-        headers: {
-            authorization: localStorage.getItem('token')
-        }
-    }).then(function (resp) {
-        window.location.reload();
-    });
+    var confirmed = confirm("Are you you want to delete " + spaceName + "?");
+    if (confirmed) {
+      axios.post('/clearSpace', {
+          params: {
+              email: localStorage.getItem('email'),
+              space: spaceName
+          },
+          headers: {
+              authorization: localStorage.getItem('token')
+          }
+      }).then(function (resp) {
+          window.location.reload();
+      });
+    }
 }
 
 function loadSpaces() {
