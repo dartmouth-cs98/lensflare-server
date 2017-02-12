@@ -74,10 +74,10 @@ function loadDatabase(space, spaceRow) {
         // .innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 3 + ")'>edit</button><br />";
 
         rowV.style.height = "100px";
-        rowV.cells[0].style.backgroundColor = "#f0f0ff";
+        // rowV.cells[0].style.backgroundColor = "#f0f0ff";
         rowV.cells[0].style.width = "175px";
         rowV.cells[1].style.width = "175px";
-        rowV.cells[2].style.backgroundColor = "#f0f0ff";
+        // rowV.cells[2].style.backgroundColor = "#f0f0ff";
         rowV.cells[3].style.width = "100px";
         rowV.cells[3].setAttribute("name", "mesh");
         rowV.cells[3].style.background = "none"

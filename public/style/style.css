@@ -21,15 +21,7 @@
   margin-top: -105px;
   margin-left: -160px;
   line-height: 150%;
-}
-
-.logout {
-  background-color: inherit;
-  border: none;
-  font-family: 'Raleway', sans-serif;
-  cursor: pointer;
-  color: white;
-  font-size: 14px;
+  background: white;
 }
 
 .db-content {
@@ -43,7 +35,8 @@
   color: #4d6bff;
   font-size: 25px;
   padding-bottom: 5px;
-  border-bottom: 1px solid #4d6bff;
+  /*border-bottom: 1px solid #4d6bff;*/
+  text-align: center;
   padding-left: 205px;
 }
 
@@ -84,10 +77,10 @@
 
 .sidebar {
   /*background-color: #f0f0f0;*/
-  background-color: #ffffff;
+  /*background-color: #ffffff;*/
   position: fixed;
   width: 190px;
-  border-right: 1px solid #4d6bff;
+  /*border-right: 1px solid #4d6bff;*/
   height: 100%;
   top: 0px;
   padding-left: 5px;
@@ -102,10 +95,12 @@
 .db-table td {
   vertical-align: top;
   padding: 7px;
+  border: 1px solid #4d6bff;
 }
 
 .db-table {
   width: 100%;
+  border: 1px solid #4d6bff;
   border-collapse: collapse;
 }
 
@@ -168,14 +163,25 @@
   float: right;
 }
 
-.logout-button {
+.logout {
+  background-color: inherit;
+  border: none;
+  font-family: 'Raleway', sans-serif;
+  cursor: pointer;
+  color: #4d6bff;
+  font-size: 14px;
+}
+
+.footer-box {
   position: fixed;
   bottom: 0;
   width: 203px;
-  background-color: #4d6bff;
-  color: white;
+  left: 50%;
+  margin-left: -101px;
+  /*background-color: #4d6bff;*/
+  color: #4d6bff;
   text-align: center;
-  left: 0;
+  /*left: 0;*/
   font-size: 16px;
   height: 25px;
   padding-top: 3px;
@@ -183,6 +189,13 @@
 
 .text-box {
   width: 100%;
+  font-family: 'Raleway', sans-serif;
+  width: 100%;
+  font-size: inherit;
+  white-space: pre-wrap;
+  border: 1px solid #dbe1ff;
+  border-radius: 4px;
+  padding: 2px;
 }
 .login-button {
   font-family: 'Raleway', sans-serif;
@@ -244,6 +257,10 @@
 body {
   font-family: 'Raleway', sans-serif;
   margin-right:0px;
+  background: -webkit-linear-gradient(left, #ffffff, #e2e7ff);
+  background: -o-linear-gradient(left, #ffffff, #e2e7ff);
+  background: -moz-linear-gradient(left, #ffffff, #e2e7ff);
+  background: linear-gradient(left, #ffffff, #e2e7ff);
 }
 
 button:focus {
