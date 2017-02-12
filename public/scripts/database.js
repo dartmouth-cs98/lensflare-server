@@ -48,7 +48,7 @@ function displayData(user) {
 
 
 function loadDatabase(space, spaceRow) {
-    document.getElementById("db-name").innerHTML = space.text;
+    document.getElementById("db-name").innerHTML = space.text + "<button class='qr-button' type='button' onclick='generateQR(\"" + space.text + "\")'>make QR</button>";
 
     document.getElementById("db-table").innerHTML = "";
 
