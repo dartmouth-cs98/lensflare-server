@@ -120,6 +120,38 @@
   float: right;
 }
 
+.qr-button {
+  font-family: 'Raleway', sans-serif;
+  width: 50px;
+  font-size: 12px;
+  background-color: inherit;
+  border: none;
+  border-radius: 5px;
+  padding: 3px;
+  position: fixed;
+}
+
+.qr-popover {
+  position: absolute;
+  display: none;
+  top: 75px;
+  left: 215px;
+  background: white;
+  border: 1px solid black;
+  padding: 10px;
+}
+
+
+.qr-close-button {
+  font-family: 'Raleway', sans-serif;
+  font-size: 12px;
+  background-color: inherit;
+  border: none;
+  border-radius: 5px;
+  padding: 3px;
+  float: right;
+}
+
 .logout-button {
   position: fixed;
   bottom: 0;

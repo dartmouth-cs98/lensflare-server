@@ -95,20 +95,14 @@ function saveSpaces(userDoc) {
     });
 }
 
-function addItemTest() {
-    axios.post('/saveItem', {
-        email: localStorage.getItem('email'),
-        url: "http://dartmouth.edu/sites/default/files/styles/header_image/public/2009-1035500133.jpg?itok=LlpoUNH9",
-        space: "The MoMA"
-    }, {
-        headers: {
-            authorization: localStorage.getItem('token')
-        }
-    }).then(function (resp) {
-        loadMessage(true, "saved successfully")
-    }).catch(function (error) {
-        loadMessage(false, "error saving - try again")
-    });
+function generateQR(spaceName) {
+  document.getElementById('qr-popover').innerHTML = "QR Code<button class='qr-close-button' type='button' onclick='closeQR()'>X</button><br />";
+  document.getElementById('qr-popover').style.display = 'block';
+  var qrCode = new QRCode(document.getElementById('qr-popover'), "{ space: '" + spaceName + "', token: '" + localStorage.getItem('token') + "' }");
+}
+
+function closeQR() {
+  document.getElementById('qr-popover').style.display = 'none';
 }
 
 function loadMessage(success, message) {
