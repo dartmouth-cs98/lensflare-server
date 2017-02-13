@@ -62,7 +62,7 @@ function loadDatabase(space, spaceRow) {
     var table = document.getElementById("db-table");
     var header = table.createTHead();
     var headerRow = header.insertRow(0);
-    headerRow.style.backgroundColor = "#4d6bff";
+    headerRow.style.backgroundColor = "#3B3C59";
     headerRow.style.color = "#ffffff";
     headerRow.insertCell(0).innerHTML = "Image"
     headerRow.insertCell(1).innerHTML = "Title"
@@ -181,7 +181,7 @@ function loadMeshes() {
         //
         // var loader = new THREE.JSONLoader();
         // loader.load("scripts/mclaren.json", function(geometry) {
-        //   var material = new THREE.MeshBasicMaterial( {color: 0x4d6bff, wireframe: true} );
+        //   var material = new THREE.MeshBasicMaterial( {color: 0x3B3C59, wireframe: true} );
         //   var mesh = new THREE.Mesh(geometry, material);
         //   scene.add(mesh);
         //   scene.userData.element = cell;
@@ -190,7 +190,7 @@ function loadMeshes() {
         // })
 
         var geometry = new THREE.BoxGeometry(200, 200, 200);
-        var material = new THREE.MeshBasicMaterial({color: 0x4d6bff, wireframe: true});
+        var material = new THREE.MeshBasicMaterial({color: 0x3B3C59, wireframe: true});
 
         var mesh = new THREE.Mesh(geometry, material);
         scene.add(mesh);
