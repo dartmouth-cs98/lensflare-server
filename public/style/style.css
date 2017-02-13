@@ -34,7 +34,7 @@
 .db-title {
   font-weight: 300;
   font-size: 25px;
-  padding-bottom: 5px;
+  padding-bottom: 10px;
   /*border-bottom: 1px solid #4d6bff;*/
   padding-left: 205px;
   text-align: center;
@@ -123,13 +123,9 @@
 
 .qr-button {
   font-family: 'Raleway', sans-serif;
-  width: 50px;
   font-size: 12px;
   background-color: inherit;
   border: none;
-  border-radius: 5px;
-  padding: 3px;
-  position: fixed;
 }
 
 .qr-popover {
