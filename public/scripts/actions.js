@@ -50,20 +50,26 @@ function signUp() {
 }
 
 function clearSpace(spaceName) {
-    var confirmed = confirm("Are you sure you want to delete " + spaceName + "?");
-    if (confirmed) {
-      axios.post('/clearSpace', {
-          params: {
-              email: localStorage.getItem('email'),
-              space: spaceName
-          },
-          headers: {
-              authorization: localStorage.getItem('token')
-          }
-      }).then(function (resp) {
-          window.location.reload();
-      });
-    }
+    document.getElementById('popover').innerHTML = "Are you sure you want to delete " + spaceName + "?<br />" +
+                                                    "<div style='text-align: center'><button type='button' style='background-color: transparent; cursor: pointer; border: none' onclick='clearSpaceConfirmed(\"" + spaceName + "\")'>YES</button>" +
+                                                    "<button type='button' style='background-color: transparent; cursor: pointer; border: none' onclick='closePopover()'>NO</button></div>";
+    document.getElementById('popover').style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
+}
+
+function clearSpaceConfirmed(spaceName) {
+  closePopover();
+  axios.post('/clearSpace', {
+      params: {
+          email: localStorage.getItem('email'),
+          space: spaceName
+      },
+      headers: {
+          authorization: localStorage.getItem('token')
+      }
+  }).then(function (resp) {
+      window.location.reload();
+  });
 }
 
 function loadSpaces() {
@@ -96,14 +102,14 @@ function saveSpaces(userDoc) {
 }
 
 function generateQR(spaceName) {
-  document.getElementById('qr-popover').innerHTML = "QR Code<button class='qr-close-button' type='button' onclick='closeQR()'>X</button><br />";
-  document.getElementById('qr-popover').style.display = 'block';
+  document.getElementById('popover').innerHTML = "QR Code<button class='qr-close-button' type='button' onclick='closePopover()'>X</button><br />";
+  document.getElementById('popover').style.display = 'block';
   document.getElementById('overlay').style.display = 'block';
-  var qrCode = new QRCode(document.getElementById('qr-popover'), "{ space: '" + spaceName + "', token: '" + localStorage.getItem('token') + "' }");
+  var qrCode = new QRCode(document.getElementById('popover'), "{ space: '" + spaceName + "', token: '" + localStorage.getItem('token') + "' }");
 }
 
-function closeQR() {
-  document.getElementById('qr-popover').style.display = 'none';
+function closePopover() {
+  document.getElementById('popover').style.display = 'none';
   document.getElementById('overlay').style.display = 'none';
 }
 
