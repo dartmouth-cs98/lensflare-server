@@ -53,6 +53,7 @@ function loadDatabase(space, spaceRow) {
     document.getElementById("db-table").innerHTML = "";
 
     if (userDoc.spaces[spaceRow].items.length == 0) {
+        document.getElementById("db-table").style.border = "none";
         document.getElementById("db-table").innerHTML = "There appears to be no photos taken - start setup via HoloLens!";
         scenes = [];
         return;
@@ -61,6 +62,8 @@ function loadDatabase(space, spaceRow) {
     var table = document.getElementById("db-table");
     var header = table.createTHead();
     var headerRow = header.insertRow(0);
+    headerRow.style.backgroundColor = "#4d6bff";
+    headerRow.style.color = "#ffffff";
     headerRow.insertCell(0).innerHTML = "Image"
     headerRow.insertCell(1).innerHTML = "Title"
     headerRow.insertCell(2).innerHTML = "Text"
@@ -125,6 +128,7 @@ function addSpace() {
     scenes = [];
     document.getElementById("db-name").innerHTML = "<input class='db-name-entry' maxlength='18' id='db-name-entry' type='text' value=''><button class='db-name-save-button' onclick='saveNewSpace()'>save</button>"
     document.getElementById("db-name-entry").focus();
+    document.getElementById("db-table").style.border = "none";
     document.getElementById("db-table").innerHTML = "Enter the new item's name above and then start setup via HoloLens!";
 }
 
