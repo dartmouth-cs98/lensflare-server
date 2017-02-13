@@ -127,6 +127,7 @@
   font-size: 12px;
   background-color: inherit;
   border: none;
+  cursor: pointer;
 }
 
 .popover {

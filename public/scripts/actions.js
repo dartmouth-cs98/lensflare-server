@@ -50,11 +50,10 @@ function signUp() {
 }
 
 function clearSpace(spaceName) {
-    document.getElementById('popover').innerHTML = "Are you sure you want to delete " + spaceName + "?<br />" +
-                                                    "<div style='text-align: center'><button type='button' style='background-color: transparent; cursor: pointer; border: none' onclick='clearSpaceConfirmed(\"" + spaceName + "\")'>YES</button>" +
-                                                    "<button type='button' style='background-color: transparent; cursor: pointer; border: none' onclick='closePopover()'>NO</button></div>";
-    document.getElementById('popover').style.display = 'block';
-    document.getElementById('overlay').style.display = 'block';
+    var popoverValue = "Are you sure you want to delete " + spaceName + "?<br />" +
+                        "<div style='text-align: center'><button type='button' style='background-color: transparent; cursor: pointer; border: none' onclick='clearSpaceConfirmed(\"" + spaceName + "\")'>YES</button>" +
+                        "<button type='button' style='background-color: transparent; cursor: pointer; border: none' onclick='closePopover()'>NO</button></div>";
+    showPopover(popoverValue);
 }
 
 function clearSpaceConfirmed(spaceName) {
@@ -102,10 +101,14 @@ function saveSpaces(userDoc) {
 }
 
 function generateQR(spaceName) {
-  document.getElementById('popover').innerHTML = "QR Code<button class='qr-close-button' type='button' onclick='closePopover()'>X</button><br />";
+  showPopover("QR Code<button class='qr-close-button' type='button' onclick='closePopover()'>X</button><br />");
+  var qrCode = new QRCode(document.getElementById('popover'), "{ space: '" + spaceName + "', token: '" + localStorage.getItem('token') + "' }");
+}
+
+function showPopover(value) {
+  document.getElementById('popover').innerHTML = value;
   document.getElementById('popover').style.display = 'block';
   document.getElementById('overlay').style.display = 'block';
-  var qrCode = new QRCode(document.getElementById('popover'), "{ space: '" + spaceName + "', token: '" + localStorage.getItem('token') + "' }");
 }
 
 function closePopover() {
@@ -144,55 +147,6 @@ function loadMessage(success, message) {
     }, 10);
 }
 
-function loadMockData() {
-    var spaces = [{
-        name: "The MoMA",
-        items: [
-            {
-                title: "T-Rex",
-                text: "The T-Rex is a scary beast, it will eat you up and gobble you whole, without a second thought for your wellbeing or happiness.",
-                url: "https://lensflare-files.s3.amazonaws.com/icon_020517113218472.jpg"
-            },
-            {
-                title: "Diplo",
-                text: "The long neck giraffe beast is also pretty fucking scary but it's less terrifying that a T-Rex because it prob can't eat you whole or it would choke. It prob also only eats grass.",
-                url: "https://lensflare-files.s3.amazonaws.com/icon_020517125514149.jpg"
-            },
-            {
-                title: "Sphinx",
-                text: "The Sphinx will ask you a very difficult riddle; if you are able to figure out the answer to the riddle then you can move on past her forboding glare and into the pyramid.",
-                url: "https://lensflare-files.s3.amazonaws.com/icon_020517113213243.jpg"
-            },
-        ]
-    },
-        {
-            name: "Dallas Museum of Art",
-            items: [
-                {
-                    title: "Eminem",
-                    text: "Marshall Bruce Mathers III, known professionally as Eminem, is an American rapper, record producer, and actor.",
-                    url: "https://lensflare-files.s3.amazonaws.com/icon_020517113218472.jpg"
-                },
-                {
-                    title: "Rihanna",
-                    text: "Robyn Rihanna Fenty is a Barbadian singer and songwriter. Born in Saint Michael and raised in Bridgetown, she first entered the music industry by recording demo tapes under the direction of record producer Evan Rogers in 2003.",
-                    url: "https://lensflare-files.s3.amazonaws.com/icon_020517125514149.jpg"
-                },
-                {
-                    title: "Backstreet Boys",
-                    text: "The Backstreet Boys are an American vocal group, formed in Orlando, Florida in 1993.",
-                    url: "https://lensflare-files.s3.amazonaws.com/icon_020517113213243.jpg"
-                },
-            ]
-        }
-    ];
-    var userDoc = {
-        spaces: spaces,
-        email: localStorage.getItem("email")
-    }
-    saveSpaces(userDoc);
-
-}
 
 /*
  *
