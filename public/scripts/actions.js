@@ -50,7 +50,7 @@ function signUp() {
 }
 
 function clearSpace(spaceName) {
-    var confirmed = confirm("Are you you want to delete " + spaceName + "?");
+    var confirmed = confirm("Are you sure you want to delete " + spaceName + "?");
     if (confirmed) {
       axios.post('/clearSpace', {
           params: {

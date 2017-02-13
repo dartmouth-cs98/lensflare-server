@@ -48,11 +48,12 @@ function displayData(user) {
 
 
 function loadDatabase(space, spaceRow) {
-    document.getElementById("db-name").innerHTML = space.text + "<button class='qr-button' type='button' onclick='generateQR(\"" + space.text + "\")'>make QR</button>";
+    document.getElementById("db-name").innerHTML = space.text + "<br /><button class='qr-button' type='button' onclick='generateQR(\"" + space.text + "\")'>make QR code</button>";
 
     document.getElementById("db-table").innerHTML = "";
 
     if (userDoc.spaces[spaceRow].items.length == 0) {
+        document.getElementById("db-table").style.border = "none";
         document.getElementById("db-table").innerHTML = "There appears to be no photos taken - start setup via HoloLens!";
         scenes = [];
         return;
@@ -61,6 +62,8 @@ function loadDatabase(space, spaceRow) {
     var table = document.getElementById("db-table");
     var header = table.createTHead();
     var headerRow = header.insertRow(0);
+    headerRow.style.backgroundColor = "#4d6bff";
+    headerRow.style.color = "#ffffff";
     headerRow.insertCell(0).innerHTML = "Image"
     headerRow.insertCell(1).innerHTML = "Title"
     headerRow.insertCell(2).innerHTML = "Text"
@@ -74,10 +77,10 @@ function loadDatabase(space, spaceRow) {
         // .innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 3 + ")'>edit</button><br />";
 
         rowV.style.height = "100px";
-        rowV.cells[0].style.backgroundColor = "#f0f0ff";
+        // rowV.cells[0].style.backgroundColor = "#f0f0ff";
         rowV.cells[0].style.width = "175px";
         rowV.cells[1].style.width = "175px";
-        rowV.cells[2].style.backgroundColor = "#f0f0ff";
+        // rowV.cells[2].style.backgroundColor = "#f0f0ff";
         rowV.cells[3].style.width = "100px";
         rowV.cells[3].setAttribute("name", "mesh");
         rowV.cells[3].style.background = "none"
@@ -123,8 +126,9 @@ function cancel(spaceRow, row, col) {
 
 function addSpace() {
     scenes = [];
-    document.getElementById("db-name").innerHTML = "<input class='db-name-entry' maxlength='18' id='db-name-entry' type='text' value=''><button class='db-name-save-button' onclick='saveNewSpace()'>save</button>"
+    document.getElementById("db-name").innerHTML = "<input class='db-name-entry' maxlength='18' id='db-name-entry' type='text' value=''><br /><button class='db-name-save-button' onclick='saveNewSpace()'>save</button>"
     document.getElementById("db-name-entry").focus();
+    document.getElementById("db-table").style.border = "none";
     document.getElementById("db-table").innerHTML = "Enter the new item's name above and then start setup via HoloLens!";
 }
 
