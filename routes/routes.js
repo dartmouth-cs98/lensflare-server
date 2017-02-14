@@ -85,8 +85,10 @@ module.exports = function (app, passport) {
     });
 
     ////////////////////////// DEVICE REGISTRATION
+
+    // WEB Endpoints
     // need user email and space Name
-    app.post('/registerDevice', function (req, res) {
+    app.post('/generateDeviceId', requireAuth, function (req, res) {
         var newDevice = new DeviceModel();
         // validate the email
         if (UserModel.hasUser(req.body.userEmail)) {
@@ -107,9 +109,9 @@ module.exports = function (app, passport) {
         }
     });
 
-    app.post('/setDeviceSpace', function (req, res) {
-        if (UserModel.hasSpace(req.userEmail, req.spaceName)) {
-            DeviceModel.setSpace(req.deviceId, req.spaceName, (err) => {
+    app.post('/setDeviceSpace', requireAuth, function (req, res) {
+        if (UserModel.hasSpace(req.body.userEmail, req.body.spaceName)) {
+            DeviceModel.setSpace(req.body.deviceId, req.body.spaceName, (err) => {
                     if (err) throw err;
                     res.send();
                 }
@@ -117,6 +119,17 @@ module.exports = function (app, passport) {
         }
         res.status(400).send("Space could not be found");
     });
+
+    app.post('/setDeviceName', requireAuth, function (req, res) {
+        DeviceModel.setName(req.body.deviceId, req.body.name, (err) => {
+                if (err) throw err;
+                res.send();
+            }
+        );
+    });
+
+    // Hololens Endpoints
+
     /////////////////////// END DEVICE REGISTRATION
 
     app.post('/clearSpace', function (req, res) {

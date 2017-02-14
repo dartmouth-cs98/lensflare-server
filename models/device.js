@@ -14,7 +14,6 @@ deviceSchema.statics.getDevice = function (deviceId, cb) {
     return this.findOne({'deviceId': deviceId}, cb);
 };
 
-
 deviceSchema.statics.setSpace = function (deviceId, spaceName, cb) {
     return this.findOne({'deviceId': deviceId}, (err, device) => {
         device.spaceName = spaceName;
@@ -22,8 +21,15 @@ deviceSchema.statics.setSpace = function (deviceId, spaceName, cb) {
             cb(err);
         });
     });
-
 };
 
+deviceSchema.statics.setName = function (deviceId, name, cb) {
+    return this.findOne({'deviceId': deviceId}, (err, device) => {
+        device.name = spaceName;
+        device.save((err) => {
+            cb(err);
+        });
+    });
+};
 
 module.exports = mongoose.model('Device', deviceSchema);
