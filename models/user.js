@@ -9,7 +9,8 @@ var userSchema = mongoose.Schema({
         name: {type: String, required: true},
         email: {type: String, required: true, unique: true},
         password: {type: String, required: true},
-        spaces: {type: Array, 'default': []}
+        spaces: {type: Array, 'default': []},
+        devices: {type: Array, 'default': []}
     }
 });
 
@@ -35,6 +36,14 @@ userSchema.methods.validPassword = function (password) {
 // necessary to use email to find user initially on login
 userSchema.statics.getUser = function (email, cb) {
     return this.findOne({'local.email': new RegExp(email, 'i')}, cb);
+};
+
+userSchema.statics.hasUser = function (email) {
+    this.findOne({'local.email': new RegExp(email, 'i')}, (err, user) => {
+        if (err) throw err;
+        if (user) return true;
+        return false;
+    });
 };
 
 userSchema.statics.removeUser = function (userID, cb) {
@@ -84,9 +93,10 @@ userSchema.statics.getSpace = function (email, spaceName, cb) {
 // };
 
 userSchema.statics.hasSpace = function (email, spaceName) {
-    return this.getUser(email, function (err, user) {
+    if (!this.hasUser(email)) return false;
+    this.getUser(email, function (err, user) {
+        console.log(user);
         if (err) throw err;
-
         for (var i in user.local.spaces) {
             if (user.local.spaces[i].name == spaceName) {
                 return true;
@@ -102,6 +112,16 @@ userSchema.statics.updateSpaces = function (email, spaces) {
 
         user.local.spaces = spaces;
 
+        user.save(function (err) {
+            if (err) throw err;
+        });
+    });
+};
+
+userSchema.statics.addDevice = function (email, deviceId) {
+    this.getUser(email, function (err, user) {
+        if (err) throw err;
+        user.local.devices.push(deviceId);
         user.save(function (err) {
             if (err) throw err;
         });

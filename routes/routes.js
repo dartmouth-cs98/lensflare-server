@@ -4,6 +4,7 @@ import {requireAuth, requireLogin} from '../config/passport';
 module.exports = function (app, passport) {
     var UserModel = require("../models/user");
     var SpaceModel = require("../models/space");
+    var DeviceModel = require("../models/device");
 
     var jwt = require('jwt-simple');
     var path = require('path');
@@ -54,7 +55,6 @@ module.exports = function (app, passport) {
         res.redirect('/');
     });
     //--------------------------------------------------------------------------------------------
-
     app.post('/signup', UserController.signup);
 
     // Login/ FE Auth
@@ -70,15 +70,6 @@ module.exports = function (app, passport) {
         res.send();
     });
 
-    // route for adding a new space to a user's set of spaces
-    // app.post('/addSpace', function (req, res) {
-    //     var newSpace = new Space({
-    //       name: req.body.spaceName
-    //     });
-    //     UserModel.addSpace(req.body.userDoc.email, newSpace);
-    //     res.send();
-    // });
-
     // backend
     // needs auth
     app.post('/saveItem', function (req, res) {
@@ -87,6 +78,59 @@ module.exports = function (app, passport) {
         res.send();
     });
 
+    app.post('/clearSpace', function (req, res) {
+        console.log(req.body);
+        UserModel.removeSpace(req.body.params.email, req.body.params.space);
+        res.send();
+    });
+
+    ////////////////////////// DEVICE REGISTRATION
+
+    // WEB Endpoints
+    // need user email and space Name
+    app.post('/generateDeviceId', requireAuth, function (req, res) {
+        var newDevice = new DeviceModel();
+        // validate the email
+        if (UserModel.hasUser(req.body.userEmail)) {
+            newDevice.deviceName = req.body.deviceName;
+            newDevice.spaceName = req.body.spaceName;
+            newDevice.userEmail = req.body.userEmail;
+            newDevice.save((err) => {
+                if (err) {
+                    console.log(err);
+                    throw err;
+                }
+                UserModel.addDevice(newDevice.userEmail, newDevice.id);
+                res.write(JSON.stringify("{ \"deviceToken\": \"\"" + newDevice.id + "\" }"));
+                res.send();
+            });
+        } else {
+            res.status(400).send("User could not be found");
+        }
+    });
+
+    app.post('/setDeviceSpace', requireAuth, function (req, res) {
+        if (UserModel.hasSpace(req.body.userEmail, req.body.spaceName)) {
+            DeviceModel.setSpace(req.body.deviceId, req.body.spaceName, (err) => {
+                    if (err) throw err;
+                    res.send();
+                }
+            );
+        }
+        res.status(400).send("Space could not be found");
+    });
+
+    app.post('/setDeviceName', requireAuth, function (req, res) {
+        DeviceModel.setName(req.body.deviceId, req.body.name, (err) => {
+                if (err) throw err;
+                res.send();
+            }
+        );
+    });
+
+    // Hololens Endpoints
+
+    /////////////////////// END DEVICE REGISTRATION
 
     app.post('/clearSpace', function (req, res) {
         console.log(req.body);
