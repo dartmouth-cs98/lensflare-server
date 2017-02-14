@@ -94,7 +94,7 @@ function loadDevices(user) {
 
   document.getElementById("db-table").innerHTML = "";
 
-  userDoc.devices = [{id: "1", name: "nick's hololens", space: "test"}];
+  userDoc.devices = [{id: "1", name: "Nick's HoloLens #1", space: "CS98"}];
 
   if (userDoc.devices.length == 0) {
       document.getElementById("db-table").style.border = "none";
@@ -122,7 +122,10 @@ function loadDevices(user) {
   rowV.cells[1].style.width = "45%";
   rowV.cells[2].style.textAlign = "center";
 
-  document.getElementById("content").innerHTML += "<div style='text-align: center'><button class='db-name-save-button' id='device-add-button' onclick='addNewDevice(" + row + ")'>add new device</button></div>"
+  var rowV = table.insertRow(row);
+  rowV.insertCell(0).innerHTML = "<div style='text-align: center'><button class='db-name-save-button' id='device-add-button' onclick='addNewDevice(" + row + ")'>add new device</button></div>";
+  rowV.cells[0].style.border = "none";
+  rowV.cells[0].colSpan = "3";
 
 }
 
@@ -156,6 +159,9 @@ function saveNewDevice(row) {
   rowV.cells[1].innerHTML = document.getElementById("device-space-entry").value;
   rowV.cells[2].innerHTML = "edit | delete";
 
+  var rowV = table.rows[row + 1];
+  rowV.cells[0].innerHTML = "<div style='text-align: center'><button class='db-name-save-button' id='device-add-button' onclick='addNewDevice(" + (row + 1) + ")'>add new device</button></div>";
+  
   document.getElementById("device-add-button").disabled = false;
 }
 
