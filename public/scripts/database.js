@@ -134,7 +134,14 @@ function addNewDevice(row) {
   var rowV = table.insertRow(row);
   document.getElementById("device-add-button").disabled = true;
   rowV.insertCell(0).innerHTML = "<input maxlength='18' id='device-name-entry' type='text' value=''>";
-  rowV.insertCell(1).innerHTML = "<input class='device-entry' maxlength='18' id='device-space-entry' type='text' value=''>";
+
+  var options = "<select id='device-space-entry' name='spaces'>";
+  for (var space in userDoc.spaces) {
+      options += "<option value=\"" + userDoc.spaces[space].name + "\">" + userDoc.spaces[space].name + "</option>";
+  }
+  options += "</select>"
+  rowV.insertCell(1).innerHTML = options;
+
   rowV.insertCell(2).innerHTML = "<a style='cursor: pointer;' onclick='saveNewDevice(" + row + ")'>save</a> | <a style='cursor: pointer;' onclick='cancelNewDevice(" + row + ")'>cancel</a>";
   rowV.cells[2].style.textAlign = "center";
 }
@@ -161,7 +168,7 @@ function saveNewDevice(row) {
 
   var rowV = table.rows[row + 1];
   rowV.cells[0].innerHTML = "<div style='text-align: center'><button class='db-name-save-button' id='device-add-button' onclick='addNewDevice(" + (row + 1) + ")'>add new device</button></div>";
-  
+
   document.getElementById("device-add-button").disabled = false;
 }
 
