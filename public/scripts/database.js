@@ -90,6 +90,60 @@ function loadDatabase(space, spaceRow) {
     loadMeshes();
 }
 
+function loadDevices(user) {
+
+  document.getElementById("db-table").innerHTML = "";
+
+  userDoc.devices = [{id: "1", name: "nick's hololens", space: "test"}];
+
+  if (userDoc.devices.length == 0) {
+      document.getElementById("db-table").style.border = "none";
+      document.getElementById("db-table").innerHTML = "You haven't added any devices yet! Add one now";
+      return;
+  }
+
+  var table = document.getElementById("db-table");
+  var header = table.createTHead();
+  var headerRow = header.insertRow(0);
+  headerRow.style.backgroundColor = "#3B3C59";
+  headerRow.style.color = "#ffffff";
+  headerRow.insertCell(0).innerHTML = "Device Name"
+  headerRow.insertCell(1).innerHTML = "Space Associated"
+  headerRow.insertCell(2).innerHTML = "Actions"
+
+  for (var row = 1; row <= userDoc.devices.length; row++) {
+      var rowV = table.insertRow(row);
+      rowV.insertCell(0).innerHTML = userDoc.devices[row - 1].name;
+      rowV.insertCell(1).innerHTML = userDoc.devices[row - 1].space;
+      rowV.insertCell(2).innerHTML = "edit | delete";
+  }
+
+  rowV.cells[0].style.width = "45%";
+  rowV.cells[1].style.width = "45%";
+  rowV.cells[2].style.textAlign = "center";
+
+  document.getElementById("content").innerHTML += "<div style='text-align: center'><button class='db-name-save-button' onclick='addNewDevice(" + row + ")'>add new device</button></div>"
+
+}
+
+function addNewDevice(row) {
+  var table = document.getElementById("db-table");
+  var rowV = table.insertRow(row);
+  rowV.insertCell(0).innerHTML = "<input maxlength='18' id='device-name-entry' type='text' value=''>";
+  rowV.insertCell(1).innerHTML = "<input class='device-entry' maxlength='18' id='device-space-entry' type='text' value=''>";
+  rowV.insertCell(2).innerHTML = "<a style='cursor: pointer;' onclick='saveNewDevice()'>save</a> | <a style='cursor: pointer;' onclick='cancelNewDevice(" + row + ")'>cancel</a>";
+  rowV.cells[2].style.textAlign = "center";
+}
+
+function saveNewDevice() {
+  console.log(document.getElementById("device-name-entry").value + ":" + document.getElementById("device-space-entry").value)
+}
+
+function cancelNewDevice(row) {
+  var table = document.getElementById("db-table");
+  var rowV = table.deleteRow(row);
+}
+
 function edit(spaceRow, row, col) {
     if (currCellRow != -1) {
         cancel(spaceRow, currCellRow, currCellCol)
@@ -130,6 +184,14 @@ function addSpace() {
     document.getElementById("db-name-entry").focus();
     document.getElementById("db-table").style.border = "none";
     document.getElementById("db-table").innerHTML = "Enter the new item's name above and then start setup via HoloLens!";
+}
+
+function manageDevices() {
+    canvas = document.getElementById("c");
+    canvas.style.display = 'none';
+    document.getElementById("db-name").innerHTML = "My Devices"
+    document.getElementById("db-table").style.border = "none";
+    loadDevices("null")
 }
 
 function saveNewSpace() {
