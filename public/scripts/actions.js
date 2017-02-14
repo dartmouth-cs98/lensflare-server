@@ -62,12 +62,28 @@ function clearSpaceConfirmed(spaceName) {
       params: {
           email: localStorage.getItem('email'),
           space: spaceName
-      },
+      } }, {
       headers: {
           authorization: localStorage.getItem('token')
       }
   }).then(function (resp) {
       window.location.reload();
+  });
+}
+
+function generateDeviceId(device, space) {
+  axios.post('/generateDeviceId', {
+      params: {
+          userEmail: localStorage.getItem('email'),
+          spaceName: space,
+          deviceName: device
+      } }, {
+      headers: {
+          authorization: localStorage.getItem('token')
+      }
+  }).then(function (resp) {
+      console.log(JSON.parse(resp.data).deviceToken)
+      generateQR(resp.data);
   });
 }
 
@@ -100,9 +116,9 @@ function saveSpaces(userDoc) {
     });
 }
 
-function generateQR(spaceName) {
+function generateQR(deviceTokenJSON) {
   showPopover("QR Code<button class='qr-close-button' type='button' onclick='closePopover()'>X</button><br />");
-  var qrCode = new QRCode(document.getElementById('popover'), "{ space: '" + spaceName + "', token: '" + localStorage.getItem('token') + "' }");
+  var qrCode = new QRCode(document.getElementById('popover'), deviceTokenJSON);
 }
 
 function showPopover(value) {

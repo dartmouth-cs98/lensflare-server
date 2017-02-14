@@ -118,10 +118,13 @@ userSchema.statics.updateSpaces = function (email, spaces) {
     });
 };
 
-userSchema.statics.addDevice = function (email, deviceId) {
+userSchema.statics.addDevice = function (device) {
+    var email = device.userEmail;
     this.getUser(email, function (err, user) {
         if (err) throw err;
-        user.local.devices.push(deviceId);
+        user.local.devices.push(device);
+
+        user.markModified('local.devices')
         user.save(function (err) {
             if (err) throw err;
         });

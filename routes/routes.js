@@ -65,20 +65,20 @@ module.exports = function (app, passport) {
     // needs auth
     // fe call
     // route for doing bulk updates to a user's set of spaces
-    app.post('/saveSpaces', function (req, res) {
+    app.post('/saveSpaces', requireAuth, function (req, res) {
         UserModel.updateSpaces(req.body.userDoc.email, req.body.userDoc.spaces);
         res.send();
     });
 
     // backend
     // needs auth
-    app.post('/saveItem', function (req, res) {
+    app.post('/saveItem', requireAuth, function (req, res) {
         UserModel.addItem(req.body.email, req.body.space, req.body.url);
         // UserModel.addItem(req.body.userId, req.body.spaceId, req.body.url);
         res.send();
     });
 
-    app.post('/clearSpace', function (req, res) {
+    app.post('/clearSpace', requireAuth, function (req, res) {
         console.log(req.body);
         UserModel.removeSpace(req.body.params.email, req.body.params.space);
         res.send();
@@ -90,23 +90,25 @@ module.exports = function (app, passport) {
     // need user email and space Name
     app.post('/generateDeviceId', requireAuth, function (req, res) {
         var newDevice = new DeviceModel();
+
         // validate the email
-        if (UserModel.hasUser(req.body.userEmail)) {
-            newDevice.deviceName = req.body.deviceName;
-            newDevice.spaceName = req.body.spaceName;
-            newDevice.userEmail = req.body.userEmail;
+        // if (UserModel.hasUser(req.body.params.userEmail)) {
+            newDevice.deviceName = req.body.params.deviceName;
+            newDevice.spaceName = req.body.params.spaceName;
+            newDevice.userEmail = req.body.params.userEmail;
             newDevice.save((err) => {
                 if (err) {
                     console.log(err);
                     throw err;
                 }
-                UserModel.addDevice(newDevice.userEmail, newDevice.id);
-                res.write(JSON.stringify("{ \"deviceToken\": \"\"" + newDevice.id + "\" }"));
+
+                UserModel.addDevice(newDevice);
+                res.write(JSON.stringify("{ \"deviceToken\": \"" + newDevice.id + "\" }"));
                 res.send();
             });
-        } else {
-            res.status(400).send("User could not be found");
-        }
+        // } else {
+        //     res.status(400).send("User could not be found");
+        // }
     });
 
     app.post('/setDeviceSpace', requireAuth, function (req, res) {
