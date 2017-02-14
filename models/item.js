@@ -9,7 +9,7 @@ var itemSchema = mongoose.Schema({
 itemSchema.plugin(uniqueValidator);
 
 itemSchema.statics.getItem = function (url, cb) {
-  return this.find({ url: new RegExp(url, 'i') }, cb);
+  return this.findOne({ url: new RegExp(url, 'i') }, cb);
 };
 
 itemSchema.statics.updateTitle = function(url, title) {
@@ -18,7 +18,9 @@ itemSchema.statics.updateTitle = function(url, title) {
     this.getItem(url, function (err, item) {
       if (err) throw err;
       item.title = title;
-      item.save(done);
+      item.save(function (err) {
+        if (err) throw err;
+      });
     });
   }
 };
@@ -29,7 +31,9 @@ itemSchema.statics.updateText = function(url, text) {
     this.getItem(url, function (err, item) {
       if (err) throw err;
       item.text = text;
-      item.save(done);
+      item.save(function (err) {
+        if (err) throw err;
+      });
     });
   }
 };
