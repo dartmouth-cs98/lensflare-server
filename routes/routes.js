@@ -17,6 +17,7 @@ module.exports = function (app, passport) {
 
     const util = require('util');
     const aws = require('aws-sdk');
+    const s3 = require('s3');
 
     // Page Rendering
     app.get('/', function (req, res) {
@@ -95,15 +96,15 @@ module.exports = function (app, passport) {
     });
 
 
-    // S3 Uploading
+    // S3 Image Uploading
     // assumes access to the relevant Space object
     app.post("/sign-s3", function (req, res) {
-        console.log("In Signed s3 endpoint")
-        const s3 = new aws.S3();
+        console.log("In signed S3 endpoint")
+        const awsS3 = new aws.S3();
         var files = req.body.files;
         var returnData = {files: []};
-        // associate the space with the user if not already
 
+        // associate the space with the user if not already
         if (!UserModel.hasSpace(req.body.email, req.body.space)) { // check this
             UserModel.addSpace(req.body.email, req.body.space);
         }
@@ -113,7 +114,7 @@ module.exports = function (app, passport) {
 
         var itemList = [];
         files.forEach((file) => {
-            s3.getSignedUrl('putObject',
+            awsS3.getSignedUrl('putObject',
                 {
                     Bucket: S3_BUCKET,
                     Key: file.fileName,
@@ -146,4 +147,78 @@ module.exports = function (app, passport) {
 
     });
 
+    // S3 Anchor Uploading
+    app.post("/upload-s3", function (req, res) {
+        console.log("In S3 endpoint for uploading World Anchors");
+
+        // create a client
+        var awsS3Client = new aws.S3();
+        var options = {
+            s3Client: awsS3Client
+        };
+        var client = s3.createClient(options);
+
+        // define parameters for uploading
+        var params = {
+            localFile: req.localFilePath // local path of file to upload
+            s3Params: {
+                Bucket: S3_BUCKET,
+                Key: req.s3AnchorPath
+            }
+        };
+
+        // upload
+        var uploader = client.uploadFile(params);
+        uploader.on('error', function(err) {
+            console.error("unable to upload:", err.stack);
+        });
+        downloader.on('progress', function() {
+            console.log("progress", uploader.progressMd5Amount, uploader.progressAmount, uploader.progressTotal);
+        });
+        downloader.on('end', function () {
+            console.log("done uploading");
+        });
+
+        // save s3AnchorPath to the associated space in the database
+        UserModel.updateAnchorPath(req.email, req.spaceName, req.s3AnchorPath);
+        res.send(); // ???
+    });
+
+    // S3 Downloading
+    app.get("/download-s3", function (req, res) {
+        console.log("In signed S3 download endpoint");
+
+        // create a client
+        var awsS3Client = new aws.S3();
+        var options = {
+            s3Client: awsS3Client
+        };
+        var client = s3.createClient(options);
+
+        // retrieve file path from database
+        // var anchorPath = UserModel.getAnchorPath(req.email, req.spaceName);
+
+        // define parameters for downloading
+        var params = {
+            localFile: req.localFilePath // path to which to download the file
+            s3Params: {
+                Bucket: S3_BUCKET,
+                // Key: anchorPath
+            }
+        };
+
+        // download
+        var downloader = client.downloadFile(params);
+        downloader.on('error', function (err) {
+            console.error("unable to download:", err.stack);
+        });
+        downloader.on('progress', function() {
+            console.log("progress", downloader.progressAmount, downloader.progressTotal);
+        });
+        downloader.on('end', function () {
+            console.log("done downloading");
+        });
+
+        res.send(); // ???
+    });
 };

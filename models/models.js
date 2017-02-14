@@ -11,6 +11,7 @@ itemSchema.plugin(uniqueValidator);
 
 var spaceSchema = mongoose.Schema({
     name: { type: String, required: true, unique: true },
+    s3AnchorPath: { type: String, default: ""},
     items: [Item]
 });
 spaceSchema.plugin(uniqueValidator);
@@ -90,6 +91,39 @@ userSchema.statics.getSpace = function (email, spaceName, cb) {
             }
         }
         return null;
+    });
+};
+
+userSchema.statics.getAnchorPath = function (email, spaceName) {
+    return this.getSpace(email, spaceName, function (err, space) {
+        if (err) {
+            console.log(err);
+            throw err;
+        }
+
+        if (space) { 
+            console.log(space.s3AnchorPath);
+            return space.s3AnchorPath; 
+        }
+        return null;
+    });
+};
+
+userSchema.statics.updateAnchorPath = function (email, spaceName, anchorPath) {
+    this.getSpace(email, spaceName, function (err, space) {
+        if (err) {
+            console.log(err);
+            throw err;
+        }
+
+        space.s3AnchorPath = anchorPath;
+
+        space.save(function (err) {
+            if (err) {
+                console.log(err);
+                throw err;
+            }
+        });
     });
 };
 
