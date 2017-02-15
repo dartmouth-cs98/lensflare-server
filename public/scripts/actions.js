@@ -82,8 +82,9 @@ function generateDeviceId(device, space) {
           authorization: localStorage.getItem('token')
       }
   }).then(function (resp) {
-      console.log(JSON.parse(resp.data).deviceToken)
-      generateQR(resp.data);
+      generateQR(JSON.parse(resp.data).deviceToken);
+      userDoc.devices.push({"deviceName": device, "spaceName": space, "_id": JSON.parse(resp.data).deviceToken});
+      loadDevices();
   });
 }
 
@@ -104,6 +105,20 @@ function loadSpaces() {
 
 function saveSpaces(userDoc) {
     axios.post('/saveSpaces', {
+        userDoc: userDoc
+    }, {
+        headers: {
+            authorization: localStorage.getItem('token')
+        }
+    }).then(function (resp) {
+        loadMessage(true, "saved successfully")
+    }).catch(function (error) {
+        loadMessage(false, "error saving - try again")
+    });
+}
+
+function saveDevices(userDoc) {
+    axios.post('/saveDevices', {
         userDoc: userDoc
     }, {
         headers: {

@@ -12,7 +12,7 @@
   padding-top: 15px;
   padding-bottom: 15px;
   height: 40px;
-  background: #3B3C59;
+  background: transparent;
 }
 
 .login-box {
@@ -82,6 +82,11 @@
 
 .sidebar {
   background-color: #3B3C59;
+
+  background: -webkit-linear-gradient(135deg, #036564, #3B3C59);
+  background: -o-linear-gradient(135deg, #036564, #3B3C59);
+  background: -moz-linear-gradient(135deg, #036564, #3B3C59);
+  background: linear-gradient(135deg, #036564, #3B3C59);
   /*background-color: #ffffff;*/
   position: fixed;
   width: 200px;

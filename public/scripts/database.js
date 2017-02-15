@@ -90,7 +90,7 @@ function loadDatabase(space, spaceRow) {
     loadMeshes();
 }
 
-function loadDevices(user) {
+function loadDevices() {
 
   document.getElementById("db-table").innerHTML = "";
 
@@ -98,7 +98,7 @@ function loadDevices(user) {
 
   if (userDoc.devices.length == 0) {
       document.getElementById("db-table").style.border = "none";
-      document.getElementById("db-table").innerHTML = "You haven't added any devices yet! Add one now: <button class='db-name-save-button' id='device-add-button' onclick='addNewDevice(" + row + ")'>add new device</button>";
+      document.getElementById("db-table").innerHTML = "You haven't added any devices yet! <button class='db-name-save-button' id='device-add-button' onclick='addFirstDevice()'>Click here to add a new device.</button>";
       return;
   }
 
@@ -116,18 +116,50 @@ function loadDevices(user) {
       console.log(userDoc.devices[row - 1])
       rowV.insertCell(0).innerHTML = userDoc.devices[row - 1].deviceName;
       rowV.insertCell(1).innerHTML = userDoc.devices[row - 1].spaceName;
-      rowV.insertCell(2).innerHTML = "<a style='cursor: pointer;' onclick='generateQR(\"" + userDoc.devices[row - 1]._id + "\")'>qr</a> | edit | <a style='cursor: pointer;' onclick='deleteDevice(" + row + ")'>delete</a>";
+      rowV.insertCell(2).innerHTML = "<a style='cursor: pointer;' onclick='generateQR(\"" + userDoc.devices[row - 1]._id + "\")'>qr</a> | edit | <a style='cursor: pointer;' onclick='deleteDevice(" + (row - 1) + ")'>delete</a>";
+      rowV.cells[0].style.width = "45%";
+      rowV.cells[1].style.width = "45%";
       rowV.cells[2].style.textAlign = "center";
   }
 
-  rowV.cells[0].style.width = "45%";
-  rowV.cells[1].style.width = "45%";
 
   var rowV = table.insertRow(row);
   rowV.insertCell(0).innerHTML = "<div style='text-align: center'><button class='db-name-save-button' id='device-add-button' onclick='addNewDevice(" + row + ")'>add new device</button></div>";
   rowV.cells[0].style.border = "none";
   rowV.cells[0].colSpan = "3";
 
+}
+
+function addFirstDevice() {
+  document.getElementById("db-table").innerHTML = "";
+
+  var table = document.getElementById("db-table");
+  var header = table.createTHead();
+  var headerRow = header.insertRow(0);
+  headerRow.style.backgroundColor = "#3B3C59";
+  headerRow.style.color = "#ffffff";
+  headerRow.insertCell(0).innerHTML = "Device Name"
+  headerRow.insertCell(1).innerHTML = "Space Associated"
+  headerRow.insertCell(2).innerHTML = "Actions"
+
+  var rowV = table.insertRow(1);
+  rowV.insertCell(0).innerHTML = "<input maxlength='18' id='device-name-entry' type='text' value=''>";
+
+  var options = "<select id='device-space-entry' name='spaces'>";
+  for (var space in userDoc.spaces) {
+      options += "<option value=\"" + userDoc.spaces[space].name + "\">" + userDoc.spaces[space].name + "</option>";
+  }
+  options += "</select>"
+  rowV.insertCell(1).innerHTML = options;
+
+  rowV.insertCell(2).innerHTML = "<a style='cursor: pointer;' onclick='saveNewDevice(" + 1 + ")'>save</a> | <a style='cursor: pointer;' onclick='cancelNewDevice(" + 0 + ")'>cancel</a>";
+  rowV.cells[2].style.textAlign = "center";
+
+  var rowV = table.insertRow(2);
+  rowV.insertCell(0).innerHTML = "<div style='text-align: center'><button class='db-name-save-button' id='device-add-button' onclick='addNewDevice(" + 2 + ")'>add new device</button></div>";
+  rowV.cells[0].style.border = "none";
+  rowV.cells[0].colSpan = "3";
+  document.getElementById("device-add-button").disabled = true;
 }
 
 function addNewDevice(row) {
@@ -163,9 +195,9 @@ function saveNewDevice(row) {
       return;
   }
 
-  rowV.cells[0].innerHTML = document.getElementById("device-name-entry").value;
-  rowV.cells[1].innerHTML = document.getElementById("device-space-entry").value;
-  rowV.cells[2].innerHTML = "edit | delete";
+  // rowV.cells[0].innerHTML = document.getElementById("device-name-entry").value;
+  // rowV.cells[1].innerHTML = document.getElementById("device-space-entry").value;
+  // rowV.cells[2].innerHTML = "edit | delete";
 
   var rowV = table.rows[row + 1];
   rowV.cells[0].innerHTML = "<div style='text-align: center'><button class='db-name-save-button' id='device-add-button' onclick='addNewDevice(" + (row + 1) + ")'>add new device</button></div>";
@@ -177,11 +209,13 @@ function saveNewDevice(row) {
 
 function deleteDevice(row) {
   var table = document.getElementById("db-table");
-  var rowV = table.deleteRow(row + 1);
+  var rowV = table.deleteRow(row);
+  userDoc.devices.splice(row, 1);
 
+  loadDevices();
   console.log(userDoc.devices[row])
   saveDevices(userDoc);
-  
+
   document.getElementById("device-add-button").disabled = false;
 }
 
@@ -238,7 +272,7 @@ function manageDevices() {
     canvas.style.display = 'none';
     document.getElementById("db-name").innerHTML = "My Devices"
     document.getElementById("db-table").style.border = "none";
-    loadDevices("null")
+    loadDevices()
 }
 
 function saveNewSpace() {

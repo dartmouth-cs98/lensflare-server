@@ -70,6 +70,11 @@ module.exports = function (app, passport) {
         res.send();
     });
 
+    app.post('/saveDevices', requireAuth, function (req, res) {
+        UserModel.updateDevices(req.body.userDoc.email, req.body.userDoc.devices);
+        res.send();
+    });
+
     // backend
     // needs auth
     app.post('/saveItem', requireAuth, function (req, res) {
