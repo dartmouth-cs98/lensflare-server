@@ -38,14 +38,8 @@ module.exports = function (app, passport) {
         });
     });
 
-      app.get('/getSpacesUnauth', function (req, res) {
-          UserModel.getSpaces(req.query.email, function (err, user) {
-              res.send(user);
-          });
-      });
-
-      app.get('/getSpacesWithToken', function (req, res) {
-          UserModel.getSpacesWithToken(req.query.token, function (err, user) {
+      app.get('/getSpaceWithToken', function (req, res) {
+          UserModel.getSpaceWithToken(req.query.token, function (err, user) {
               res.send(user);
           });
       });
