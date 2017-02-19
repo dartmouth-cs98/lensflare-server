@@ -11,7 +11,7 @@ deviceSchema.plugin(uniqueValidator);
 
 // necessary to use email to find user initially on login
 deviceSchema.statics.getDevice = function (deviceId, cb) {
-    return this.findOne({'deviceId': deviceId}, cb);
+    return this.findOne({'_id': deviceId}, cb);
 };
 
 deviceSchema.statics.setSpace = function (deviceId, spaceName, cb) {

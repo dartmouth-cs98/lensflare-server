@@ -3,6 +3,8 @@ var uniqueValidator = require('mongoose-unique-validator');
 var bcrypt = require('bcrypt-nodejs');
 var Space = require('./space.js');
 var Item = require('./item')
+var Device = require('./device')
+var User = require('./../models/user')
 
 var userSchema = mongoose.Schema({
     local: {
@@ -66,6 +68,15 @@ userSchema.statics.updateName = function (userID, name) {
 userSchema.statics.getSpaces = function (email, cb) {
     this.findOne({'local.email': email}, function (err, user) {
         cb(err, user)
+    });
+};
+
+userSchema.statics.getSpacesWithToken = function (token, cb) {
+    Device.getDevice(token, function (err, device) {
+      var User = require('./user')
+      User.getUser(device.userEmail, function (err, user) {
+          cb(err, user)
+      });
     });
 };
 
