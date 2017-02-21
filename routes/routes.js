@@ -39,7 +39,7 @@ module.exports = function (app, passport) {
     });
 
       app.get('/getSpaceWithToken', function (req, res) {
-          DeviceModel.getSpaceForDevice(req.query.token, function (err, user) {
+          UserModel.getSpaceWithToken(req.query.token, function (err, user) {
               res.send(user);
           });
       });

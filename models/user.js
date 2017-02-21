@@ -71,6 +71,15 @@ userSchema.statics.getSpaces = function (email, cb) {
     });
 };
 
+userSchema.statics.getSpaceWithToken = function (token, cb) {
+    Device.getDevice(token, function (err, device) {
+      var User = require('./user')
+      User.getSpace(device.userEmail, device.spaceName, function (err, user) {
+          cb(err, user)
+      });
+    });
+};
+
 userSchema.statics.getSpace = function (email, spaceName, cb) {
     this.findOne({'local.email': email}, function (err, user) {
         for (var space in user.local.spaces) {
