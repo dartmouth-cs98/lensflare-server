@@ -88,7 +88,6 @@ userSchema.statics.getSpace = function (email, spaceName, cb) {
                 break;
             }
         }
-
     });
 };
 
@@ -152,6 +151,19 @@ userSchema.statics.addDevice = function (device) {
             if (err) throw err;
         });
     });
+};
+
+userSchema.statics.setAnchors = function (device, anchors) {
+  Device.getDevice(token, function (err, device) {
+    var User = require('./user')
+    User.getSpace(device.userEmail, device.spaceName, function (err, space) {
+        space.anchors = anchors;
+        space.markModified('anchors')
+        space.save(function (err) {
+            if (err) throw err;
+        });
+    });
+  });
 };
 
 userSchema.statics.addSpace = function (email, spaceName) {

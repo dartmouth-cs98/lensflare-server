@@ -145,6 +145,11 @@ module.exports = function (app, passport) {
         res.send();
     });
 
+    app.post('/setAnchors', function (req, res) {
+        console.log(req.body);
+        UserModel.setAnchors(req.body.token, req.body.anchors);
+        res.send();
+    });
 
     // S3 Uploading
     // assumes access to the relevant Space object
