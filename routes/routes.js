@@ -38,11 +38,11 @@ module.exports = function (app, passport) {
         });
     });
 
-      app.get('/getSpaceWithToken', function (req, res) {
-          UserModel.getSpaceWithToken(req.query.token, function (err, user) {
-              res.send(user);
-          });
-      });
+    app.get('/getSpaceWithToken', function (req, res) {
+        UserModel.getSpaceWithToken(req.query.token, function (err, user) {
+            res.send(user);
+        });
+    });
 
     app.get('/getSpace', requireAuth, function (req, res) {
         UserModel.getSpace(req.query.email, req.query.spaceName, function (err, space) {
@@ -98,19 +98,19 @@ module.exports = function (app, passport) {
 
         // validate the email
         // if (UserModel.hasUser(req.body.params.userEmail)) {
-            newDevice.deviceName = req.body.params.deviceName;
-            newDevice.spaceName = req.body.params.spaceName;
-            newDevice.userEmail = req.body.params.userEmail;
-            newDevice.save((err) => {
-                if (err) {
-                    console.log(err);
-                    throw err;
-                }
+        newDevice.deviceName = req.body.params.deviceName;
+        newDevice.spaceName = req.body.params.spaceName;
+        newDevice.userEmail = req.body.params.userEmail;
+        newDevice.save((err) => {
+            if (err) {
+                console.log(err);
+                throw err;
+            }
 
-                UserModel.addDevice(newDevice);
-                res.write(JSON.stringify("{ \"deviceToken\": \"" + newDevice.id + "\" }"));
-                res.send();
-            });
+            UserModel.addDevice(newDevice);
+            res.write(JSON.stringify("{ \"deviceToken\": \"" + newDevice.id + "\" }"));
+            res.send();
+        });
         // } else {
         //     res.status(400).send("User could not be found");
         // }
@@ -200,6 +200,33 @@ module.exports = function (app, passport) {
         console.log("Done generating Signed URLS")
         console.log(returnData);
 
+    });
+
+
+    //Takes:
+    // token:
+    // file:
+    //Returns:
+    //  signedUrl
+    app.post("/sign-s3-anchors", function (req, res) {
+        const s3 = new aws.S3();
+        s3.getSignedUrl('putObject',
+            {
+                Bucket: S3_BUCKET,
+                Key: req.body.file,
+                Expires: 60,
+                ACL: 'public-read'
+            },
+            (err, data) => {
+                if (err) throw err;
+
+                UserModel.setAnchors(req.body.token, util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, req.body.file))
+
+                res.write(JSON.stringify("{\"signedUrl\": \"" + data + "\"}"));
+                res.end();
+
+            });
+        console.log("Done generating Signed URL")
     });
 
 };

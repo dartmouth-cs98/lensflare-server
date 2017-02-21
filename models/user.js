@@ -73,10 +73,10 @@ userSchema.statics.getSpaces = function (email, cb) {
 
 userSchema.statics.getSpaceWithToken = function (token, cb) {
     Device.getDevice(token, function (err, device) {
-      var User = require('./user')
-      User.getSpace(device.userEmail, device.spaceName, function (err, user) {
-          cb(err, user)
-      });
+        var User = require('./user')
+        User.getSpace(device.userEmail, device.spaceName, function (err, user) {
+            cb(err, user)
+        });
     });
 };
 
@@ -154,16 +154,16 @@ userSchema.statics.addDevice = function (device) {
 };
 
 userSchema.statics.setAnchors = function (device, anchors) {
-  Device.getDevice(token, function (err, device) {
-    var User = require('./user')
-    User.getSpace(device.userEmail, device.spaceName, function (err, space) {
-        space.anchors = anchors;
-        space.markModified('anchors')
-        space.save(function (err) {
-            if (err) throw err;
+    Device.getDevice(token, function (err, device) {
+        var User = require('./user')
+        User.getSpace(device.userEmail, device.spaceName, function (err, space) {
+            space.anchors = anchors;
+            space.markModified('anchors')
+            space.save(function (err) {
+                if (err) throw err;
+            });
         });
     });
-  });
 };
 
 userSchema.statics.addSpace = function (email, spaceName) {
