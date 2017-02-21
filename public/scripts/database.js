@@ -29,10 +29,11 @@ function displayData(user) {
     canvas.style.left = (window.innerWidth - 120) + "px";
 
     userDoc = JSON.parse(user).local;
-
     document.getElementById("space-links").innerHTML = "Welcome, " + userDoc.name + "!<br /><br />";
 
     for (var space in userDoc.spaces) {
+
+      console.log(userDoc.spaces[space])
         document.getElementById("space-links").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this," + space + ")'>" + userDoc.spaces[space].name + "</a><button class='delete-space-button' onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'>x</button><br/>"
     }
 
@@ -284,7 +285,8 @@ function saveNewSpace() {
     }
     userDoc.spaces.push({
         name: dbName,
-        items: []
+        items: [],
+        anchors: ""
     })
     reloadSidebar();
 
