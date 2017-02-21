@@ -6,7 +6,7 @@ var User = require('./user.js')
 var spaceSchema = mongoose.Schema({
   name: { type: String, required: true, unique: true },
   items: { type: Array, 'default': [] },
-  anchors: { type: String, 'default': null }
+  anchors: { type: String, 'default': "" }
 });
 spaceSchema.plugin(uniqueValidator);
 
