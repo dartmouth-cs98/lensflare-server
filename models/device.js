@@ -32,4 +32,13 @@ deviceSchema.statics.setName = function (deviceId, name, cb) {
     });
 };
 
+deviceSchema.statics.getSpaceForDevice = function (token, cb) {
+    this.getDevice(token, function (err, device) {
+        var User = require('./user')
+        User.getSpace(device.userEmail, device.spaceName, function (err, user) {
+            cb(err, user)
+        });
+    });
+};
+
 module.exports = mongoose.model('Device', deviceSchema);
