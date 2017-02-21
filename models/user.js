@@ -41,6 +41,7 @@ userSchema.statics.getUser = function (email, cb) {
 };
 
 userSchema.statics.hasUser = function (email) {
+
     this.findOne({'local.email': new RegExp(email, 'i')}, (err, user) => {
         if (err) throw err;
         if (user) return true;
@@ -88,6 +89,7 @@ userSchema.statics.getSpace = function (email, spaceName, cb) {
                 break;
             }
         }
+        cb(err, null);
     });
 };
 
@@ -101,20 +103,6 @@ userSchema.statics.getSpace = function (email, spaceName, cb) {
 //         });
 //     });
 // };
-
-userSchema.statics.hasSpace = function (email, spaceName) {
-    if (!this.hasUser(email)) return false;
-    this.getUser(email, function (err, user) {
-        console.log(user);
-        if (err) throw err;
-        for (var i in user.local.spaces) {
-            if (user.local.spaces[i].name == spaceName) {
-                return true;
-            }
-        }
-        return false;
-    });
-};
 
 userSchema.statics.updateSpaces = function (email, spaces) {
     this.getUser(email, function (err, user) {
@@ -153,16 +141,36 @@ userSchema.statics.addDevice = function (device) {
     });
 };
 
-userSchema.statics.setAnchors = function (device, anchors) {
+userSchema.statics.setAnchors = function (token, anchors) {
+    console.log("This is the token:  " + token);
     Device.getDevice(token, function (err, device) {
+        if (err) throw err;
         var User = require('./user')
-        User.getSpace(device.userEmail, device.spaceName, function (err, space) {
-            space.anchors = anchors;
-            space.markModified('anchors')
-            space.save(function (err) {
+        console.log(device);
+
+        User.getUser(device.userEmail, (err, user) => {
+            if (err) throw err;
+            for (var space in user.local.spaces) {
+                if (user.local.spaces[space].name == device.spaceName) {
+                    user.local.spaces[space].anchors = anchors;
+                    break;
+                }
+            }
+
+            user.markModified('local.spaces');
+
+
+            user.save((err) => {
                 if (err) throw err;
-            });
+
+            })
         });
+        // User.getSpace(device.userEmail, device.spaceName, function (err, space) {
+        //     space.anchors = anchors;
+        //     space.save(function (err) {
+        //         if (err) throw err;
+        //     });
+        // });
     });
 };
 

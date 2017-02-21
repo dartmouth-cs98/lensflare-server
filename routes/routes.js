@@ -116,15 +116,19 @@ module.exports = function (app, passport) {
         // }
     });
 
+    // needs to be tested.
     app.post('/setDeviceSpace', requireAuth, function (req, res) {
-        if (UserModel.hasSpace(req.body.userEmail, req.body.spaceName)) {
+        UserModel.getSpace(req.body.userEmail, req.body.spaceName, (err, space) =>
+        {
+            if (err) throw err;
+            if(space == null) res.status(400).send("Space could not be found");
             DeviceModel.setSpace(req.body.deviceId, req.body.spaceName, (err) => {
                     if (err) throw err;
                     res.send();
                 }
             );
-        }
-        res.status(400).send("Space could not be found");
+        });
+
     });
 
     app.post('/setDeviceName', requireAuth, function (req, res) {
@@ -153,16 +157,14 @@ module.exports = function (app, passport) {
 
     // S3 Uploading
     // assumes access to the relevant Space object
-    app.post("/sign-s3", function (req, res) {
+    app.post("/sign-s3-photos", function (req, res) {
         console.log("In Signed s3 endpoint")
         const s3 = new aws.S3();
         var files = req.body.files;
         var returnData = {files: []};
         // associate the space with the user if not already
 
-        if (!UserModel.hasSpace(req.body.email, req.body.space)) { // check this
-            UserModel.addSpace(req.body.email, req.body.space);
-        }
+
         console.log("About to generate Signed URLS")
         console.log(req.body);
         console.log(req.body.files);
@@ -202,14 +204,14 @@ module.exports = function (app, passport) {
 
     });
 
-
     //Takes:
     // token:
     // file:
     //Returns:
     //  signedUrl
-    app.post("/sign-s3-anchors", function (req, res) {
+    app.post("/sign-s3", function (req, res) {
         const s3 = new aws.S3();
+        console.log(req.body);
         s3.getSignedUrl('putObject',
             {
                 Bucket: S3_BUCKET,
@@ -219,14 +221,25 @@ module.exports = function (app, passport) {
             },
             (err, data) => {
                 if (err) throw err;
+                console.log(req.body.file);
+                console.log(data);
 
-                UserModel.setAnchors(req.body.token, util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, req.body.file))
+                var rData = {
+                    signedUrl: data,
+                    url: util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, req.body.file),
+                    fileName: req.body.file
+                };
 
-                res.write(JSON.stringify("{\"signedUrl\": \"" + data + "\"}"));
+                res.write(JSON.stringify(rData));
                 res.end();
 
             });
         console.log("Done generating Signed URL")
+    });
+
+    app.post("/addAnchors", function (req, res) {
+        UserModel.setAnchors(req.body.token, req.body.anchors);
+        res.send();
     });
 
 };
