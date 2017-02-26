@@ -40,7 +40,7 @@ module.exports = function (app, passport) {
 
     app.get('/getSpaceWithToken', function (req, res) {
         UserModel.getSpaceWithToken(req.query.token, function (err, user) {
-            res.write(user);
+            res.write(JSON.stringify(user));
             res.end();
         });
     });
