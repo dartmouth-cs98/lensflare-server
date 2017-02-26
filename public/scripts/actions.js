@@ -135,7 +135,9 @@ function saveSpaces(userDoc) {
 
 function getSignedUrl(space, file, fileBytes) {
     axios.post('/sign-s3', {
-        file: file.name
+        headers: {
+          'content-type': 'application/json'
+        }, file: file.name
     }).then(function (resp) {
         console.log(resp);
         putS3Media(space, file, fileBytes, resp)
@@ -147,7 +149,7 @@ function getSignedUrl(space, file, fileBytes) {
 function putS3Media(space, file, fileBytes, resp) {
     axios.put(resp.data.signedUrl, file, {
         headers: {
-          'Content-Type': file.type
+          'Content-Type': ''
         }
     }).then(function (resp) {
         console.log(resp);
