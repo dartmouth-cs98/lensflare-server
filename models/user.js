@@ -238,6 +238,24 @@ userSchema.statics.removeSpace = function (email, space) {
     });
 }
 
+userSchema.statics.removeSpaceById = function (email, id) {
+    console.log("Removing the Sapce");
+    this.getUser(email, function (err, user) {
+        if (err) throw err;
+
+        for (var s = 0; s < user.local.spaces.length; s++) {
+            if (user.local.spaces[s]._id == id) {
+                console.log("Foudn the space to be reomoved");
+                user.local.spaces.splice(s, 1);
+                break;
+            }
+        }
+        user.save(function (err) {
+            if (err) throw err;
+        });
+    });
+}
+
 userSchema.pre("save", function beforeUserSave(next) {
     const user = this;
     if (!user.isModified('password')) return next();

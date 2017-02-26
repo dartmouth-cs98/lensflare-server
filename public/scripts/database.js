@@ -55,7 +55,14 @@ function loadDatabase(space, spaceRow) {
 
     if (userDoc.spaces[spaceRow].items.length == 0) {
         document.getElementById("db-table").style.border = "none";
-        document.getElementById("db-table").innerHTML = "There appears to be no photos taken - start setup via HoloLens!";
+        document.getElementById("db-table").innerHTML = "There appears to be no photos taken - start setup via HoloLens!<br /><br />To set up, follow these instructions:<br />" +
+                                                          "1. If not already installed, download and install Lensflare for the HoloLens<br />" +
+                                                          "2. Open Lensflare on the HoloLens<br />" +
+                                                          "3. <br />" +
+                                                          "<br />" +
+                                                          "<br />" +
+                                                          "<br />" +
+                                                          "<br />";
         scenes = [];
         return;
     }
@@ -117,7 +124,7 @@ function loadDevices() {
       console.log(userDoc.devices[row - 1])
       rowV.insertCell(0).innerHTML = userDoc.devices[row - 1].deviceName;
       rowV.insertCell(1).innerHTML = userDoc.devices[row - 1].spaceName;
-      rowV.insertCell(2).innerHTML = "<a style='cursor: pointer;' onclick='generateQR(\"" + userDoc.devices[row - 1]._id + "\")'>qr</a> | edit | <a style='cursor: pointer;' onclick='deleteDevice(" + (row - 1) + ")'>delete</a>";
+      rowV.insertCell(2).innerHTML = "<a style='cursor: pointer;' onclick='generateQR(\"" + userDoc.devices[row - 1]._id + "\")'>qr</a> | <a style='cursor: pointer;' onclick='deleteDevice(" + (row - 1) + ")'>delete</a>";
       rowV.cells[0].style.width = "45%";
       rowV.cells[1].style.width = "45%";
       rowV.cells[2].style.textAlign = "center";
@@ -176,7 +183,7 @@ function addNewDevice(row) {
   options += "</select>"
   rowV.insertCell(1).innerHTML = options;
 
-  rowV.insertCell(2).innerHTML = "<a style='cursor: pointer;' onclick='saveNewDevice(" + row + ")'>save</a> | <a style='cursor: pointer;' onclick='cancelNewDevice(" + (row - 1) + ")'>cancel</a>";
+  rowV.insertCell(2).innerHTML = "<a style='cursor: pointer;' onclick='saveNewDevice(" + row + ")'>save</a> | <a style='cursor: pointer;' onclick='cancelNewDevice(" + row + ")'>cancel</a>";
   rowV.cells[2].style.textAlign = "center";
 }
 
