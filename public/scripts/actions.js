@@ -67,41 +67,43 @@ function signUp() {
 
 function clearSpace(spaceName) {
     var popoverValue = "Are you sure you want to delete " + spaceName + "?<br />" +
-                        "<div style='text-align: center'><button type='button' style='background-color: transparent; cursor: pointer; border: none' onclick='clearSpaceConfirmed(\"" + spaceName + "\")'>YES</button>" +
-                        "<button type='button' style='background-color: transparent; cursor: pointer; border: none' onclick='closePopover()'>NO</button></div>";
+        "<div style='text-align: center'><button type='button' style='background-color: transparent; cursor: pointer; border: none' onclick='clearSpaceConfirmed(\"" + spaceName + "\")'>YES</button>" +
+        "<button type='button' style='background-color: transparent; cursor: pointer; border: none' onclick='closePopover()'>NO</button></div>";
     showPopover(popoverValue);
 }
 
 function clearSpaceConfirmed(spaceName) {
-  closePopover();
-  axios.post('/clearSpace', {
-      params: {
-          email: localStorage.getItem('email'),
-          space: spaceName
-      } }, {
-      headers: {
-          authorization: localStorage.getItem('token')
-      }
-  }).then(function (resp) {
-      window.location.reload();
-  });
+    closePopover();
+    axios.post('/clearSpace', {
+        params: {
+            email: localStorage.getItem('email'),
+            space: spaceName
+        }
+    }, {
+        headers: {
+            authorization: localStorage.getItem('token')
+        }
+    }).then(function (resp) {
+        window.location.reload();
+    });
 }
 
 function generateDeviceId(device, space) {
-  axios.post('/generateDeviceId', {
-      params: {
-          userEmail: localStorage.getItem('email'),
-          spaceName: space,
-          deviceName: device
-      } }, {
-      headers: {
-          authorization: localStorage.getItem('token')
-      }
-  }).then(function (resp) {
-      generateQR(JSON.parse(resp.data).deviceToken);
-      userDoc.devices.push({"deviceName": device, "spaceName": space, "_id": JSON.parse(resp.data).deviceToken});
-      loadDevices();
-  });
+    axios.post('/generateDeviceId', {
+        params: {
+            userEmail: localStorage.getItem('email'),
+            spaceName: space,
+            deviceName: device
+        }
+    }, {
+        headers: {
+            authorization: localStorage.getItem('token')
+        }
+    }).then(function (resp) {
+        generateQR(JSON.parse(resp.data).deviceToken);
+        userDoc.devices.push({"deviceName": device, "spaceName": space, "_id": JSON.parse(resp.data).deviceToken});
+        loadDevices();
+    });
 }
 
 function loadSpaces() {
@@ -136,7 +138,7 @@ function saveSpaces(userDoc) {
 function getSignedUrl(space, file, fileBytes) {
     axios.post('/sign-s3', {
         headers: {
-          'content-type': 'application/json'
+            'content-type': 'application/json'
         }, file: file.name
     }).then(function (resp) {
         console.log(resp);
@@ -147,13 +149,17 @@ function getSignedUrl(space, file, fileBytes) {
 }
 
 function putS3Media(space, file, fileBytes, resp) {
-    axios.put(resp.data.signedUrl, file, {
+    console.log("Trying to genrate a signed url");
+
+    axios.put(resp.data.signedUrl, fileBytes, {
         headers: {
-          'Content-Type': ''
+            'Content-Type': ''
         }
     }).then(function (resp) {
         console.log(resp);
+        // now save the url in the userDoc
     }).catch(function (error) {
+        console.log(error);
         loadMessage(false, "error uploading - try again")
     });
 }
@@ -173,19 +179,19 @@ function saveDevices(userDoc) {
 }
 
 function generateQR(deviceTokenJSON) {
-  showPopover("QR Code<button class='qr-close-button' type='button' onclick='closePopover()'>X</button><br />");
-  var qrCode = new QRCode(document.getElementById('popover'), deviceTokenJSON);
+    showPopover("QR Code<button class='qr-close-button' type='button' onclick='closePopover()'>X</button><br />");
+    var qrCode = new QRCode(document.getElementById('popover'), deviceTokenJSON);
 }
 
 function showPopover(value) {
-  document.getElementById('popover').innerHTML = value;
-  document.getElementById('popover').style.display = 'block';
-  document.getElementById('overlay').style.display = 'block';
+    document.getElementById('popover').innerHTML = value;
+    document.getElementById('popover').style.display = 'block';
+    document.getElementById('overlay').style.display = 'block';
 }
 
 function closePopover() {
-  document.getElementById('popover').style.display = 'none';
-  document.getElementById('overlay').style.display = 'none';
+    document.getElementById('popover').style.display = 'none';
+    document.getElementById('overlay').style.display = 'none';
 }
 
 function loadMessage(success, message) {
