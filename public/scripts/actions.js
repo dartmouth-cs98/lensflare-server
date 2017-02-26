@@ -133,15 +133,26 @@ function saveSpaces(userDoc) {
     });
 }
 
-function uploadMediaS3(space, file) {
+function getSignedUrl(space, file, fileBytes) {
     axios.post('/sign-s3', {
-        email: localStorage.getItem('email'),
-        space: space
-        files: [file]
+        file: file.name
     }).then(function (resp) {
-        loadMessage(true, "saved successfully")
+        console.log(resp);
+        putS3Media(space, file, fileBytes, resp)
     }).catch(function (error) {
-        loadMessage(false, "error saving - try again")
+        loadMessage(false, "error uploading - try again")
+    });
+}
+
+function putS3Media(space, file, fileBytes, resp) {
+    axios.put(resp.data.signedUrl, file, {
+        headers: {
+          'Content-Type': file.type
+        }
+    }).then(function (resp) {
+        console.log(resp);
+    }).catch(function (error) {
+        loadMessage(false, "error uploading - try again")
     });
 }
 

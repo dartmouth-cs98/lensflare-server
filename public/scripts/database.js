@@ -255,7 +255,7 @@ function uploadMedia(spaceRow, row) {
       fileReader.readAsArrayBuffer(fileObject.files[0]);
       fileReader.onload = function() {
         var data = fileReader.result;
-
+        getSignedUrl(userDoc.spaces[spaceRow].name, fileObject.files[0], data);
       };
     }
     console.log(fileObject.files);
