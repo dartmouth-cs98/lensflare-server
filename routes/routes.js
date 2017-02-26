@@ -172,10 +172,10 @@ module.exports = function (app, passport) {
         uploader.on('error', function(err) {
             console.error("unable to upload:", err.stack);
         });
-        downloader.on('progress', function() {
+        uploader.on('progress', function() {
             console.log("progress", uploader.progressMd5Amount, uploader.progressAmount, uploader.progressTotal);
         });
-        downloader.on('end', function () {
+        uploader.on('end', function () {
             console.log("done uploading");
         });
 
