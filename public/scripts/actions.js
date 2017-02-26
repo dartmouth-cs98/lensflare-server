@@ -1,6 +1,22 @@
 var fadeInInterval;
 var fadeOutInterval;
 
+function addItemTest() {
+    axios.post('/saveItem', {
+        email: localStorage.getItem('email'),
+        url: "http://dartmouth.edu/sites/default/files/styles/header_image/public/2009-1035500133.jpg?itok=LlpoUNH9",
+        space: "CS98"
+    }, {
+        headers: {
+            authorization: localStorage.getItem('token')
+        }
+    }).then(function (resp) {
+        loadMessage(true, "saved successfully")
+    }).catch(function (error) {
+        loadMessage(false, "error saving - try again")
+    });
+}
+
 function signIn() {
     var email = document.getElementById("email").value;
     var password = document.getElementById("password").value;
@@ -110,6 +126,18 @@ function saveSpaces(userDoc) {
         headers: {
             authorization: localStorage.getItem('token')
         }
+    }).then(function (resp) {
+        loadMessage(true, "saved successfully")
+    }).catch(function (error) {
+        loadMessage(false, "error saving - try again")
+    });
+}
+
+function uploadMediaS3(space, file) {
+    axios.post('/sign-s3', {
+        email: localStorage.getItem('email'),
+        space: space
+        files: [file]
     }).then(function (resp) {
         loadMessage(true, "saved successfully")
     }).catch(function (error) {

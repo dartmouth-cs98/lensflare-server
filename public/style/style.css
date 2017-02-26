@@ -225,11 +225,17 @@
   left: 180px;
 }
 
+.upload-button {
+  bottom: 0;
+}
+
 .test-button {
   background-color: inherit;
   border: none;
   font-family: 'Raleway', sans-serif;
   font-size: 13px;
+  color: white;
+  text-align: center;
 }
 
 .delete-space-button:hover {

@@ -76,7 +76,12 @@ module.exports = function (app, passport) {
 
     // backend
     app.post('/saveItem', requireAuth, function (req, res) {
-        UserModel.addItem(req.body.email, req.body.space, req.body.url);
+
+        var returnData = {files: []};
+        UserModel.addItems(req.body.email, req.body.space, [req.body.url], returnData, (rData) => {
+            res.send();
+        });
+        // UserModel.addItem(req.body.email, req.body.space, req.body.url);
         // UserModel.addItem(req.body.userId, req.body.spaceId, req.body.url);
         res.send();
     });

@@ -80,7 +80,7 @@ function loadDatabase(space, spaceRow) {
         var rowV = table.insertRow(row);
         rowV.insertCell(0).innerHTML = "<img height='auto' width='350px' src='" + userDoc.spaces[spaceRow].items[row - 1].url + "'>"
         rowV.insertCell(1).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 1 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].title;
-        rowV.insertCell(2).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].text;
+        rowV.insertCell(2).innerHTML = "<input class='upload-button' id='upload-" + spaceRow + "-" + (row - 1) + "' type='file'><button class='edit-button' type='button' onclick='uploadMedia(" + spaceRow + "," + (row - 1) + ")'>upload media</button><button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].text;
         rowV.insertCell(3);
         // .innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 3 + ")'>edit</button><br />";
 
@@ -245,6 +245,20 @@ function edit(spaceRow, row, col) {
     cell.innerHTML = "<form action='/save' method='post'><button class='edit-button' type='button' onclick='save(" + spaceRow + "," + row + "," + col + ")'>done</button> <button class='edit-button' type='button' onclick='cancel(" + spaceRow + "," + row + "," + col + ")'>cancel</button><textarea class='input-text' name='input-box' rows='3' id='input-box' value=''>" + startText + "</textarea></form>";
     currCellRow = row;
     currCellCol = col;
+}
+
+function uploadMedia(spaceRow, row) {
+    var id = "upload-" + spaceRow + "-" + row;
+    var fileObject = document.getElementById(id);
+    var fileReader = new FileReader();
+    if (fileObject.files.length > 0) {
+      fileReader.readAsArrayBuffer(fileObject.files[0]);
+      fileReader.onload = function() {
+        var data = fileReader.result;
+
+      };
+    }
+    console.log(fileObject.files);
 }
 
 function save(spaceRow, row, col) {
