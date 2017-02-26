@@ -62,7 +62,6 @@ module.exports = function (app, passport) {
         res.send({email: req.user.local.email, token: tokenForUser(req.user)});
     });
 
-    // needs auth
     // fe call
     // route for doing bulk updates to a user's set of spaces
     app.post('/saveSpaces', requireAuth, function (req, res) {
@@ -76,9 +75,13 @@ module.exports = function (app, passport) {
     });
 
     // backend
-    // needs auth
     app.post('/saveItem', requireAuth, function (req, res) {
-        UserModel.addItem(req.body.email, req.body.space, req.body.url);
+
+        var returnData = {files: []};
+        UserModel.addItems(req.body.email, req.body.space, [req.body.url], returnData, (rData) => {
+            res.send();
+        });
+        // UserModel.addItem(req.body.email, req.body.space, req.body.url);
         // UserModel.addItem(req.body.userId, req.body.spaceId, req.body.url);
         res.send();
     });
@@ -86,6 +89,12 @@ module.exports = function (app, passport) {
     app.post('/clearSpace', requireAuth, function (req, res) {
         console.log(req.body);
         UserModel.removeSpace(req.body.params.email, req.body.params.space);
+        res.send();
+    });
+
+    app.post('/clearSpaceById', requireAuth, function (req, res) {
+        console.log(req.body);
+        UserModel.removeSpaceById(req.body.params.email, req.body.params.id);
         res.send();
     });
 

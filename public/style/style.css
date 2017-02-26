@@ -225,11 +225,17 @@
   left: 180px;
 }
 
+.upload-button {
+  bottom: 0;
+}
+
 .test-button {
   background-color: inherit;
   border: none;
   font-family: 'Raleway', sans-serif;
   font-size: 13px;
+  color: white;
+  text-align: center;
 }
 
 .delete-space-button:hover {
@@ -264,6 +270,22 @@
   position: fixed;
   width: 100px;
   height: 100%;
+}
+
+#device-space-entry {
+  font-family: 'Raleway', sans-serif;
+  font-size: inherit;
+  border: 1px solid #dbe1ff;
+  border-radius: 4px;
+  resize: none;
+}
+
+#device-name-entry {
+  font-family: 'Raleway', sans-serif;
+  font-size: inherit;
+  border: 1px solid #dbe1ff;
+  border-radius: 4px;
+  resize: none;
 }
 
 input {

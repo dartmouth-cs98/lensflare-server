@@ -55,7 +55,14 @@ function loadDatabase(space, spaceRow) {
 
     if (userDoc.spaces[spaceRow].items.length == 0) {
         document.getElementById("db-table").style.border = "none";
-        document.getElementById("db-table").innerHTML = "There appears to be no photos taken - start setup via HoloLens!";
+        document.getElementById("db-table").innerHTML = "There appears to be no photos taken - start setup via HoloLens!<br /><br />To set up, follow these instructions:<br />" +
+                                                          "1. If not already installed, download and install Lensflare for the HoloLens<br />" +
+                                                          "2. Open Lensflare on the HoloLens<br />" +
+                                                          "3. <br />" +
+                                                          "<br />" +
+                                                          "<br />" +
+                                                          "<br />" +
+                                                          "<br />";
         scenes = [];
         return;
     }
@@ -73,7 +80,7 @@ function loadDatabase(space, spaceRow) {
         var rowV = table.insertRow(row);
         rowV.insertCell(0).innerHTML = "<img height='auto' width='350px' src='" + userDoc.spaces[spaceRow].items[row - 1].url + "'>"
         rowV.insertCell(1).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 1 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].title;
-        rowV.insertCell(2).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].text;
+        rowV.insertCell(2).innerHTML = "<input class='upload-button' id='upload-" + spaceRow + "-" + (row - 1) + "' type='file'><button class='edit-button' type='button' onclick='uploadMedia(" + spaceRow + "," + (row - 1) + ")'>upload media</button><button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].text;
         rowV.insertCell(3);
         // .innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 3 + ")'>edit</button><br />";
 
@@ -117,7 +124,7 @@ function loadDevices() {
       console.log(userDoc.devices[row - 1])
       rowV.insertCell(0).innerHTML = userDoc.devices[row - 1].deviceName;
       rowV.insertCell(1).innerHTML = userDoc.devices[row - 1].spaceName;
-      rowV.insertCell(2).innerHTML = "<a style='cursor: pointer;' onclick='generateQR(\"" + userDoc.devices[row - 1]._id + "\")'>qr</a> | edit | <a style='cursor: pointer;' onclick='deleteDevice(" + (row - 1) + ")'>delete</a>";
+      rowV.insertCell(2).innerHTML = "<a style='cursor: pointer;' onclick='generateQR(\"" + userDoc.devices[row - 1]._id + "\")'>qr</a> | <a style='cursor: pointer;' onclick='deleteDevice(" + (row - 1) + ")'>delete</a>";
       rowV.cells[0].style.width = "45%";
       rowV.cells[1].style.width = "45%";
       rowV.cells[2].style.textAlign = "center";
@@ -176,7 +183,7 @@ function addNewDevice(row) {
   options += "</select>"
   rowV.insertCell(1).innerHTML = options;
 
-  rowV.insertCell(2).innerHTML = "<a style='cursor: pointer;' onclick='saveNewDevice(" + row + ")'>save</a> | <a style='cursor: pointer;' onclick='cancelNewDevice(" + (row - 1) + ")'>cancel</a>";
+  rowV.insertCell(2).innerHTML = "<a style='cursor: pointer;' onclick='saveNewDevice(" + row + ")'>save</a> | <a style='cursor: pointer;' onclick='cancelNewDevice(" + row + ")'>cancel</a>";
   rowV.cells[2].style.textAlign = "center";
 }
 
@@ -238,6 +245,20 @@ function edit(spaceRow, row, col) {
     cell.innerHTML = "<form action='/save' method='post'><button class='edit-button' type='button' onclick='save(" + spaceRow + "," + row + "," + col + ")'>done</button> <button class='edit-button' type='button' onclick='cancel(" + spaceRow + "," + row + "," + col + ")'>cancel</button><textarea class='input-text' name='input-box' rows='3' id='input-box' value=''>" + startText + "</textarea></form>";
     currCellRow = row;
     currCellCol = col;
+}
+
+function uploadMedia(spaceRow, row) {
+    var id = "upload-" + spaceRow + "-" + row;
+    var fileObject = document.getElementById(id);
+    var fileReader = new FileReader();
+    if (fileObject.files.length > 0) {
+      fileReader.readAsArrayBuffer(fileObject.files[0]);
+      fileReader.onload = function() {
+        var data = fileReader.result;
+
+      };
+    }
+    console.log(fileObject.files);
 }
 
 function save(spaceRow, row, col) {
