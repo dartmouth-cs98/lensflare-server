@@ -40,7 +40,8 @@ module.exports = function (app, passport) {
 
     app.get('/getSpaceWithToken', function (req, res) {
         UserModel.getSpaceWithToken(req.query.token, function (err, user) {
-            res.send(user);
+            res.write(user);
+            res.end();
         });
     });
 
@@ -127,10 +128,9 @@ module.exports = function (app, passport) {
 
     // needs to be tested.
     app.post('/setDeviceSpace', requireAuth, function (req, res) {
-        UserModel.getSpace(req.body.userEmail, req.body.spaceName, (err, space) =>
-        {
+        UserModel.getSpace(req.body.userEmail, req.body.spaceName, (err, space) => {
             if (err) throw err;
-            if(space == null) res.status(400).send("Space could not be found");
+            if (space == null) res.status(400).send("Space could not be found");
             DeviceModel.setSpace(req.body.deviceId, req.body.spaceName, (err) => {
                     if (err) throw err;
                     res.send();
