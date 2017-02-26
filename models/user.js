@@ -74,6 +74,7 @@ userSchema.statics.getSpaces = function (email, cb) {
 
 userSchema.statics.getSpaceWithToken = function (token, cb) {
     Device.getDevice(token, function (err, device) {
+        if (err) throw err;
         var User = require('./user')
         User.getSpace(device.userEmail, device.spaceName, function (err, user) {
             cb(err, user)

@@ -40,6 +40,7 @@ module.exports = function (app, passport) {
 
     app.get('/getSpaceWithToken', function (req, res) {
         UserModel.getSpaceWithToken(req.query.token, function (err, user) {
+            if (err) throw err;
             res.send(user);
         });
     });
