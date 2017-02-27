@@ -159,6 +159,8 @@ function putS3Media(file, fileBytes, resp) {
         }
     }).then(function (resp) {
         console.log(resp);
+        closePopover();
+        location.reload();
         // now save the url in the userDoc
     }).catch(function (error) {
         console.log(error);

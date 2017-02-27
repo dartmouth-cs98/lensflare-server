@@ -82,22 +82,27 @@ function loadDatabase(space, spaceRow) {
         rowV.insertCell(1).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 1 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].title;
         rowV.insertCell(2).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].text +
                                         "<br /><br /><br /><br /><input class='upload-button' id='upload-" + spaceRow + "-" + (row - 1) + "' type='file'><button class='upload-button' type='button' onclick='uploadMedia(" + spaceRow + "," + (row - 1) + ")'>upload media</button>";
+
+        var mediaUrl = "none currently uploaded"
+
         if (userDoc.spaces[spaceRow].items[row - 1].media != null && typeof(userDoc.spaces[spaceRow].items[row - 1].media.media_url) != 'undefined') {
           var split = userDoc.spaces[spaceRow].items[row - 1].media.media_url.split('/');
           if (split.length > 0) {
-            var mediaUrl = "<a href='" + userDoc.spaces[spaceRow].items[row - 1].media.media_url + "'>" + split[split.length - 1] + "</a>"
-            rowV.cells[2].innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].text +
-                                            "<br /><br /><br /><br /><div style='font-size: 12px'>Current file: " + mediaUrl + "</div><input class='upload-button' id='upload-" + spaceRow + "-" + (row - 1) + "' type='file' file='a'><button class='upload-button' type='button' onclick='uploadMedia(" + spaceRow + "," + (row - 1) + ")'>upload media</button>";
+            mediaUrl = "<a href=\"" + userDoc.spaces[spaceRow].items[row - 1].media.media_url + "\">" + split[split.length - 1] + "</a>"
           }
         }
+
+        var popoverText = "<button class=\\\"qr-close-button\\\" type=\\\"button\\\" onclick=\\\"closePopover()\\\">X</button>" +
+                      "Upload New Media<br /><br /><div style=\\\"font-size: 12px\\\">supported file types:<br />jpeg & png images, ogg videos</div><div style=\\\"text-align: center\\\"><br /><input style=\\\"border: none\\\" class=\\\"upload-button\\\" id=\\\"upload-" + spaceRow + "-" + (row - 1) + "\\\" type=\\\"file\\\"><br /><button class=\\\"upload-button\\\" type=\\\"button\\\" onclick=\\\"uploadMedia(" + spaceRow + "," + (row - 1) + ")\\\">upload</button></div>";
+        rowV.cells[2].innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].text +
+                                        "<br /><br /><br /><br /><div style='font-size: 12px'>current file: " + mediaUrl + "<br /><button class='upload-button' onclick='showPopover(\"" + popoverText + "\")'>edit media</button></div>";
+
+
         rowV.insertCell(3);
-        // .innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 3 + ")'>edit</button><br />";
 
         rowV.style.height = "100px";
-        // rowV.cells[0].style.backgroundColor = "#f0f0ff";
         rowV.cells[0].style.width = "175px";
         rowV.cells[1].style.width = "175px";
-        // rowV.cells[2].style.backgroundColor = "#f0f0ff";
         rowV.cells[3].style.width = "100px";
         rowV.cells[3].setAttribute("name", "mesh");
         rowV.cells[3].style.background = "none"
@@ -212,10 +217,6 @@ function saveNewDevice(row) {
       return;
   }
 
-  // rowV.cells[0].innerHTML = document.getElementById("device-name-entry").value;
-  // rowV.cells[1].innerHTML = document.getElementById("device-space-entry").value;
-  // rowV.cells[2].innerHTML = "edit | delete";
-
   var rowV = table.rows[row + 1];
   rowV.cells[0].innerHTML = "<div style='text-align: center'><button class='db-name-save-button' id='device-add-button' onclick='addNewDevice(" + (row + 1) + ")'>add new device</button></div>";
 
@@ -253,7 +254,9 @@ function edit(spaceRow, row, col) {
     if (col == 1) startText = userDoc.spaces[spaceRow].items[row].title;
     else startText = userDoc.spaces[spaceRow].items[row].text;
 
+
     cell.innerHTML = "<form action='/save' method='post'><button class='edit-button' type='button' onclick='save(" + spaceRow + "," + row + "," + col + ")'>done</button> <button class='edit-button' type='button' onclick='cancel(" + spaceRow + "," + row + "," + col + ")'>cancel</button><textarea class='input-text' name='input-box' rows='3' id='input-box' value=''>" + startText + "</textarea></form>";
+
     currCellRow = row;
     currCellCol = col;
 }
@@ -287,6 +290,23 @@ function save(spaceRow, row, col) {
 
     if (col == 1) cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + col + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].title;
     else cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + col + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].text;
+
+    if (col != 1) {
+      var mediaUrl = "none currently uploaded"
+
+      if (userDoc.spaces[spaceRow].items[row].media != null && typeof(userDoc.spaces[spaceRow].items[row].media.media_url) != 'undefined') {
+        var split = userDoc.spaces[spaceRow].items[row].media.media_url.split('/');
+        if (split.length > 0) {
+          mediaUrl = "<a href=\"" + userDoc.spaces[spaceRow].items[row].media.media_url + "\">" + split[split.length - 1] + "</a>"
+        }
+      }
+
+      var popoverText = "<button class=\\\"qr-close-button\\\" type=\\\"button\\\" onclick=\\\"closePopover()\\\">X</button>" +
+                    "Upload New Media<br /><br /><div style=\\\"font-size: 12px\\\">supported file types:<br />jpeg & png images, ogg videos</div><div style=\\\"text-align: center\\\"><br /><input style=\\\"border: none\\\" class=\\\"upload-button\\\" id=\\\"upload-" + spaceRow + "-" + row + "\\\" type=\\\"file\\\"><br /><button class=\\\"upload-button\\\" type=\\\"button\\\" onclick=\\\"uploadMedia(" + spaceRow + "," + row + ")\\\">upload</button></div>";
+      cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].text +
+                                      "<br /><br /><br /><br /><div style='font-size: 12px'>current file: " + mediaUrl + "<br /><button class='upload-button' onclick='showPopover(\"" + popoverText + "\")'>edit media</button></div>";
+    }
+
     saveSpaces(userDoc);
 }
 
@@ -294,7 +314,26 @@ function cancel(spaceRow, row, col) {
     var table = document.getElementById("db-table");
     var cell = table.rows[row + 1].cells[col];
 
-    if (active) cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + col + ")'>edit</button><br />" + startText;
+    if (active) {
+      cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + col + ")'>edit</button><br />" + startText;
+
+      if (col != 1) {
+        var mediaUrl = "none currently uploaded"
+
+        if (userDoc.spaces[spaceRow].items[row].media != null && typeof(userDoc.spaces[spaceRow].items[row].media.media_url) != 'undefined') {
+          var split = userDoc.spaces[spaceRow].items[row].media.media_url.split('/');
+          if (split.length > 0) {
+            mediaUrl = "<a href=\"" + userDoc.spaces[spaceRow].items[row].media.media_url + "\">" + split[split.length - 1] + "</a>"
+          }
+        }
+
+        var popoverText = "<button class=\\\"qr-close-button\\\" type=\\\"button\\\" onclick=\\\"closePopover()\\\">X</button>" +
+                      "Upload New Media<br /><br /><div style=\\\"font-size: 12px\\\">supported file types:<br />jpeg & png images, ogg videos</div><div style=\\\"text-align: center\\\"><br /><input style=\\\"border: none\\\" class=\\\"upload-button\\\" id=\\\"upload-" + spaceRow + "-" + row + "\\\" type=\\\"file\\\"><br /><button class=\\\"upload-button\\\" type=\\\"button\\\" onclick=\\\"uploadMedia(" + spaceRow + "," + row + ")\\\">upload</button></div>";
+        cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].text +
+                                        "<br /><br /><br /><br /><div style='font-size: 12px'>current file: " + mediaUrl + "<br /><button class='upload-button' onclick='showPopover(\"" + popoverText + "\")'>edit media</button></div>";
+      }
+    }
+
 }
 
 function addSpace() {
