@@ -127,6 +127,15 @@
   float: right;
 }
 
+.upload-button {
+  font-family: 'Raleway', sans-serif;
+  font-size: 12px;
+  background-color: inherit;
+  border: none;
+  border-radius: 5px;
+  padding: 3px;
+}
+
 .qr-button {
   font-family: 'Raleway', sans-serif;
   font-size: 12px;
@@ -263,6 +272,10 @@
 }
 
 .edit-button:hover {
+  text-decoration: underline;
+}
+
+.upload-button:hover {
   text-decoration: underline;
 }
 

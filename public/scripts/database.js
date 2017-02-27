@@ -80,7 +80,16 @@ function loadDatabase(space, spaceRow) {
         var rowV = table.insertRow(row);
         rowV.insertCell(0).innerHTML = "<img height='auto' width='350px' src='" + userDoc.spaces[spaceRow].items[row - 1].url + "'>"
         rowV.insertCell(1).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 1 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].title;
-        rowV.insertCell(2).innerHTML = "<input class='upload-button' id='upload-" + spaceRow + "-" + (row - 1) + "' type='file'><button class='edit-button' type='button' onclick='uploadMedia(" + spaceRow + "," + (row - 1) + ")'>upload media</button><button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].text;
+        rowV.insertCell(2).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].text +
+                                        "<br /><br /><br /><br /><input class='upload-button' id='upload-" + spaceRow + "-" + (row - 1) + "' type='file'><button class='upload-button' type='button' onclick='uploadMedia(" + spaceRow + "," + (row - 1) + ")'>upload media</button>";
+        if (userDoc.spaces[spaceRow].items[row - 1].media != null && typeof(userDoc.spaces[spaceRow].items[row - 1].media.media_url) != 'undefined') {
+          var split = userDoc.spaces[spaceRow].items[row - 1].media.media_url.split('/');
+          if (split.length > 0) {
+            var mediaUrl = "<a href='" + userDoc.spaces[spaceRow].items[row - 1].media.media_url + "'>" + split[split.length - 1] + "</a>"
+            rowV.cells[2].innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].text +
+                                            "<br /><br /><br /><br /><div style='font-size: 12px'>Current file: " + mediaUrl + "</div><input class='upload-button' id='upload-" + spaceRow + "-" + (row - 1) + "' type='file' file='a'><button class='upload-button' type='button' onclick='uploadMedia(" + spaceRow + "," + (row - 1) + ")'>upload media</button>";
+          }
+        }
         rowV.insertCell(3);
         // .innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 3 + ")'>edit</button><br />";
 
@@ -241,7 +250,9 @@ function edit(spaceRow, row, col) {
     var table = document.getElementById("db-table");
     var cell = table.rows[row + 1].cells[col];
     startText = cell.innerText;
-    startText = startText.slice(4, startText.length);
+    if (col == 1) startText = userDoc.spaces[spaceRow].items[row].title;
+    else startText = userDoc.spaces[spaceRow].items[row].text;
+
     cell.innerHTML = "<form action='/save' method='post'><button class='edit-button' type='button' onclick='save(" + spaceRow + "," + row + "," + col + ")'>done</button> <button class='edit-button' type='button' onclick='cancel(" + spaceRow + "," + row + "," + col + ")'>cancel</button><textarea class='input-text' name='input-box' rows='3' id='input-box' value=''>" + startText + "</textarea></form>";
     currCellRow = row;
     currCellCol = col;
@@ -252,13 +263,18 @@ function uploadMedia(spaceRow, row) {
     var fileObject = document.getElementById(id);
     var fileReader = new FileReader();
     if (fileObject.files.length > 0) {
+      console.log(fileObject.files[0].type)
+      if (!(fileObject.files[0].type.includes("jpeg") || fileObject.files[0].type.includes("png") || fileObject.files[0].type.includes("ogg"))) {
+        loadMessage(false, "file type unsupported - try again");
+        return;
+      }
       fileReader.readAsArrayBuffer(fileObject.files[0]);
       fileReader.onload = function() {
         var data = fileReader.result;
-        getSignedUrl(userDoc.spaces[spaceRow].name, fileObject.files[0], data);
+        getSignedUrl(userDoc, spaceRow, row, fileObject.files[0], data);
       };
     }
-    console.log(fileObject.files);
+    console.log(fileObject);
 }
 
 function save(spaceRow, row, col) {
