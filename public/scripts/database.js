@@ -49,6 +49,10 @@ function displayData(user) {
 
 
 function loadDatabase(space, spaceRow) {
+
+    canvas = document.getElementById("c");
+    canvas.style.display = 'block';
+
     document.getElementById("db-name").innerHTML = space.text; //+ "<br /><button class='qr-button' type='button' onclick='generateQR(\"" + space.text + "\")'>make QR code</button>";
 
     document.getElementById("db-table").innerHTML = "";
@@ -93,7 +97,7 @@ function loadDatabase(space, spaceRow) {
         }
 
         var popoverText = "<button class=\\\"qr-close-button\\\" type=\\\"button\\\" onclick=\\\"closePopover()\\\">X</button>" +
-                      "Upload New Media<br /><br /><div style=\\\"font-size: 12px\\\">supported file types:<br />jpeg & png images, ogg videos</div><div style=\\\"text-align: center\\\"><br /><input style=\\\"border: none\\\" class=\\\"upload-button\\\" id=\\\"upload-" + spaceRow + "-" + (row - 1) + "\\\" type=\\\"file\\\"><br /><button class=\\\"upload-button\\\" type=\\\"button\\\" onclick=\\\"uploadMedia(" + spaceRow + "," + (row - 1) + ")\\\">upload</button></div>";
+                      "Upload New Media<br /><br /><div style=\\\"font-size: 12px\\\">supported file types:<br />jpeg & png images, ogg videos</div><div style=\\\"text-align: center\\\"><br /><label class=\\\"upload-button\\\"><input onchange=\\\"updateFileName(this)\\\" style=\\\"border: none\\\" class=\\\"upload-button\\\" id=\\\"upload-" + spaceRow + "-" + (row - 1) + "\\\" type=\\\"file\\\">choose file</label> | <button class=\\\"upload-button\\\" type=\\\"button\\\" onclick=\\\"uploadMedia(" + spaceRow + "," + (row - 1) + ")\\\">upload</button><div id=\\\"file-name\\\"></div></div>";
         rowV.cells[2].innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].text +
                                         "<br /><br /><br /><br /><div style='font-size: 12px'>current file: " + mediaUrl + "<br /><button class='upload-button' onclick='showPopover(\"" + popoverText + "\")'>edit media</button></div>";
 
@@ -110,6 +114,12 @@ function loadDatabase(space, spaceRow) {
 
     scenes = [];
     loadMeshes();
+}
+
+function updateFileName(fileInput) {
+  var split = fileInput.value.split('\\');
+  document.getElementById("file-name").innerHTML = split[split.length - 1]
+  document.getElementById("file-name").style.fontSize = "12px"
 }
 
 function loadDevices() {
