@@ -135,20 +135,22 @@ function saveSpaces(userDoc) {
     });
 }
 
-function getSignedUrl(space, file, fileBytes) {
+function getSignedUrl(userDoc, spaceRow, row, file, fileBytes) {
     axios.post('/sign-s3', {
         headers: {
             'content-type': 'application/json'
         }, file: file.name
     }).then(function (resp) {
         console.log(resp);
-        putS3Media(space, file, fileBytes, resp)
+        userDoc.spaces[spaceRow].items[row].media = {'media_url': resp.data.url, 'type': file.type, 'width': 0, 'height': 0};
+        saveSpaces(userDoc);
+        putS3Media(file, fileBytes, resp)
     }).catch(function (error) {
         loadMessage(false, "error uploading - try again")
     });
 }
 
-function putS3Media(space, file, fileBytes, resp) {
+function putS3Media(file, fileBytes, resp) {
     console.log("Trying to genrate a signed url");
 
     axios.put(resp.data.signedUrl, fileBytes, {
@@ -157,6 +159,8 @@ function putS3Media(space, file, fileBytes, resp) {
         }
     }).then(function (resp) {
         console.log(resp);
+        closePopover();
+        location.reload();
         // now save the url in the userDoc
     }).catch(function (error) {
         console.log(error);
@@ -196,6 +200,7 @@ function closePopover() {
 
 function loadMessage(success, message) {
     if (!success) document.getElementById("db-messages").style.backgroundColor = "#ff7f7f"
+    else document.getElementById("db-messages").style.backgroundColor = "#84BE6A"
 
     document.getElementById("db-messages").innerHTML = message;
     document.getElementById("db-messages").style.opacity = "0";

@@ -92,7 +92,7 @@ userSchema.statics.getSpace = function (email, spaceName, cb) {
         for (var space in user.local.spaces) {
             if (user.local.spaces[space].name == spaceName) {
                 cb(err, user.local.spaces[space]);
-                break;
+                return;
             }
         }
         cb(err, null);

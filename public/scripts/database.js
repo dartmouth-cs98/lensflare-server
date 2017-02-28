@@ -49,6 +49,10 @@ function displayData(user) {
 
 
 function loadDatabase(space, spaceRow) {
+
+    canvas = document.getElementById("c");
+    canvas.style.display = 'block';
+
     document.getElementById("db-name").innerHTML = space.text; //+ "<br /><button class='qr-button' type='button' onclick='generateQR(\"" + space.text + "\")'>make QR code</button>";
 
     document.getElementById("db-table").innerHTML = "";
@@ -57,12 +61,12 @@ function loadDatabase(space, spaceRow) {
         document.getElementById("db-table").style.border = "none";
         document.getElementById("db-table").innerHTML = "There appears to be no photos taken - start setup via HoloLens!<br /><br />To set up, follow these instructions:<br />" +
                                                           "1. If not already installed, download and install Lensflare for the HoloLens<br />" +
-                                                          "2. Open Lensflare on the HoloLens<br />" +
-                                                          "3. <br />" +
-                                                          "<br />" +
-                                                          "<br />" +
-                                                          "<br />" +
-                                                          "<br />";
+                                                          "2. If the device is already paired with your account, edit it in 'My Devices' to be associated with this space; if not, add a new device in 'My Devices' and associate it with this space<br />" +
+                                                          "3. Open Lensflare on the HoloLens - if a new device was added in Step 2, say 'Pair Device' to enter device pairing mode on the HoloLens to scan the QR code generated<br />" +
+                                                          "4. Once the device is paired with the space, say 'Enter Setup Mode' to begin set up<br />" +
+                                                          "5. Follow directions on the HoloLens to place gems around your space and say 'Done' when you are finished<br />" +
+                                                          "6. Once the upload is complete, you may refresh this page to see the new items you identified in the Lensflare setup mode<br />" +
+                                                          "7. Edit the items' titles, descriptions, and media fields with your custom information - this will be updated every 10 seconds on your HoloLens<br />";
         scenes = [];
         return;
     }
@@ -80,15 +84,29 @@ function loadDatabase(space, spaceRow) {
         var rowV = table.insertRow(row);
         rowV.insertCell(0).innerHTML = "<img height='auto' width='350px' src='" + userDoc.spaces[spaceRow].items[row - 1].url + "'>"
         rowV.insertCell(1).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 1 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].title;
-        rowV.insertCell(2).innerHTML = "<input class='upload-button' id='upload-" + spaceRow + "-" + (row - 1) + "' type='file'><button class='edit-button' type='button' onclick='uploadMedia(" + spaceRow + "," + (row - 1) + ")'>upload media</button><button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].text;
+        rowV.insertCell(2).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].text +
+                                        "<br /><br /><br /><br /><input class='upload-button' id='upload-" + spaceRow + "-" + (row - 1) + "' type='file'><button class='upload-button' type='button' onclick='uploadMedia(" + spaceRow + "," + (row - 1) + ")'>upload media</button>";
+
+        var mediaUrl = "none currently uploaded"
+
+        if (userDoc.spaces[spaceRow].items[row - 1].media != null && typeof(userDoc.spaces[spaceRow].items[row - 1].media.media_url) != 'undefined') {
+          var split = userDoc.spaces[spaceRow].items[row - 1].media.media_url.split('/');
+          if (split.length > 0) {
+            mediaUrl = "<a href=\"" + userDoc.spaces[spaceRow].items[row - 1].media.media_url + "\">" + split[split.length - 1] + "</a>"
+          }
+        }
+
+        var popoverText = "<button class=\\\"qr-close-button\\\" type=\\\"button\\\" onclick=\\\"closePopover()\\\">X</button>" +
+                      "Upload New Media<br /><br /><div style=\\\"font-size: 12px\\\">supported file types:<br />jpeg & png images, ogg videos</div><div style=\\\"text-align: center\\\"><br /><label class=\\\"upload-button\\\"><input accept=\\\"image/png, image/jpeg, video/ogg\\\" onchange=\\\"updateFileName(this)\\\" style=\\\"border: none\\\" class=\\\"upload-button\\\" id=\\\"upload-" + spaceRow + "-" + (row - 1) + "\\\" type=\\\"file\\\">choose file</label> | <button class=\\\"upload-button\\\" type=\\\"button\\\" onclick=\\\"uploadMedia(" + spaceRow + "," + (row - 1) + ")\\\">upload</button><div id=\\\"file-name\\\"></div></div>";
+        rowV.cells[2].innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row - 1].text +
+                                        "<br /><br /><br /><br /><div style='font-size: 12px'>current file: " + mediaUrl + "<br /><button class='upload-button' onclick='showPopover(\"" + popoverText + "\")'>edit media</button></div>";
+
+
         rowV.insertCell(3);
-        // .innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row - 1) + "," + 3 + ")'>edit</button><br />";
 
         rowV.style.height = "100px";
-        // rowV.cells[0].style.backgroundColor = "#f0f0ff";
         rowV.cells[0].style.width = "175px";
         rowV.cells[1].style.width = "175px";
-        // rowV.cells[2].style.backgroundColor = "#f0f0ff";
         rowV.cells[3].style.width = "100px";
         rowV.cells[3].setAttribute("name", "mesh");
         rowV.cells[3].style.background = "none"
@@ -96,6 +114,12 @@ function loadDatabase(space, spaceRow) {
 
     scenes = [];
     loadMeshes();
+}
+
+function updateFileName(fileInput) {
+  var split = fileInput.value.split('\\');
+  document.getElementById("file-name").innerHTML = split[split.length - 1]
+  document.getElementById("file-name").style.fontSize = "12px"
 }
 
 function loadDevices() {
@@ -203,10 +227,6 @@ function saveNewDevice(row) {
       return;
   }
 
-  // rowV.cells[0].innerHTML = document.getElementById("device-name-entry").value;
-  // rowV.cells[1].innerHTML = document.getElementById("device-space-entry").value;
-  // rowV.cells[2].innerHTML = "edit | delete";
-
   var rowV = table.rows[row + 1];
   rowV.cells[0].innerHTML = "<div style='text-align: center'><button class='db-name-save-button' id='device-add-button' onclick='addNewDevice(" + (row + 1) + ")'>add new device</button></div>";
 
@@ -241,8 +261,12 @@ function edit(spaceRow, row, col) {
     var table = document.getElementById("db-table");
     var cell = table.rows[row + 1].cells[col];
     startText = cell.innerText;
-    startText = startText.slice(4, startText.length);
+    if (col == 1) startText = userDoc.spaces[spaceRow].items[row].title;
+    else startText = userDoc.spaces[spaceRow].items[row].text;
+
+
     cell.innerHTML = "<form action='/save' method='post'><button class='edit-button' type='button' onclick='save(" + spaceRow + "," + row + "," + col + ")'>done</button> <button class='edit-button' type='button' onclick='cancel(" + spaceRow + "," + row + "," + col + ")'>cancel</button><textarea class='input-text' name='input-box' rows='3' id='input-box' value=''>" + startText + "</textarea></form>";
+
     currCellRow = row;
     currCellCol = col;
 }
@@ -252,13 +276,18 @@ function uploadMedia(spaceRow, row) {
     var fileObject = document.getElementById(id);
     var fileReader = new FileReader();
     if (fileObject.files.length > 0) {
+      console.log(fileObject.files[0].type)
+      if (!(fileObject.files[0].type.includes("jpeg") || fileObject.files[0].type.includes("png") || fileObject.files[0].type.includes("ogg"))) {
+        loadMessage(false, "file type unsupported - try again");
+        return;
+      }
       fileReader.readAsArrayBuffer(fileObject.files[0]);
       fileReader.onload = function() {
         var data = fileReader.result;
-        getSignedUrl(userDoc.spaces[spaceRow].name, fileObject.files[0], data);
+        getSignedUrl(userDoc, spaceRow, row, fileObject.files[0], data);
       };
     }
-    console.log(fileObject.files);
+    console.log(fileObject);
 }
 
 function save(spaceRow, row, col) {
@@ -271,6 +300,23 @@ function save(spaceRow, row, col) {
 
     if (col == 1) cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + col + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].title;
     else cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + col + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].text;
+
+    if (col != 1) {
+      var mediaUrl = "none currently uploaded"
+
+      if (userDoc.spaces[spaceRow].items[row].media != null && typeof(userDoc.spaces[spaceRow].items[row].media.media_url) != 'undefined') {
+        var split = userDoc.spaces[spaceRow].items[row].media.media_url.split('/');
+        if (split.length > 0) {
+          mediaUrl = "<a href=\"" + userDoc.spaces[spaceRow].items[row].media.media_url + "\">" + split[split.length - 1] + "</a>"
+        }
+      }
+
+      var popoverText = "<button class=\\\"qr-close-button\\\" type=\\\"button\\\" onclick=\\\"closePopover()\\\">X</button>" +
+                    "Upload New Media<br /><br /><div style=\\\"font-size: 12px\\\">supported file types:<br />jpeg & png images, ogg videos</div><div style=\\\"text-align: center\\\"><br /><input style=\\\"border: none\\\" class=\\\"upload-button\\\" id=\\\"upload-" + spaceRow + "-" + row + "\\\" type=\\\"file\\\"><br /><button class=\\\"upload-button\\\" type=\\\"button\\\" onclick=\\\"uploadMedia(" + spaceRow + "," + row + ")\\\">upload</button></div>";
+      cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].text +
+                                      "<br /><br /><br /><br /><div style='font-size: 12px'>current file: " + mediaUrl + "<br /><button class='upload-button' onclick='showPopover(\"" + popoverText + "\")'>edit media</button></div>";
+    }
+
     saveSpaces(userDoc);
 }
 
@@ -278,7 +324,26 @@ function cancel(spaceRow, row, col) {
     var table = document.getElementById("db-table");
     var cell = table.rows[row + 1].cells[col];
 
-    if (active) cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + col + ")'>edit</button><br />" + startText;
+    if (active) {
+      cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + col + ")'>edit</button><br />" + startText;
+
+      if (col != 1) {
+        var mediaUrl = "none currently uploaded"
+
+        if (userDoc.spaces[spaceRow].items[row].media != null && typeof(userDoc.spaces[spaceRow].items[row].media.media_url) != 'undefined') {
+          var split = userDoc.spaces[spaceRow].items[row].media.media_url.split('/');
+          if (split.length > 0) {
+            mediaUrl = "<a href=\"" + userDoc.spaces[spaceRow].items[row].media.media_url + "\">" + split[split.length - 1] + "</a>"
+          }
+        }
+
+        var popoverText = "<button class=\\\"qr-close-button\\\" type=\\\"button\\\" onclick=\\\"closePopover()\\\">X</button>" +
+                      "Upload New Media<br /><br /><div style=\\\"font-size: 12px\\\">supported file types:<br />jpeg & png images, ogg videos</div><div style=\\\"text-align: center\\\"><br /><input style=\\\"border: none\\\" class=\\\"upload-button\\\" id=\\\"upload-" + spaceRow + "-" + row + "\\\" type=\\\"file\\\"><br /><button class=\\\"upload-button\\\" type=\\\"button\\\" onclick=\\\"uploadMedia(" + spaceRow + "," + row + ")\\\">upload</button></div>";
+        cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].text +
+                                        "<br /><br /><br /><br /><div style='font-size: 12px'>current file: " + mediaUrl + "<br /><button class='upload-button' onclick='showPopover(\"" + popoverText + "\")'>edit media</button></div>";
+      }
+    }
+
 }
 
 function addSpace() {

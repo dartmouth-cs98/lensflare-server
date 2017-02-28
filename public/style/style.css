@@ -127,6 +127,15 @@
   float: right;
 }
 
+.upload-button {
+  font-family: 'Raleway', sans-serif;
+  font-size: 12px;
+  background-color: inherit;
+  border: none;
+  border-radius: 5px;
+  padding: 0px;
+}
+
 .qr-button {
   font-family: 'Raleway', sans-serif;
   font-size: 12px;
@@ -266,6 +275,10 @@
   text-decoration: underline;
 }
 
+.upload-button:hover {
+  text-decoration: underline;
+}
+
 #c {
   position: fixed;
   width: 100px;
@@ -318,4 +331,8 @@ body {
 
 button:focus {
   outline: none;
+}
+
+input[type="file"] {
+  display: none;
 }
