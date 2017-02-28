@@ -61,12 +61,12 @@ function loadDatabase(space, spaceRow) {
         document.getElementById("db-table").style.border = "none";
         document.getElementById("db-table").innerHTML = "There appears to be no photos taken - start setup via HoloLens!<br /><br />To set up, follow these instructions:<br />" +
                                                           "1. If not already installed, download and install Lensflare for the HoloLens<br />" +
-                                                          "2. Open Lensflare on the HoloLens<br />" +
-                                                          "3. <br />" +
-                                                          "<br />" +
-                                                          "<br />" +
-                                                          "<br />" +
-                                                          "<br />";
+                                                          "2. If the device is already paired with your account, edit it in 'My Devices' to be associated with this space; if not, add a new device in 'My Devices' and associate it with this space<br />" +
+                                                          "3. Open Lensflare on the HoloLens - if a new device was added in Step 2, say 'Pair Device' to enter device pairing mode on the HoloLens to scan the QR code generated<br />" +
+                                                          "4. Once the device is paired with the space, say 'Enter Setup Mode' to begin set up<br />" +
+                                                          "5. Follow directions on the HoloLens to place gems around your space and say 'Done' when you are finished<br />" +
+                                                          "6. Once the upload is complete, you may refresh this page to see the new items you identified in the Lensflare setup mode<br />" +
+                                                          "7. Edit the items' titles, descriptions, and media fields with your custom information - this will be updated every 10 seconds on your HoloLens<br />";
         scenes = [];
         return;
     }
