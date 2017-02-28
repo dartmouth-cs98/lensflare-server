@@ -72,6 +72,7 @@ userSchema.statics.getSpaces = function (email, cb) {
     });
 };
 
+
 userSchema.statics.getSpaceWithToken = function (token, cb) {
     Device.getDevice(token, function (err, device) {
         if (err) throw err;
@@ -96,6 +97,23 @@ userSchema.statics.getSpace = function (email, spaceName, cb) {
             }
         }
         cb(err, null);
+    });
+};
+
+userSchema.statics.clearSpace = function (email, spaceName, cb) {
+    this.findOne({'local.email': email}, function (err, user) {
+        if (err) throw err;
+
+        for (var space in user.local.spaces) {
+            if (user.local.spaces[space].name == spaceName) {
+                user.local.spaces[space].items.length = 0;
+                user.save((err) => {
+                        cb(err);
+                    }
+                )
+            }
+        }
+        cb(err);
     });
 };
 

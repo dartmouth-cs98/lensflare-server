@@ -191,40 +191,38 @@ module.exports = function (app, passport) {
                 res.end();
             }
 
-            var itemList = [];
-            files.forEach((file) => {
-                s3.getSignedUrl('putObject',
-                    {
-                        Bucket: S3_BUCKET,
-                        Key: file.fileName,
-                        Expires: 60,
-                        ACL: 'public-read'
-                    },
-                    (err, data) => {
-                        if (err) {
-                            console.log(err);
-                            return res.end();
-                        }
-                        returnData.files.push({
-                            fileName: file.fileName,
-                            signedUrl: data,
-                            url: util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, file.fileName)
+            UserModel.clearSpace(device.userEmail, device.spaceName, () => {
+                var itemList = [];
+                files.forEach((file) => {
+                    s3.getSignedUrl('putObject',
+                        {
+                            Bucket: S3_BUCKET,
+                            Key: file.fileName,
+                            Expires: 60,
+                            ACL: 'public-read'
+                        },
+                        (err, data) => {
+                            if (err) {
+                                console.log(err);
+                                return res.end();
+                            }
+                            returnData.files.push({
+                                fileName: file.fileName,
+                                signedUrl: data,
+                                url: util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, file.fileName)
+                            });
+                            itemList.push(util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, file.fileName));
                         });
-                        itemList.push(util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, file.fileName));
+                });
 
-                        // UserModel.addItem(req.body.email, req.body.space, util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, file.fileName));
-                    });
-            });
+                UserModel.addItems(device.userEmail, device.spaceName, itemList, returnData, (rData) => {
+                    res.write(JSON.stringify(rData));
+                    res.end();
+                });
 
-            UserModel.addItems(device.userEmail, device.spaceName, itemList, returnData, (rData) => {
-                res.write(JSON.stringify(rData));
-                res.end();
-            });
-
-            console.log("Done generating Signed URLS")
-            console.log(returnData);
-
-
+                console.log("Done generating Signed URLS")
+                console.log(returnData);
+            })
         });
 
 
