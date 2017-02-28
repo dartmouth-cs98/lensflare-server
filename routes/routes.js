@@ -39,8 +39,13 @@ module.exports = function (app, passport) {
     });
 
     app.get('/getSpaceWithToken', function (req, res) {
+        // need to do something if the token is no longer valid
         UserModel.getSpaceWithToken(req.query.token, function (err, user) {
             if (err) throw err;
+
+            if (user == null) {
+                res.status(401);
+            }
             res.send(user);
         });
     });
@@ -178,38 +183,50 @@ module.exports = function (app, passport) {
         console.log(req.body);
         console.log(req.body.files);
 
-        var itemList = [];
-        files.forEach((file) => {
-            s3.getSignedUrl('putObject',
-                {
-                    Bucket: S3_BUCKET,
-                    Key: file.fileName,
-                    Expires: 60,
-                    ACL: 'public-read'
-                },
-                (err, data) => {
-                    if (err) {
-                        console.log(err);
-                        return res.end();
-                    }
-                    returnData.files.push({
-                        fileName: file.fileName,
-                        signedUrl: data,
-                        url: util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, file.fileName)
+        DeviceModel.getDevice(req.body.token, (err, device) => {
+            if (err) throw err;
+
+            if (device == null) {
+                res.status(401);
+                res.end();
+            }
+
+            var itemList = [];
+            files.forEach((file) => {
+                s3.getSignedUrl('putObject',
+                    {
+                        Bucket: S3_BUCKET,
+                        Key: file.fileName,
+                        Expires: 60,
+                        ACL: 'public-read'
+                    },
+                    (err, data) => {
+                        if (err) {
+                            console.log(err);
+                            return res.end();
+                        }
+                        returnData.files.push({
+                            fileName: file.fileName,
+                            signedUrl: data,
+                            url: util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, file.fileName)
+                        });
+                        itemList.push(util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, file.fileName));
+
+                        // UserModel.addItem(req.body.email, req.body.space, util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, file.fileName));
                     });
-                    itemList.push(util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, file.fileName));
+            });
 
-                    // UserModel.addItem(req.body.email, req.body.space, util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, file.fileName));
-                });
+            UserModel.addItems(device.userEmail, device.spaceName, itemList, returnData, (rData) => {
+                res.write(JSON.stringify(rData));
+                res.end();
+            });
+
+            console.log("Done generating Signed URLS")
+            console.log(returnData);
+
+
         });
 
-        UserModel.addItems(req.body.email, req.body.space, itemList, returnData, (rData) => {
-            res.write(JSON.stringify(rData));
-            res.end();
-        });
-
-        console.log("Done generating Signed URLS")
-        console.log(returnData);
 
     });
 
