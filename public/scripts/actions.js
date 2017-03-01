@@ -166,7 +166,7 @@ function getSignedUrl(userDoc, spaceRow, row, file, fileBytes) {
         }, file: file.name
     }).then(function (resp) {
         console.log(resp);
-        userDoc.spaces[spaceRow].items[row].media = {'media_url': resp.data.url, 'type': file.type, 'width': 0, 'height': 0};
+        userDoc.spaces[spaceRow].items[row].media = {'media_url': resp.data.url, 'type': file.type, 'width': 300, 'height': 300};
         saveSpaces(userDoc);
         putS3Media(file, fileBytes, resp)
     }).catch(function (error) {

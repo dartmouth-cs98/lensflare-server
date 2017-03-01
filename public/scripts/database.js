@@ -362,8 +362,8 @@ function save(spaceRow, row, col) {
       }
 
       var popoverText = "<button class=\\\"qr-close-button\\\" type=\\\"button\\\" onclick=\\\"closePopover()\\\">X</button>" +
-                    "Upload New Media<br /><br /><div style=\\\"font-size: 12px\\\">supported file types:<br />jpeg & png images, ogg videos</div><div style=\\\"text-align: center\\\"><br /><input style=\\\"border: none\\\" class=\\\"upload-button\\\" id=\\\"upload-" + spaceRow + "-" + row + "\\\" type=\\\"file\\\"><br /><button class=\\\"upload-button\\\" type=\\\"button\\\" onclick=\\\"uploadMedia(" + spaceRow + "," + row + ")\\\">upload</button></div>";
-      cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].text +
+                    "Upload New Media<br /><br /><div style=\\\"font-size: 12px\\\">supported file types:<br />jpeg & png images, ogg videos</div><div style=\\\"text-align: center\\\"><br /><label class=\\\"upload-button\\\"><input accept=\\\"image/png, image/jpeg, video/ogg\\\" onchange=\\\"updateFileName(this)\\\" style=\\\"border: none\\\" class=\\\"upload-button\\\" id=\\\"upload-" + spaceRow + "-" + row + "\\\" type=\\\"file\\\">choose file</label> | <button class=\\\"upload-button\\\" type=\\\"button\\\" onclick=\\\"uploadMedia(" + spaceRow + "," + row + ")\\\">upload</button><div id=\\\"file-name\\\"></div></div>";
+      cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row  + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].text +
                                       "<br /><br /><br /><br /><div style='font-size: 12px'>current file: " + mediaUrl + "<br /><button class='upload-button' onclick='showPopover(\"" + popoverText + "\")'>edit media</button></div>";
     }
 
@@ -388,9 +388,10 @@ function cancel(spaceRow, row, col) {
         }
 
         var popoverText = "<button class=\\\"qr-close-button\\\" type=\\\"button\\\" onclick=\\\"closePopover()\\\">X</button>" +
-                      "Upload New Media<br /><br /><div style=\\\"font-size: 12px\\\">supported file types:<br />jpeg & png images, ogg videos</div><div style=\\\"text-align: center\\\"><br /><input style=\\\"border: none\\\" class=\\\"upload-button\\\" id=\\\"upload-" + spaceRow + "-" + row + "\\\" type=\\\"file\\\"><br /><button class=\\\"upload-button\\\" type=\\\"button\\\" onclick=\\\"uploadMedia(" + spaceRow + "," + row + ")\\\">upload</button></div>";
-        cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].text +
+                      "Upload New Media<br /><br /><div style=\\\"font-size: 12px\\\">supported file types:<br />jpeg & png images, ogg videos</div><div style=\\\"text-align: center\\\"><br /><label class=\\\"upload-button\\\"><input accept=\\\"image/png, image/jpeg, video/ogg\\\" onchange=\\\"updateFileName(this)\\\" style=\\\"border: none\\\" class=\\\"upload-button\\\" id=\\\"upload-" + spaceRow + "-" + row + "\\\" type=\\\"file\\\">choose file</label> | <button class=\\\"upload-button\\\" type=\\\"button\\\" onclick=\\\"uploadMedia(" + spaceRow + "," + row + ")\\\">upload</button><div id=\\\"file-name\\\"></div></div>";
+        cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row  + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].text +
                                         "<br /><br /><br /><br /><div style='font-size: 12px'>current file: " + mediaUrl + "<br /><button class='upload-button' onclick='showPopover(\"" + popoverText + "\")'>edit media</button></div>";
+
       }
     }
 
