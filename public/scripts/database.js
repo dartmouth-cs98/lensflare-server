@@ -148,7 +148,7 @@ function loadDevices() {
       console.log(userDoc.devices[row - 1])
       rowV.insertCell(0).innerHTML = userDoc.devices[row - 1].deviceName;
       rowV.insertCell(1).innerHTML = userDoc.devices[row - 1].spaceName;
-      rowV.insertCell(2).innerHTML = "<a style='cursor: pointer;' onclick='generateQR(\"" + userDoc.devices[row - 1]._id + "\")'>qr</a> | <a style='cursor: pointer;' onclick='deleteDevice(" + (row - 1) + ")'>delete</a>";
+      rowV.insertCell(2).innerHTML = "<a style='cursor: pointer;' onclick='generateQR(\"" + userDoc.devices[row - 1]._id + "\")'>qr</a> | <a style='cursor: pointer;' onclick='editDevice(" + (row - 1) + ")'>edit</a> | <a style='cursor: pointer;' onclick='deleteDevice(" + (row - 1) + ")'>delete</a>";
       rowV.cells[0].style.width = "45%";
       rowV.cells[1].style.width = "45%";
       rowV.cells[2].style.textAlign = "center";
@@ -213,7 +213,6 @@ function addNewDevice(row) {
 
 function saveNewDevice(row) {
   var table = document.getElementById("db-table");
-  var rowV = table.rows[row];
   var name = document.getElementById("device-name-entry").value;
   var space = document.getElementById("device-space-entry").value;
 
@@ -251,6 +250,59 @@ function cancelNewDevice(row) {
   var table = document.getElementById("db-table");
   var rowV = table.deleteRow(row);
   document.getElementById("device-add-button").disabled = false;
+}
+
+function editDevice(row) {
+  var table = document.getElementById("db-table");
+  var rowV = table.rows[row + 1];
+
+  var initName = rowV.cells[0].innerHTML;
+  var initSpace = rowV.cells[1].innerHTML;
+  console.log(initName)
+  console.log(initSpace)
+  rowV.cells[0].innerHTML = "<input maxlength='18' id='device-name-entry' type='text' value='" + rowV.cells[0].innerHTML + "'>";
+
+  var options = "<select id='device-space-entry' name='spaces'>";
+  for (var space in userDoc.spaces) {
+      options += "<option value=\"" + userDoc.spaces[space].name + "\">" + userDoc.spaces[space].name + "</option>";
+  }
+  options += "</select>"
+  rowV.cells[1].innerHTML = options;
+
+  rowV.cells[2].innerHTML = "<a style='cursor: pointer;' onclick='saveEditDevice(" + row + ")'>save</a> | <a style='cursor: pointer;' onclick='cancelEditDevice(" + row + ",\"" + initName + "\",\"" + initSpace + "\")'>cancel</a>";
+  rowV.cells[2].style.textAlign = "center";
+}
+
+function cancelEditDevice(row, name, space) {
+  var table = document.getElementById("db-table");
+  var rowV = table.rows[row + 1];
+
+  rowV.cells[0].innerHTML = name;
+  rowV.cells[1].innerHTML = space;
+  rowV.cells[2].innerHTML = "<a style='cursor: pointer;' onclick='generateQR(\"" + userDoc.devices[row]._id + "\")'>qr</a> | <a style='cursor: pointer;' onclick='editDevice(" + row + ")'>edit</a> | <a style='cursor: pointer;' onclick='deleteDevice(" + row + ")'>delete</a>";
+  rowV.cells[2].style.textAlign = "center";
+}
+
+function saveEditDevice(row) {
+  var table = document.getElementById("db-table");
+  var rowV = table.rows[row + 1];
+  var name = document.getElementById("device-name-entry").value;
+  var space = document.getElementById("device-space-entry").value;
+
+  if (name == "") {
+      loadMessage(false, "please enter a name and try again")
+      return;
+  }
+
+  if (space == "") {
+      loadMessage(false, "please enter a space and try again")
+      return;
+  }
+
+  rowV.cells[0].innerHTML = "<div style='text-align: center'><button class='db-name-save-button' id='device-add-button' onclick='addNewDevice(" + (row + 1) + ")'>add new device</button></div>";
+
+  editDeviceName(userDoc.devices[row]._id, space, name);
+
 }
 
 function edit(spaceRow, row, col) {

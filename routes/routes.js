@@ -132,21 +132,21 @@ module.exports = function (app, passport) {
     });
 
     // needs to be tested.
-    app.post('/setDeviceSpace', requireAuth, function (req, res) {
-        UserModel.getSpace(req.body.userEmail, req.body.spaceName, (err, space) => {
-            if (err) throw err;
-            if (space == null) res.status(400).send("Space could not be found");
-            DeviceModel.setSpace(req.body.deviceId, req.body.spaceName, (err) => {
-                    if (err) throw err;
-                    res.send();
-                }
-            );
-        });
+    // app.post('/setDeviceSpace', requireAuth, function (req, res) {
+    //     UserModel.getSpace(req.body.userEmail, req.body.spaceName, (err, space) => {
+    //         if (err) throw err;
+    //         if (space == null) res.status(400).send("Space could not be found");
+    //         DeviceModel.setSpace(req.body.deviceId, req.body.spaceName, (err) => {
+    //                 if (err) throw err;
+    //                 res.send();
+    //             }
+    //         );
+    //     });
+    //
+    // });
 
-    });
-
-    app.post('/setDeviceName', requireAuth, function (req, res) {
-        DeviceModel.setName(req.body.deviceId, req.body.name, (err) => {
+    app.post('/editDevice', requireAuth, function (req, res) {
+        UserModel.editDevice(req.body.params.email, req.body.params.deviceId, req.body.params.name, req.body.params.space, (err) => {
                 if (err) throw err;
                 res.send();
             }

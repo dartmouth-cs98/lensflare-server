@@ -15,7 +15,7 @@ deviceSchema.statics.getDevice = function (deviceId, cb) {
 };
 
 deviceSchema.statics.setSpace = function (deviceId, spaceName, cb) {
-    return this.findOne({'deviceId': deviceId}, (err, device) => {
+    return this.findOne({'_id': deviceId}, (err, device) => {
         device.spaceName = spaceName;
         device.save((err) => {
             cb(err);
@@ -24,9 +24,11 @@ deviceSchema.statics.setSpace = function (deviceId, spaceName, cb) {
 };
 
 deviceSchema.statics.setName = function (deviceId, name, cb) {
-    return this.findOne({'deviceId': deviceId}, (err, device) => {
-        device.name = spaceName;
+    return this.findOne({'_id': deviceId}, (err, device) => {
+        device.spaceName = name;
+
         device.save((err) => {
+            console.log("HERE " + name)
             cb(err);
         });
     });
