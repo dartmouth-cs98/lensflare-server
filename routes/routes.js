@@ -39,6 +39,10 @@ module.exports = function (app, passport) {
     });
 
     app.get('/getSpaceWithToken', function (req, res) {
+        if (req.body.token == null) {
+            res.status(400);
+            res.end();
+        }
         // need to do something if the token is no longer valid
         UserModel.getSpaceWithToken(req.query.token, function (err, user) {
             if (err) throw err;
@@ -172,17 +176,16 @@ module.exports = function (app, passport) {
     // S3 Uploading
     // assumes access to the relevant Space object
     app.post("/sign-s3-photos", function (req, res) {
-        console.log("In Signed s3 endpoint")
         const s3 = new aws.S3();
         var files = req.body.files;
         var returnData = {files: []};
+        if (req.body.token == null) {
+            res.status(400);
+            res.end();
+        }
+
+
         // associate the space with the user if not already
-
-
-        console.log("About to generate Signed URLS")
-        console.log(req.body);
-        console.log(req.body.files);
-
         DeviceModel.getDevice(req.body.token, (err, device) => {
             if (err) throw err;
 
@@ -191,7 +194,7 @@ module.exports = function (app, passport) {
                 res.end();
             }
 
-            UserModel.clearSpace(device.userEmail, device.spaceName, () => {
+            UserModel.clearSpace(device.userEmail, device.spaceName, (err) => {
                 var itemList = [];
                 files.forEach((file) => {
                     s3.getSignedUrl('putObject',
@@ -214,17 +217,12 @@ module.exports = function (app, passport) {
                             itemList.push(util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, file.fileName));
                         });
                 });
-
                 UserModel.addItems(device.userEmail, device.spaceName, itemList, returnData, (rData) => {
                     res.write(JSON.stringify(rData));
                     res.end();
                 });
-
-                console.log("Done generating Signed URLS")
-                console.log(returnData);
             })
         });
-
 
     });
 
