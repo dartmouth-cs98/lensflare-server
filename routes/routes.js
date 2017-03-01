@@ -39,9 +39,10 @@ module.exports = function (app, passport) {
     });
 
     app.get('/getSpaceWithToken', function (req, res) {
-        if (req.body.token == null) {
+        if (req.query.token == null) {
             res.status(400);
             res.end();
+            return;
         }
         // need to do something if the token is no longer valid
         UserModel.getSpaceWithToken(req.query.token, function (err, user) {
