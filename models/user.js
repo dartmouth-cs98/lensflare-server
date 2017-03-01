@@ -79,9 +79,11 @@ userSchema.statics.getSpaceWithToken = function (token, cb) {
         var User = require('./user')
         if (device == null) {
             cb(err, null);
+            return;
         } else {
             User.getSpace(device.userEmail, device.spaceName, function (err, user) {
                 cb(err, user)
+                return;
             });
         }
 
@@ -97,6 +99,7 @@ userSchema.statics.getSpace = function (email, spaceName, cb) {
             }
         }
         cb(err, null);
+        return;
     });
 };
 
