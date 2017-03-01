@@ -101,19 +101,51 @@ userSchema.statics.getSpace = function (email, spaceName, cb) {
 };
 
 userSchema.statics.clearSpace = function (email, spaceName, cb) {
+    const aws = require('aws-sdk');
+    console.log("trying to clear space");
     this.findOne({'local.email': email}, function (err, user) {
         if (err) throw err;
-
+        var found = false;
         for (var space in user.local.spaces) {
             if (user.local.spaces[space].name == spaceName) {
+                found = true;
+                if (user.local.spaces[space].items.length == 0) {
+                    console.log("Space is already empty");
+                    cb(err);
+                    return;
+                }
+
+                var objects = [];
+                for (var i in user.local.spaces[space].items) {
+                    objects.push({Key: user.local.spaces[space].items[i].url})
+                }
+
+                console.log(objects);
+
+                var params = {
+                    Bucket: process.env.S3_BUCKET, /* required */
+                    Delete: {
+                        /* required */
+                        Objects: objects,
+                    }
+                };
+                const s3 = new aws.S3();
+                s3.deleteObjects(params, (err) => {
+                    if (err) throw err;
+                });
                 user.local.spaces[space].items.length = 0;
+                user.markModified('local.spaces');
                 user.save((err) => {
+                        if (err) throw err;
                         cb(err);
                     }
-                )
+                );
+
             }
         }
-        cb(err);
+        if (!found) {
+            cb(err);
+        }
     });
 };
 
@@ -201,8 +233,6 @@ userSchema.statics.setAnchors = function (token, anchors) {
             }
 
             user.markModified('local.spaces');
-
-
             user.save((err) => {
                 if (err) throw err;
 
@@ -233,29 +263,15 @@ userSchema.statics.addSpace = function (email, spaceName) {
 
 userSchema.statics.addItems = function (email, spaceName, urls, returnData, cb) {
     this.getUser(email, function (err, user) {
+        if (err) throw err;
         for (var i in urls) {
-            var url = urls[i];
-            console.log("Saving " + url);
-            if (err) throw err;
             for (var space in user.local.spaces) {
-                var alreadyThere = false;
                 if (user.local.spaces[space].name == spaceName) {
-                    console.log(user.local.spaces[space].name + "Space Items: ");
-                    for (var i in user.local.spaces[space].items) {
-                        console.log("THe URL is: " + user.local.spaces[space].items[i].url);
-                        if (user.local.spaces[space].items[i].url == url) {
-                            console.log("found duplicate " + url);
-                            alreadyThere = true;
-                            break;
-                        }
-                    }
-                    if (!alreadyThere) {
-                        user.local.spaces[space].items.push(new Item({
-                            title: "[add title]",
-                            text: "[add text]",
-                            url: url
-                        }));
-                    }
+                    user.local.spaces[space].items.push(new Item({
+                        title: "[add title]",
+                        text: "[add text]",
+                        url: urls[i]
+                    }));
                 }
             }
         }
@@ -263,7 +279,7 @@ userSchema.statics.addItems = function (email, spaceName, urls, returnData, cb) 
         user.markModified('local.spaces')
         user.save(function (err) {
             if (err) {
-                cb(returnData);
+                console.log(err);
                 throw err;
             }
             cb(returnData);
@@ -328,3 +344,30 @@ userSchema.pre("save", function beforeUserSave(next) {
 });
 
 module.exports = mongoose.model('User', userSchema);
+
+
+// for (var i in urls) {
+//     console.log("Saving " + urls[i]);
+//     var url = urls[i];
+//     for (var space in user.local.spaces) {
+//         var alreadyThere = false;
+//         if (user.local.spaces[space].name == spaceName) {
+//             console.log(user.local.spaces[space].name + "Space Items: ");
+//             for (var i in user.local.spaces[space].items) {
+//                 console.log("THe URL is: " + user.local.spaces[space].items[i].url);
+//                 if (user.local.spaces[space].items[i].url == url) {
+//                     // console.log("found duplicate " + url);
+//                     alreadyThere = true;
+//                     break;
+//                 }
+//             }
+//             if (!alreadyThere) {
+//                 user.local.spaces[space].items.push(new Item({
+//                     title: "[add title]",
+//                     text: "[add text]",
+//                     url: url
+//                 }));
+//             }
+//         }
+//     }
+// }
