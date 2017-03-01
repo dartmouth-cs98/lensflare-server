@@ -200,6 +200,25 @@ userSchema.statics.addDevice = function (device) {
     });
 };
 
+userSchema.statics.editDevice = function (email, id, name, space) {
+    this.getUser(email, function (err, user) {
+        if (err) throw err;
+        console.log("ID" + id)
+        for (var deviceInd in user.local.devices) {
+          if (id == user.local.devices[deviceInd]._id) {
+            console.log("HERE")
+            user.local.devices[deviceInd].deviceName = name;
+            user.local.devices[deviceInd].spaceName = space;
+          }
+        }
+
+        user.markModified('local.devices')
+        user.save(function (err) {
+            if (err) throw err;
+        });
+    });
+};
+
 userSchema.statics.setAnchors = function (token, anchors) {
     console.log("This is the token:  " + token);
     Device.getDevice(token, function (err, device) {

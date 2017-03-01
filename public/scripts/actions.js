@@ -106,6 +106,24 @@ function generateDeviceId(device, space) {
     });
 }
 
+function editDeviceName(deviceToken, deviceSpace, deviceName) {
+    axios.post('/editDevice', {
+        params: {
+            email: localStorage.getItem('email'),
+            deviceId: deviceToken,
+            space: deviceSpace,
+            name: deviceName
+        }
+    }, {
+        headers: {
+            authorization: localStorage.getItem('token')
+        }
+    }).then(function (resp) {
+        // userDoc.devices.push({"deviceName": device, "spaceName": space, "_id": JSON.parse(resp.data).deviceToken});
+        // loadDevices();
+    });
+}
+
 function loadSpaces() {
     axios.get('/getSpaces', {
         params: {
