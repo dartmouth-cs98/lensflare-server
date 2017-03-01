@@ -299,9 +299,7 @@ function saveEditDevice(row) {
       return;
   }
 
-  rowV.cells[0].innerHTML = "<div style='text-align: center'><button class='db-name-save-button' id='device-add-button' onclick='addNewDevice(" + (row + 1) + ")'>add new device</button></div>";
-
-  editDeviceName(userDoc.devices[row]._id, space, name);
+  editDeviceAction(userDoc.devices[row]._id, space, name);
 
 }
 

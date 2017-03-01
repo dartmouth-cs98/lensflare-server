@@ -152,9 +152,10 @@ module.exports = function (app, passport) {
     app.post('/editDevice', requireAuth, function (req, res) {
         UserModel.editDevice(req.body.params.email, req.body.params.deviceId, req.body.params.name, req.body.params.space, (err) => {
                 if (err) throw err;
-                res.send();
             }
         );
+
+        res.send();
     });
 
     // Hololens Endpoints

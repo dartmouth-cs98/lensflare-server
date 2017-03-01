@@ -106,7 +106,7 @@ function generateDeviceId(device, space) {
     });
 }
 
-function editDeviceName(deviceToken, deviceSpace, deviceName) {
+function editDeviceAction(deviceToken, deviceSpace, deviceName) {
     axios.post('/editDevice', {
         params: {
             email: localStorage.getItem('email'),
@@ -119,8 +119,14 @@ function editDeviceName(deviceToken, deviceSpace, deviceName) {
             authorization: localStorage.getItem('token')
         }
     }).then(function (resp) {
-        // userDoc.devices.push({"deviceName": device, "spaceName": space, "_id": JSON.parse(resp.data).deviceToken});
-        // loadDevices();
+        for (var deviceInd in userDoc.devices) {
+          if (userDoc.devices[deviceInd]._id == deviceToken) {
+            userDoc.devices[deviceInd].deviceName = deviceName
+            userDoc.devices[deviceInd].spaceName = deviceSpace
+          }
+        }
+        console.log(userDoc)
+        loadDevices();
     });
 }
 

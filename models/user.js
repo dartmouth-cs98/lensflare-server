@@ -200,10 +200,9 @@ userSchema.statics.addDevice = function (device) {
 userSchema.statics.editDevice = function (email, id, name, space) {
     this.getUser(email, function (err, user) {
         if (err) throw err;
-        console.log("ID" + id)
+
         for (var deviceInd in user.local.devices) {
           if (id == user.local.devices[deviceInd]._id) {
-            console.log("HERE")
             user.local.devices[deviceInd].deviceName = name;
             user.local.devices[deviceInd].spaceName = space;
           }
