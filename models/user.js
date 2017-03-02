@@ -223,10 +223,10 @@ userSchema.statics.setAnchors = function (token, anchors) {
     Device.getDevice(token, function (err, device) {
         if (err) throw err;
         var User = require('./user')
-        console.log(device);
 
         User.getUser(device.userEmail, (err, user) => {
             if (err) throw err;
+
             for (var space in user.local.spaces) {
                 if (user.local.spaces[space].name == device.spaceName) {
                     user.local.spaces[space].anchors = anchors;
@@ -240,12 +240,7 @@ userSchema.statics.setAnchors = function (token, anchors) {
 
             })
         });
-        // User.getSpace(device.userEmail, device.spaceName, function (err, space) {
-        //     space.anchors = anchors;
-        //     space.save(function (err) {
-        //         if (err) throw err;
-        //     });
-        // });
+        
     });
 };
 
