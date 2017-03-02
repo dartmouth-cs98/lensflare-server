@@ -449,38 +449,50 @@ function loadMeshes() {
 
     var cells = document.getElementsByName('mesh');
 
-    for (var i = 0; i < cells.length; i++) {
-        var cell = cells[i];
+    // for (var i = 0; i < cells.length; i++) {
+    //     var cell = cells[i];
+    //
+    //     var scene = new THREE.Scene();
+    //
+    //     var camera = new THREE.PerspectiveCamera(35, 1, 1, 10000);
+    //     // camera.position.z = 1000;
+    //     // scene.userData.camera = camera;
+    //
+    //     camera.position.z = 5;
+    //     scene.userData.camera = camera;
 
-        var scene = new THREE.Scene();
+        var loader = new THREE.JSONLoader();
+        loader.load("scripts/gem.json", function(geometry) {
+          for (var i = 0; i < cells.length; i++) {
+              var cell = cells[i];
 
-        var camera = new THREE.PerspectiveCamera(35, 1, 1, 10000);
-        camera.position.z = 1000;
-        scene.userData.camera = camera;
+              var scene = new THREE.Scene();
 
-        // camera.position.z = 15;
-        // scene.userData.camera = camera;
+              var camera = new THREE.PerspectiveCamera(35, 1, 1, 10000);
+              // camera.position.z = 1000;
+              // scene.userData.camera = camera;
+
+              camera.position.z = 5;
+              scene.userData.camera = camera;
+            var material = new THREE.MeshBasicMaterial( {color: 0x3B3C59, wireframe: true} );
+            var mesh = new THREE.Mesh(geometry, material);
+            scene.add(mesh);
+            scene.userData.element = cell;
+            scenes.push(scene);
+            readyForAnimation = true;
+          }
+        })
+
+        // var geometry = new THREE.BoxGeometry(200, 200, 200);
+        // var material = new THREE.MeshBasicMaterial({color: 0x3B3C59, wireframe: true});
         //
-        // var loader = new THREE.JSONLoader();
-        // loader.load("scripts/mclaren.json", function(geometry) {
-        //   var material = new THREE.MeshBasicMaterial( {color: 0x3B3C59, wireframe: true} );
-        //   var mesh = new THREE.Mesh(geometry, material);
-        //   scene.add(mesh);
-        //   scene.userData.element = cell;
-        //   scenes.push(scene);
-        //   readyForAnimation = true;
-        // })
-
-        var geometry = new THREE.BoxGeometry(200, 200, 200);
-        var material = new THREE.MeshBasicMaterial({color: 0x3B3C59, wireframe: true});
-
-        var mesh = new THREE.Mesh(geometry, material);
-        scene.add(mesh);
-
-        scene.userData.element = cell;
-
-        scenes.push(scene);
-    }
+        // var mesh = new THREE.Mesh(geometry, material);
+        // scene.add(mesh);
+        //
+        // scene.userData.element = cell;
+        //
+        // scenes.push(scene);
+    // }
 
 }
 
@@ -493,8 +505,8 @@ function animate() {
     for (var i in scenes) {
         var mesh = scenes[i].children[0];
 
-        mesh.rotation.x += 0.01;
-        mesh.rotation.y += 0.02;
+        // mesh.rotation.x += 0.01;
+        mesh.rotation.y += 0.015;
 
         var cell = scenes[i].userData.element;
 
