@@ -16,6 +16,10 @@ if (!localStorage.getItem("token")) {
     window.location.href = "/";
 }
 
+if (!window.location.href.includes("/database?=")) {
+  window.location.href += "?=" + userDoc.spaces[0].name;
+}
+
 window.addEventListener('resize', function () {
     "use strict";
     canvas.style.left = (window.innerWidth - 120) + "px";
@@ -503,16 +507,16 @@ function loadMeshes() {
         var loader = new THREE.JSONLoader();
         loader.load("scripts/gem.json", function(geometry) {
           for (var i = 0; i < cells.length; i++) {
-              var cell = cells[i];
+            var cell = cells[i];
 
-              var scene = new THREE.Scene();
+            var scene = new THREE.Scene();
 
-              var camera = new THREE.PerspectiveCamera(35, 1, 1, 10000);
-              // camera.position.z = 1000;
-              // scene.userData.camera = camera;
+            var camera = new THREE.PerspectiveCamera(35, 1, 1, 10000);
+            // camera.position.z = 1000;
+            // scene.userData.camera = camera;
 
-              camera.position.z = 5;
-              scene.userData.camera = camera;
+            camera.position.z = 5;
+            scene.userData.camera = camera;
             var material = new THREE.MeshBasicMaterial( {color: 0x3B3C59, wireframe: true} );
             var mesh = new THREE.Mesh(geometry, material);
             scene.add(mesh);

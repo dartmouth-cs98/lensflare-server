@@ -44,11 +44,14 @@ module.exports = function (app, passport) {
             res.end();
             return;
         }
+        console.log(req.query.token)
         // need to do something if the token is no longer valid
         UserModel.getSpaceWithToken(req.query.token, function (err, user) {
             if (err) throw err;
 
             if (user == null) {
+              console.log("HERE: " + req.query.token)
+                console.log(user)
                 res.status(401);
             }
             res.send(user);
