@@ -39,16 +39,42 @@ function displayData(user) {
 
     document.getElementById("space-links").innerHTML += "<div style='font-size:12px; text-align:center'><a style='cursor: pointer;' onclick='addSpace()'>add new space</a></div>"
 
-    var start = {};
-    start.text = userDoc.spaces[0].name
-    document.getElementById("db-name").innerHTML = userDoc.spaces[0].name
-    loadDatabase(start, 0)
-
     animate();
+
+    if (window.location.href.includes("/database?=")) {
+      var spaceName = window.location.href.split("/database?=")[1]
+      for (var space in userDoc.spaces) {
+        if (userDoc.spaces[space].name == spaceName) {
+          var start = {};
+          start.text = userDoc.spaces[space].name
+          loadDatabaseInfo(start, space)
+          return;
+        }
+      }
+
+      var start = {};
+      start.text = userDoc.spaces[0].name
+      document.getElementById("db-name").innerHTML = userDoc.spaces[0].name
+      loadDatabaseInfo(start, 0)
+    }
+    else {
+      var start = {};
+      start.text = userDoc.spaces[0].name
+      document.getElementById("db-name").innerHTML = userDoc.spaces[0].name
+      loadDatabaseInfo(start, 0)
+    }
 }
 
-
 function loadDatabase(space, spaceRow) {
+
+    if (!window.location.href.includes("database?=")) window.location.href += "?=" + space.text;
+    else if (!(window.location.href.split("?")[1] == ("=" + space.text))){
+      console.log(space.text)
+      window.location.href = window.location.href.split("?")[0] + "?=" + space.text;
+    }
+}
+
+function loadDatabaseInfo(space, spaceRow) {
 
     canvas = document.getElementById("c");
     canvas.style.display = 'block';
@@ -418,6 +444,11 @@ function saveNewSpace() {
 
     if (dbName == "") {
         document.getElementById("db-table").innerHTML = "<div style='color:red'>Please enter a name for the new entry and try again.</div>"
+        return;
+    }
+
+    if (dbName.includes("?=")) {
+        document.getElementById("db-table").innerHTML = "<div style='color:red'>Sorry the space name cannot contain \"?=\"; please enter a new name.</div>"
         return;
     }
     userDoc.spaces.push({
