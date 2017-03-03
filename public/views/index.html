@@ -11,12 +11,14 @@
 if (localStorage.getItem("token")) {
     window.location.href = "/database";
 }
+
 </script>
 
 <body>
   <div class="splash-body">
+
     <div class="login-box" id="login-box">
-      <div class="title">Lensflare</div>
+      <div class="title">Lensflare<img style="float: right" onclick="window.location.href = '/help'" src="assets/question.png"></div>
       <br/>
       Email:<br/><input class="text-box" id="email" type="text" autocomplete="off"></input><br/>
       Password:<br/><input class="text-box" id="password" type="password"></input>

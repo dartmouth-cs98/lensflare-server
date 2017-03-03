@@ -1,0 +1,55 @@
+<!DOCTYPE html>
+<head>
+    <meta charset="utf-8">
+    <link href="style/style.css" rel="stylesheet" type="text/css">
+    <script src="scripts/actions.js"></script>
+    <link href="https://fonts.googleapis.com/css?family=Raleway:300,900" rel="stylesheet">
+    <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
+</head>
+
+<script>
+if (localStorage.getItem("token")) {
+    window.location.href = "/database";
+}
+
+</script>
+
+<body>
+  <div class="help-body">
+    <img style="float: left; margin-left: 10px; margin-top: 10px" onclick="window.location.href = '/'" src="assets/back.png">
+    <div class="help-box" id="help-box">
+      <div class="help-title">Lensflare</div>
+      <div style="float:left; width: 65%; padding-top: 35px"><img width="100%" src="assets/Splash.jpg"></div>
+      <div style="float:right; text-align: right; width: 35%">
+        <div style="font-size: 75px; text-decoration: italic; padding-top:85px"><i>Annotate your world</i></div><br /><br />
+        <div style="font-size: 25px;">Lensflare is a Hololens applicaiton built to provide curation solutions for every need, from car dealerships to art museums to your own home. Set up is designed to be simple and straight forward: follow the directions below to get started.</div>
+      </div>
+
+      <div style="float:right; text-align:right; width: 65%; padding-top: 100px">
+        <!-- <img width="100%" src="assets/Splash.jpg"> -->
+        <div style="font-size: 25px;">
+          Start by creating a Lensflare account, if you don't already have one. Once it's made, add a new space by clicking "add new space" in the sidebar and then create your first device by clicking "manage my devices" and then "new device" -
+          select the space you just made to associate your HoloLens with that space.
+        </div>
+      </div>
+      <div style="float:left; text-align: left; width: 35%">
+        <div style="font-size: 75px; text-decoration: italic; padding-top:85px"><i>Set up your account</i></div><br /><br />
+        <div style="font-size: 25px;"></div>
+      </div>
+
+      <div style="float:right; text-align: right; width: 35%">
+        <div style="font-size: 75px; text-decoration: italic; padding-top:85px"><i>Switch to the HoloLens</i></div><br /><br />
+        <div style="font-size: 25px;"></div>
+      </div>
+
+      <div style="float:left; text-align:left; width: 65%; padding-top: 85px">
+        <!-- <img width="100%" src="assets/Splash.jpg"> -->
+        <div style="font-size: 25px;">
+          Once your account is up and running, 
+        </div>
+      </div>
+      <!-- <img src="assets/Splash.jpg"> -->
+      <!-- <a href="/" style="font-size:11px; text-decoration:none; color:white;">back to login</a> -->
+    </div>
+  </div>
+</body>

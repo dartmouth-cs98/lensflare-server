@@ -24,6 +24,10 @@ module.exports = function (app, passport) {
         res.sendFile(path.join(__dirname + '/../public/views/index.html'));
     });
 
+    app.get('/help', function (req, res) {
+        res.sendFile(path.join(__dirname + '/../public/views/help.html'));
+    });
+
     app.get('/signup', function (req, res) {
         res.sendFile(path.join(__dirname + '/../public/views/signup.html'));
     });
