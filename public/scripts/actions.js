@@ -20,7 +20,6 @@ function addItemTest() {
 function signIn() {
     var email = document.getElementById("email").value;
     var password = document.getElementById("password").value;
-    console.log("About to post with axios " + email + "  " + password);
     axios.post('/jwt', {
         'email': email,
         'password': password
