@@ -50,8 +50,7 @@ module.exports = function (app, passport) {
             if (err) throw err;
 
             if (user == null) {
-              console.log("HERE: " + req.query.token)
-                console.log(user)
+                console.log("No user doc was not found with the token " + req.query.token)
                 res.status(401);
             }
             res.send(user);

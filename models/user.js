@@ -227,8 +227,10 @@ userSchema.statics.setAnchors = function (token, anchors) {
         User.getUser(device.userEmail, (err, user) => {
             if (err) throw err;
 
+            console.log(user.local.email + " was found - looking for space " + device.spaceName);
             for (var space in user.local.spaces) {
                 if (user.local.spaces[space].name == device.spaceName) {
+                    console.log(anchors + " is being added to " + user.local.spaces[space].name);
                     user.local.spaces[space].anchors = anchors;
                     break;
                 }
@@ -240,7 +242,7 @@ userSchema.statics.setAnchors = function (token, anchors) {
 
             })
         });
-        
+
     });
 };
 
