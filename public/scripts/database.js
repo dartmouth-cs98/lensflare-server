@@ -17,7 +17,7 @@ if (!localStorage.getItem("token")) {
 }
 
 if (!window.location.href.includes("/database?=")) {
-  window.location.href += "?=" + userDoc.spaces[0].name;
+  // window.location.href += "?=" + userDoc.spaces[0].name;
 }
 
 window.addEventListener('resize', function () {
@@ -33,11 +33,10 @@ function displayData(user) {
     canvas.style.left = (window.innerWidth - 120) + "px";
 
     userDoc = JSON.parse(user).local;
-    document.getElementById("space-links").innerHTML = "Welcome, " + userDoc.name + "!<br /><br />";
 
+    document.getElementById("welcome").innerHTML = "Welcome, " + userDoc.name + "!";
+    document.getElementById("space-links").innerHTML = "";
     for (var space in userDoc.spaces) {
-
-      console.log(userDoc.spaces[space])
         document.getElementById("space-links").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this," + space + ")'>" + userDoc.spaces[space].name + "</a><button class='delete-space-button' onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'><img src='assets/close.png'></button><br/>"
     }
 
@@ -64,7 +63,11 @@ function displayData(user) {
       loadDatabaseInfo(start, 0)
     }
     else {
-      window.location.href += "?=" + userDoc.spaces[0].name;
+      var start = {};
+      start.text = userDoc.spaces[0].name
+      document.getElementById("db-name").innerHTML = userDoc.spaces[0].name
+      loadDatabaseInfo(start, 0)
+      // window.location.href += "?=" + userDoc.spaces[0].name;
     }
 }
 
@@ -267,7 +270,7 @@ function deleteDevice(row) {
   userDoc.devices.splice(row, 1);
 
   loadDevices();
-  console.log(userDoc.devices[row])
+
   saveDevices(userDoc);
 
   document.getElementById("device-add-button").disabled = false;
@@ -285,8 +288,7 @@ function editDevice(row) {
 
   var initName = rowV.cells[0].innerHTML;
   var initSpace = rowV.cells[1].innerHTML;
-  console.log(initName)
-  console.log(initSpace)
+
   rowV.cells[0].innerHTML = "<input maxlength='18' id='device-name-entry' type='text' value='" + rowV.cells[0].innerHTML + "'>";
 
   var options = "<select id='device-space-entry' name='spaces'>";
@@ -433,7 +435,10 @@ function addSpace() {
 }
 
 function manageDevices() {
-  window.location.href = window.location.href.split("/database?=")[0] + "/database?=manageDevices";
+  if (!window.location.href.includes("database?=")) window.location.href += "?=manageDevices";
+  else if (!(window.location.href.split("?")[1] == "=manageDevices")){
+    window.location.href = window.location.href.split("/database?=")[0] + "/database?=manageDevices";
+  }
 }
 
 function manageDevicesLoad() {
@@ -448,18 +453,18 @@ function saveNewSpace() {
     var dbName = document.getElementById("db-name-entry").value;
 
     if (dbName == "") {
-        document.getElementById("db-table").innerHTML = "<div style='color:red'>Please enter a name for the new entry and try again.</div>"
-        return;
+      loadMessage(false, "please enter a name and try again")
+      return;
     }
 
     if (dbName.includes("?=")) {
-        document.getElementById("db-table").innerHTML = "<div style='color:red'>Sorry the space name cannot contain \"?=\" -- please enter a new name.</div>"
-        return;
+      loadMessage(false, "space name cannot contain \"?=\"")
+      return;
     }
 
     if (dbName.includes("manageDevices")) {
-        document.getElementById("db-table").innerHTML = "<div style='color:red'>Sorry the space name cannot be \"manageDevices\" -- please enter a new name.</div>"
-        return;
+      loadMessage(false, "space name cannot be \"manageDevices\"")
+      return;
     }
     userDoc.spaces.push({
         name: dbName,
@@ -476,8 +481,8 @@ function saveNewSpace() {
 
 function reloadSidebar() {
 
-    document.getElementById("space-links").innerHTML = "Welcome, " + userDoc.name + "!<br /><br />";
-
+    document.getElementById("welcome").innerHTML = "Welcome, " + userDoc.name + "!";
+    document.getElementById("space-links").innerHTML = "";
     for (var space in userDoc.spaces) {
         document.getElementById("space-links").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this," + space + ")'>" + userDoc.spaces[space].name + "</a><button class='delete-space-button' onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'><img src='assets/close.png'></button><br/>"
     }
