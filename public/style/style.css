@@ -80,14 +80,15 @@
 .db-name-entry {
   font-weight: 300;
   color: #3B3C59;
-  font-size: 25px;
+  font-size: inherit;
   padding-bottom: 5px;
+  width: 140px;
 }
 
 .db-name-save-button {
   background: inherit;
   font-weight: 300;
-  color: #3B3C59;
+  color: white;
   font-size: 15px;
   padding-bottom: 5px;
   border: none;
@@ -244,8 +245,19 @@
   color: white;
   font-family: 'Raleway', sans-serif;
   font-size: 18px;
-  position: fixed;
-  left: 180px;
+  position: absolute;
+  right: 0px;
+}
+
+.save-space-button {
+  background-color: inherit;
+  border: none;
+  color: white;
+  font-family: 'Raleway', sans-serif;
+  font-size: 18px;
+  position: absolute;
+  right: 22px;
+  padding-left: 10px;
 }
 
 .upload-button {

@@ -38,10 +38,8 @@ function displayData(user) {
     for (var space in userDoc.spaces) {
 
       console.log(userDoc.spaces[space])
-        document.getElementById("space-links").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this," + space + ")'>" + userDoc.spaces[space].name + "</a><button class='delete-space-button' onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'>x</button><br/>"
+        document.getElementById("space-links").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this," + space + ")'>" + userDoc.spaces[space].name + "</a><button class='delete-space-button' onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'><img src='assets/close.png'></button><br/>"
     }
-
-    document.getElementById("space-links").innerHTML += "<div style='font-size:12px; text-align:center'><a style='cursor: pointer;' onclick='addSpace()'>add new space</a></div>"
 
     animate();
 
@@ -179,7 +177,7 @@ function loadDevices() {
       rowV.insertCell(1).innerHTML = userDoc.devices[row - 1].spaceName;
       rowV.insertCell(2).innerHTML = "<a style='cursor: pointer;' onclick='generateQR(\"" + userDoc.devices[row - 1]._id + "\")'>qr</a> | <a style='cursor: pointer;' onclick='editDevice(" + (row - 1) + ")'>edit</a> | <a style='cursor: pointer;' onclick='deleteDevice(" + (row - 1) + ")'>delete</a>";
       rowV.cells[0].style.width = "45%";
-      rowV.cells[1].style.width = "45%";
+      rowV.cells[2].style.width = "200px";
       rowV.cells[2].style.textAlign = "center";
   }
 
@@ -428,10 +426,10 @@ function cancel(spaceRow, row, col) {
 
 function addSpace() {
     scenes = [];
-    document.getElementById("db-name").innerHTML = "<input class='db-name-entry' maxlength='18' id='db-name-entry' type='text' value=''><br /><button class='db-name-save-button' onclick='saveNewSpace()'>save</button>"
+    document.getElementById("new-space").innerHTML = "<input class='db-name-entry' style='right: 30px' id='db-name-entry' type='text' value=''><button class='save-space-button' onclick='saveNewSpace()'><img src='assets/check.png'></button><button class='delete-space-button' onclick='reloadSidebar()'><img src='assets/close.png'></button>"
     document.getElementById("db-name-entry").focus();
-    document.getElementById("db-table").style.border = "none";
-    document.getElementById("db-table").innerHTML = "Enter the new item's name above and then start setup via HoloLens!";
+    // document.getElementById("db-table").style.border = "none";
+    // document.getElementById("db-table").innerHTML = "Enter the new item's name above and then start setup via HoloLens!";
 }
 
 function manageDevices() {
@@ -481,10 +479,10 @@ function reloadSidebar() {
     document.getElementById("space-links").innerHTML = "Welcome, " + userDoc.name + "!<br /><br />";
 
     for (var space in userDoc.spaces) {
-        document.getElementById("space-links").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this," + space + ")'>" + userDoc.spaces[space].name + "</a><button class='delete-space-button' onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'>x</button><br/>"
+        document.getElementById("space-links").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this," + space + ")'>" + userDoc.spaces[space].name + "</a><button class='delete-space-button' onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'><img src='assets/close.png'></button><br/>"
     }
 
-    document.getElementById("space-links").innerHTML += "<div style='font-size:12px; text-align:center'><a style='cursor: pointer;' onclick='addSpace()'>add new</a></div>"
+    document.getElementById("new-space").innerHTML = ""
 }
 
 
