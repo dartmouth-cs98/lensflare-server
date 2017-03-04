@@ -7,43 +7,57 @@ var scenes = [];
 var canvas;
 var readyForAnimation = false;
 
+//init user doc
 var userDoc = {
     name: localStorage.getItem("name"),
     email: localStorage.getItem("email")
 };
 
+//checks if there is auth token - if not, go to login page
 if (!localStorage.getItem("token")) {
     window.location.href = "/";
 }
 
-if (!window.location.href.includes("/database?=")) {
-  // window.location.href += "?=" + userDoc.spaces[0].name;
-}
-
+//for resizing and moving meshes to fit on screen
 window.addEventListener('resize', function () {
     "use strict";
     canvas.style.left = (window.innerWidth - 120) + "px";
 })
 
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//                                                                        PAGE LOADING
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+//displays the userdoc
 function displayData(user) {
+
+    //set up animation scene
     canvas = document.getElementById("c");
     renderer = new THREE.WebGLRenderer({canvas: canvas, alpha: true});
     renderer.setSize(100, window.innerHeight);
     renderer.setClearColor(0xffffff, 0);
     canvas.style.left = (window.innerWidth - 120) + "px";
 
+    //parse the userdoc
     userDoc = JSON.parse(user).local;
 
+    //set up sidebar and welcome div
     document.getElementById("welcome").innerHTML = "Welcome, " + userDoc.name + "!";
     document.getElementById("space-links").innerHTML = "";
     for (var space in userDoc.spaces) {
         document.getElementById("space-links").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this," + space + ")'>" + userDoc.spaces[space].name + "</a><button class='delete-space-button' onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'><img src='assets/close.png'></button><br/>"
     }
 
+    //start animation with meshes
     animate();
 
+    //if the URL has space in it already, load that space (or manage devuces)
     if (window.location.href.includes("/database?=")) {
-      var spaceName = window.location.href.split("/database?=")[1]
+      var spaceName = window.location.href.split("/database?=")[1].replace("%20", " ")
       if (spaceName == "manageDevices") {
         manageDevicesLoad()
         return;
@@ -57,20 +71,21 @@ function displayData(user) {
         }
       }
 
-      var start = {};
-      start.text = userDoc.spaces[0].name
-      document.getElementById("db-name").innerHTML = userDoc.spaces[0].name
-      loadDatabaseInfo(start, 0)
+      //if not found, load default space
+      window.location.href = window.location.href.split("/database?=")[0] + "/database?=" + userDoc.spaces[0].name;
+
     }
+
+    //otherwise load default space
     else {
       var start = {};
-      start.text = userDoc.spaces[0].name
-      document.getElementById("db-name").innerHTML = userDoc.spaces[0].name
-      loadDatabaseInfo(start, 0)
-      // window.location.href += "?=" + userDoc.spaces[0].name;
+      start.text = userDoc.spaces[0].name;
+      document.getElementById("db-name").innerHTML = userDoc.spaces[0].name;
+      loadDatabaseInfo(start, 0);
     }
 }
 
+//set up URL for loading database
 function loadDatabase(space, spaceRow) {
     if (!window.location.href.includes("database?=")) window.location.href += "?=" + space.text;
     else if (!(window.location.href.split("?")[1] == ("=" + space.text))){
@@ -78,29 +93,26 @@ function loadDatabase(space, spaceRow) {
     }
 }
 
+//actual database loading done here
 function loadDatabaseInfo(space, spaceRow) {
 
+    //make mesh reappear
     canvas = document.getElementById("c");
     canvas.style.display = 'block';
 
-    document.getElementById("db-name").innerHTML = space.text; //+ "<br /><button class='qr-button' type='button' onclick='generateQR(\"" + space.text + "\")'>make QR code</button>";
-
+    //set db name and clear table
+    document.getElementById("db-name").innerHTML = space.text;
     document.getElementById("db-table").innerHTML = "";
 
+    //if no items present, tell user what to do
     if (userDoc.spaces[spaceRow].items.length == 0) {
         document.getElementById("db-table").style.border = "none";
-        document.getElementById("db-table").innerHTML = "There appears to be no photos taken - start setup via HoloLens!<br /><br />To set up, follow these instructions:<br />" +
-                                                          "1. If not already installed, download and install Lensflare for the HoloLens<br />" +
-                                                          "2. If the device is already paired with your account, edit it in 'My Devices' to be associated with this space; if not, add a new device in 'My Devices' and associate it with this space<br />" +
-                                                          "3. Open Lensflare on the HoloLens - if a new device was added in Step 2, say 'Pair Device' to enter device pairing mode on the HoloLens to scan the QR code generated<br />" +
-                                                          "4. Once the device is paired with the space, say 'Enter Setup Mode' to begin set up<br />" +
-                                                          "5. Follow directions on the HoloLens to place gems around your space and say 'Done' when you are finished<br />" +
-                                                          "6. Once the upload is complete, you may refresh this page to see the new items you identified in the Lensflare setup mode<br />" +
-                                                          "7. Edit the items' titles, descriptions, and media fields with your custom information - this will be updated every 10 seconds on your HoloLens<br />";
+        document.getElementById("db-table").innerHTML = "There appears to be no photos taken - visit the <a href='/help'>help page</a> to get started!";
         scenes = [];
         return;
     }
 
+    //set up table with styling
     var table = document.getElementById("db-table");
     var header = table.createTHead();
     var headerRow = header.insertRow(0);
@@ -146,11 +158,193 @@ function loadDatabaseInfo(space, spaceRow) {
     loadMeshes();
 }
 
+
+function manageDevices() {
+  if (!window.location.href.includes("database?=")) window.location.href += "?=manageDevices";
+  else if (!(window.location.href.split("?")[1] == "=manageDevices")){
+    window.location.href = window.location.href.split("/database?=")[0] + "/database?=manageDevices";
+  }
+}
+
+function manageDevicesLoad() {
+      canvas = document.getElementById("c");
+      canvas.style.display = 'none';
+      document.getElementById("db-name").innerHTML = "My Devices"
+      document.getElementById("db-table").style.border = "none";
+      loadDevices()
+}
+
+
+function reloadSidebar() {
+
+    document.getElementById("welcome").innerHTML = "Welcome, " + userDoc.name + "!";
+    document.getElementById("space-links").innerHTML = "";
+    for (var space in userDoc.spaces) {
+        document.getElementById("space-links").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this," + space + ")'>" + userDoc.spaces[space].name + "</a><button class='delete-space-button' onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'><img src='assets/close.png'></button><br/>"
+    }
+
+    document.getElementById("new-space").innerHTML = ""
+}
+
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//                                                                        SPACE MANAGEMENT
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+function addSpace() {
+    document.getElementById("new-space").innerHTML = "<input class='db-name-entry' style='right: 30px' id='db-name-entry' type='text' value=''><button class='save-space-button' onclick='saveNewSpace()'><img src='assets/check.png'></button><button class='delete-space-button' onclick='reloadSidebar()'><img src='assets/close.png'></button>"
+    document.getElementById("db-name-entry").focus();
+}
+
+
+
+function edit(spaceRow, row, col) {
+    if (currCellRow != -1) {
+        cancel(spaceRow, currCellRow, currCellCol)
+    }
+    active = true;
+    var table = document.getElementById("db-table");
+    var cell = table.rows[row + 1].cells[col];
+    startText = cell.innerText;
+    if (col == 1) startText = userDoc.spaces[spaceRow].items[row].title;
+    else startText = userDoc.spaces[spaceRow].items[row].text;
+
+
+    cell.innerHTML = "<form action='/save' method='post'><button class='edit-button' type='button' onclick='save(" + spaceRow + "," + row + "," + col + ")'>done</button> <button class='edit-button' type='button' onclick='cancel(" + spaceRow + "," + row + "," + col + ")'>cancel</button><textarea class='input-text' name='input-box' rows='3' id='input-box' value=''>" + startText + "</textarea></form>";
+
+    currCellRow = row;
+    currCellCol = col;
+}
+
+function save(spaceRow, row, col) {
+    active = false;
+    var table = document.getElementById("db-table");
+    var cell = table.rows[row + 1].cells[col];
+    var inputBox = document.getElementById('input-box')
+    if (col == 1) userDoc.spaces[spaceRow].items[row].title = inputBox.value
+    else userDoc.spaces[spaceRow].items[row].text = inputBox.value
+
+    if (col == 1) cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + col + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].title;
+    else cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + col + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].text;
+
+    if (col != 1) {
+      var mediaUrl = "none currently uploaded"
+
+      if (userDoc.spaces[spaceRow].items[row].media != null && typeof(userDoc.spaces[spaceRow].items[row].media.media_url) != 'undefined') {
+        var split = userDoc.spaces[spaceRow].items[row].media.media_url.split('/');
+        if (split.length > 0) {
+          mediaUrl = "<a href=\"" + userDoc.spaces[spaceRow].items[row].media.media_url + "\">" + split[split.length - 1] + "</a>"
+        }
+      }
+
+      var popoverText = "<button class=\\\"qr-close-button\\\" type=\\\"button\\\" onclick=\\\"closePopover()\\\">X</button>" +
+                    "Upload New Media<br /><br /><div style=\\\"font-size: 12px\\\">supported file types:<br />jpeg & png images, ogg videos</div><div style=\\\"text-align: center\\\"><br /><label class=\\\"upload-button\\\"><input accept=\\\"image/png, image/jpeg, video/ogg\\\" onchange=\\\"updateFileName(this)\\\" style=\\\"border: none\\\" class=\\\"upload-button\\\" id=\\\"upload-" + spaceRow + "-" + row + "\\\" type=\\\"file\\\">choose file</label> | <button class=\\\"upload-button\\\" type=\\\"button\\\" onclick=\\\"uploadMedia(" + spaceRow + "," + row + ")\\\">upload</button><div id=\\\"file-name\\\"></div></div>";
+      cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row  + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].text +
+                                      "<br /><br /><br /><br /><div style='font-size: 12px'>current file: " + mediaUrl + "<br /><button class='upload-button' onclick='showPopover(\"" + popoverText + "\")'>edit media</button></div>";
+    }
+
+    saveSpaces(userDoc);
+}
+
+function cancel(spaceRow, row, col) {
+    var table = document.getElementById("db-table");
+    var cell = table.rows[row + 1].cells[col];
+
+    if (active) {
+      cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + col + ")'>edit</button><br />" + startText;
+
+      if (col != 1) {
+        var mediaUrl = "none currently uploaded"
+
+        if (userDoc.spaces[spaceRow].items[row].media != null && typeof(userDoc.spaces[spaceRow].items[row].media.media_url) != 'undefined') {
+          var split = userDoc.spaces[spaceRow].items[row].media.media_url.split('/');
+          if (split.length > 0) {
+            mediaUrl = "<a href=\"" + userDoc.spaces[spaceRow].items[row].media.media_url + "\">" + split[split.length - 1] + "</a>"
+          }
+        }
+
+        var popoverText = "<button class=\\\"qr-close-button\\\" type=\\\"button\\\" onclick=\\\"closePopover()\\\">X</button>" +
+                      "Upload New Media<br /><br /><div style=\\\"font-size: 12px\\\">supported file types:<br />jpeg & png images, ogg videos</div><div style=\\\"text-align: center\\\"><br /><label class=\\\"upload-button\\\"><input accept=\\\"image/png, image/jpeg, video/ogg\\\" onchange=\\\"updateFileName(this)\\\" style=\\\"border: none\\\" class=\\\"upload-button\\\" id=\\\"upload-" + spaceRow + "-" + row + "\\\" type=\\\"file\\\">choose file</label> | <button class=\\\"upload-button\\\" type=\\\"button\\\" onclick=\\\"uploadMedia(" + spaceRow + "," + row + ")\\\">upload</button><div id=\\\"file-name\\\"></div></div>";
+        cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row  + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].text +
+                                        "<br /><br /><br /><br /><div style='font-size: 12px'>current file: " + mediaUrl + "<br /><button class='upload-button' onclick='showPopover(\"" + popoverText + "\")'>edit media</button></div>";
+
+      }
+    }
+
+}
+
+function saveNewSpace() {
+    var dbName = document.getElementById("db-name-entry").value;
+
+    if (dbName == "") {
+      loadMessage(false, "please enter a name and try again")
+      return;
+    }
+
+    if (dbName.includes("?=")) {
+      loadMessage(false, "space name cannot contain \"?=\"")
+      return;
+    }
+
+    if (dbName.includes("manageDevices")) {
+      loadMessage(false, "space name cannot be \"manageDevices\"")
+      return;
+    }
+    userDoc.spaces.push({
+        name: dbName,
+        items: [],
+        anchors: ""
+    })
+    reloadSidebar();
+
+    var newDB = {};
+    newDB.text = dbName;
+    loadDatabase(newDB, userDoc.spaces.length - 1);
+    saveSpaces(userDoc);
+}
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//                                                                        MEDIA UPLOAD
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+//update file name in media upload
 function updateFileName(fileInput) {
   var split = fileInput.value.split('\\');
   document.getElementById("file-name").innerHTML = split[split.length - 1]
   document.getElementById("file-name").style.fontSize = "12px"
 }
+
+//upload media to S3
+function uploadMedia(spaceRow, row) {
+    var id = "upload-" + spaceRow + "-" + row;
+    var fileObject = document.getElementById(id);
+    var fileReader = new FileReader();
+    if (fileObject.files.length > 0) {
+
+      if (!(fileObject.files[0].type.includes("jpeg") || fileObject.files[0].type.includes("png") || fileObject.files[0].type.includes("ogg"))) {
+        loadMessage(false, "file type unsupported - try again");
+        return;
+      }
+      fileReader.readAsArrayBuffer(fileObject.files[0]);
+      fileReader.onload = function() {
+        var data = fileReader.result;
+        getSignedUrl(userDoc, spaceRow, row, fileObject.files[0], data);
+      };
+    }
+    console.log(fileObject);
+}
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//                                                                        DEVICE MANAGEMENT
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
 
 function loadDevices() {
 
@@ -332,213 +526,39 @@ function saveEditDevice(row) {
 
 }
 
-function edit(spaceRow, row, col) {
-    if (currCellRow != -1) {
-        cancel(spaceRow, currCellRow, currCellCol)
-    }
-    active = true;
-    var table = document.getElementById("db-table");
-    var cell = table.rows[row + 1].cells[col];
-    startText = cell.innerText;
-    if (col == 1) startText = userDoc.spaces[spaceRow].items[row].title;
-    else startText = userDoc.spaces[spaceRow].items[row].text;
 
-
-    cell.innerHTML = "<form action='/save' method='post'><button class='edit-button' type='button' onclick='save(" + spaceRow + "," + row + "," + col + ")'>done</button> <button class='edit-button' type='button' onclick='cancel(" + spaceRow + "," + row + "," + col + ")'>cancel</button><textarea class='input-text' name='input-box' rows='3' id='input-box' value=''>" + startText + "</textarea></form>";
-
-    currCellRow = row;
-    currCellCol = col;
-}
-
-function uploadMedia(spaceRow, row) {
-    var id = "upload-" + spaceRow + "-" + row;
-    var fileObject = document.getElementById(id);
-    var fileReader = new FileReader();
-    if (fileObject.files.length > 0) {
-      console.log(fileObject.files[0].type)
-      if (!(fileObject.files[0].type.includes("jpeg") || fileObject.files[0].type.includes("png") || fileObject.files[0].type.includes("ogg"))) {
-        loadMessage(false, "file type unsupported - try again");
-        return;
-      }
-      fileReader.readAsArrayBuffer(fileObject.files[0]);
-      fileReader.onload = function() {
-        var data = fileReader.result;
-        getSignedUrl(userDoc, spaceRow, row, fileObject.files[0], data);
-      };
-    }
-    console.log(fileObject);
-}
-
-function save(spaceRow, row, col) {
-    active = false;
-    var table = document.getElementById("db-table");
-    var cell = table.rows[row + 1].cells[col];
-    var inputBox = document.getElementById('input-box')
-    if (col == 1) userDoc.spaces[spaceRow].items[row].title = inputBox.value
-    else userDoc.spaces[spaceRow].items[row].text = inputBox.value
-
-    if (col == 1) cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + col + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].title;
-    else cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + col + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].text;
-
-    if (col != 1) {
-      var mediaUrl = "none currently uploaded"
-
-      if (userDoc.spaces[spaceRow].items[row].media != null && typeof(userDoc.spaces[spaceRow].items[row].media.media_url) != 'undefined') {
-        var split = userDoc.spaces[spaceRow].items[row].media.media_url.split('/');
-        if (split.length > 0) {
-          mediaUrl = "<a href=\"" + userDoc.spaces[spaceRow].items[row].media.media_url + "\">" + split[split.length - 1] + "</a>"
-        }
-      }
-
-      var popoverText = "<button class=\\\"qr-close-button\\\" type=\\\"button\\\" onclick=\\\"closePopover()\\\">X</button>" +
-                    "Upload New Media<br /><br /><div style=\\\"font-size: 12px\\\">supported file types:<br />jpeg & png images, ogg videos</div><div style=\\\"text-align: center\\\"><br /><label class=\\\"upload-button\\\"><input accept=\\\"image/png, image/jpeg, video/ogg\\\" onchange=\\\"updateFileName(this)\\\" style=\\\"border: none\\\" class=\\\"upload-button\\\" id=\\\"upload-" + spaceRow + "-" + row + "\\\" type=\\\"file\\\">choose file</label> | <button class=\\\"upload-button\\\" type=\\\"button\\\" onclick=\\\"uploadMedia(" + spaceRow + "," + row + ")\\\">upload</button><div id=\\\"file-name\\\"></div></div>";
-      cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row  + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].text +
-                                      "<br /><br /><br /><br /><div style='font-size: 12px'>current file: " + mediaUrl + "<br /><button class='upload-button' onclick='showPopover(\"" + popoverText + "\")'>edit media</button></div>";
-    }
-
-    saveSpaces(userDoc);
-}
-
-function cancel(spaceRow, row, col) {
-    var table = document.getElementById("db-table");
-    var cell = table.rows[row + 1].cells[col];
-
-    if (active) {
-      cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + col + ")'>edit</button><br />" + startText;
-
-      if (col != 1) {
-        var mediaUrl = "none currently uploaded"
-
-        if (userDoc.spaces[spaceRow].items[row].media != null && typeof(userDoc.spaces[spaceRow].items[row].media.media_url) != 'undefined') {
-          var split = userDoc.spaces[spaceRow].items[row].media.media_url.split('/');
-          if (split.length > 0) {
-            mediaUrl = "<a href=\"" + userDoc.spaces[spaceRow].items[row].media.media_url + "\">" + split[split.length - 1] + "</a>"
-          }
-        }
-
-        var popoverText = "<button class=\\\"qr-close-button\\\" type=\\\"button\\\" onclick=\\\"closePopover()\\\">X</button>" +
-                      "Upload New Media<br /><br /><div style=\\\"font-size: 12px\\\">supported file types:<br />jpeg & png images, ogg videos</div><div style=\\\"text-align: center\\\"><br /><label class=\\\"upload-button\\\"><input accept=\\\"image/png, image/jpeg, video/ogg\\\" onchange=\\\"updateFileName(this)\\\" style=\\\"border: none\\\" class=\\\"upload-button\\\" id=\\\"upload-" + spaceRow + "-" + row + "\\\" type=\\\"file\\\">choose file</label> | <button class=\\\"upload-button\\\" type=\\\"button\\\" onclick=\\\"uploadMedia(" + spaceRow + "," + row + ")\\\">upload</button><div id=\\\"file-name\\\"></div></div>";
-        cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row  + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].text +
-                                        "<br /><br /><br /><br /><div style='font-size: 12px'>current file: " + mediaUrl + "<br /><button class='upload-button' onclick='showPopover(\"" + popoverText + "\")'>edit media</button></div>";
-
-      }
-    }
-
-}
-
-function addSpace() {
-    scenes = [];
-    document.getElementById("new-space").innerHTML = "<input class='db-name-entry' style='right: 30px' id='db-name-entry' type='text' value=''><button class='save-space-button' onclick='saveNewSpace()'><img src='assets/check.png'></button><button class='delete-space-button' onclick='reloadSidebar()'><img src='assets/close.png'></button>"
-    document.getElementById("db-name-entry").focus();
-    // document.getElementById("db-table").style.border = "none";
-    // document.getElementById("db-table").innerHTML = "Enter the new item's name above and then start setup via HoloLens!";
-}
-
-function manageDevices() {
-  if (!window.location.href.includes("database?=")) window.location.href += "?=manageDevices";
-  else if (!(window.location.href.split("?")[1] == "=manageDevices")){
-    window.location.href = window.location.href.split("/database?=")[0] + "/database?=manageDevices";
-  }
-}
-
-function manageDevicesLoad() {
-      canvas = document.getElementById("c");
-      canvas.style.display = 'none';
-      document.getElementById("db-name").innerHTML = "My Devices"
-      document.getElementById("db-table").style.border = "none";
-      loadDevices()
-}
-
-function saveNewSpace() {
-    var dbName = document.getElementById("db-name-entry").value;
-
-    if (dbName == "") {
-      loadMessage(false, "please enter a name and try again")
-      return;
-    }
-
-    if (dbName.includes("?=")) {
-      loadMessage(false, "space name cannot contain \"?=\"")
-      return;
-    }
-
-    if (dbName.includes("manageDevices")) {
-      loadMessage(false, "space name cannot be \"manageDevices\"")
-      return;
-    }
-    userDoc.spaces.push({
-        name: dbName,
-        items: [],
-        anchors: ""
-    })
-    reloadSidebar();
-
-    var newDB = {};
-    newDB.text = dbName;
-    loadDatabase(newDB, userDoc.spaces.length - 1);
-    saveSpaces(userDoc);
-}
-
-function reloadSidebar() {
-
-    document.getElementById("welcome").innerHTML = "Welcome, " + userDoc.name + "!";
-    document.getElementById("space-links").innerHTML = "";
-    for (var space in userDoc.spaces) {
-        document.getElementById("space-links").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this," + space + ")'>" + userDoc.spaces[space].name + "</a><button class='delete-space-button' onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'><img src='assets/close.png'></button><br/>"
-    }
-
-    document.getElementById("new-space").innerHTML = ""
-}
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//                                                                        MESH/ANIMATION MANAGEMENT
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
 function loadMeshes() {
 
     var cells = document.getElementsByName('mesh');
 
-    // for (var i = 0; i < cells.length; i++) {
-    //     var cell = cells[i];
-    //
-    //     var scene = new THREE.Scene();
-    //
-    //     var camera = new THREE.PerspectiveCamera(35, 1, 1, 10000);
-    //     // camera.position.z = 1000;
-    //     // scene.userData.camera = camera;
-    //
-    //     camera.position.z = 5;
-    //     scene.userData.camera = camera;
+    var loader = new THREE.JSONLoader();
+    loader.load("scripts/gem.json", function(geometry) {
+      for (var i = 0; i < cells.length; i++) {
+        var cell = cells[i];
 
-        var loader = new THREE.JSONLoader();
-        loader.load("scripts/gem.json", function(geometry) {
-          for (var i = 0; i < cells.length; i++) {
-            var cell = cells[i];
+        var scene = new THREE.Scene();
 
-            var scene = new THREE.Scene();
+        var camera = new THREE.PerspectiveCamera(35, 1, 1, 10000);
+        // camera.position.z = 1000;
+        // scene.userData.camera = camera;
 
-            var camera = new THREE.PerspectiveCamera(35, 1, 1, 10000);
-            // camera.position.z = 1000;
-            // scene.userData.camera = camera;
-
-            camera.position.z = 5;
-            scene.userData.camera = camera;
-            var material = new THREE.MeshBasicMaterial( {color: 0x3B3C59, wireframe: true} );
-            var mesh = new THREE.Mesh(geometry, material);
-            scene.add(mesh);
-            scene.userData.element = cell;
-            scenes.push(scene);
-            readyForAnimation = true;
-          }
-        })
-
-        // var geometry = new THREE.BoxGeometry(200, 200, 200);
-        // var material = new THREE.MeshBasicMaterial({color: 0x3B3C59, wireframe: true});
-        //
-        // var mesh = new THREE.Mesh(geometry, material);
-        // scene.add(mesh);
-        //
-        // scene.userData.element = cell;
-        //
-        // scenes.push(scene);
-    // }
+        camera.position.z = 5;
+        scene.userData.camera = camera;
+        var material = new THREE.MeshBasicMaterial( {color: 0x3B3C59, wireframe: true} );
+        var mesh = new THREE.Mesh(geometry, material);
+        scene.add(mesh);
+        scene.userData.element = cell;
+        scenes.push(scene);
+        readyForAnimation = true;
+      }
+    })
 
 }
 
