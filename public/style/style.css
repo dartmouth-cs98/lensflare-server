@@ -36,8 +36,8 @@
 
 .help-box {
   padding-top: 25px;
-  margin-left: 15%;
-  margin-right: 15%;
+  padding-left: 10%;
+  padding-right: 10%;
 }
 
 .db-content {
