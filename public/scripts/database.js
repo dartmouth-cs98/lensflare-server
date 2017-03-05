@@ -182,7 +182,6 @@ function manageDevicesLoad() {
 
 
 function reloadSidebar() {
-
     document.getElementById("welcome").innerHTML = "Welcome, " + userDoc.name + "!";
     document.getElementById("space-links").innerHTML = "";
     for (var space in userDoc.spaces) {
@@ -206,6 +205,35 @@ function addSpace() {
 }
 
 
+function saveNewSpace() {
+    var dbName = document.getElementById("db-name-entry").value;
+
+    if (dbName == "") {
+      loadMessage(false, "please enter a name and try again")
+      return;
+    }
+
+    if (dbName.includes("?=")) {
+      loadMessage(false, "space name cannot contain \"?=\"")
+      return;
+    }
+
+    if (dbName.includes("manageDevices")) {
+      loadMessage(false, "space name cannot be \"manageDevices\"")
+      return;
+    }
+    userDoc.spaces.push({
+        name: dbName,
+        items: [],
+        anchors: ""
+    })
+    reloadSidebar();
+
+    var newDB = {};
+    newDB.text = dbName;
+    loadDatabase(newDB, userDoc.spaces.length - 1);
+    saveSpaces(userDoc);
+}
 
 function edit(spaceRow, row, col) {
     if (currCellRow != -1) {
@@ -281,37 +309,6 @@ function cancel(spaceRow, row, col) {
     }
 
 }
-
-function saveNewSpace() {
-    var dbName = document.getElementById("db-name-entry").value;
-
-    if (dbName == "") {
-      loadMessage(false, "please enter a name and try again")
-      return;
-    }
-
-    if (dbName.includes("?=")) {
-      loadMessage(false, "space name cannot contain \"?=\"")
-      return;
-    }
-
-    if (dbName.includes("manageDevices")) {
-      loadMessage(false, "space name cannot be \"manageDevices\"")
-      return;
-    }
-    userDoc.spaces.push({
-        name: dbName,
-        items: [],
-        anchors: ""
-    })
-    reloadSidebar();
-
-    var newDB = {};
-    newDB.text = dbName;
-    loadDatabase(newDB, userDoc.spaces.length - 1);
-    saveSpaces(userDoc);
-}
-
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //                                                                        MEDIA UPLOAD
@@ -370,8 +367,6 @@ function uploadMedia(spaceRow, row) {
 function loadDevices() {
 
   document.getElementById("db-table").innerHTML = "";
-
-  // userDoc.devices = [{id: "1", name: "Nick's HoloLens #1", space: "CS98"}];
 
   if (userDoc.devices.length == 0) {
       document.getElementById("db-table").style.border = "none";

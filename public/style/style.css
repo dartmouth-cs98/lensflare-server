@@ -1,13 +1,11 @@
 .title {
   font-weight: 300;
-  /*color: #3B3C59;*/
   color: white;
   font-size: 40px;
 }
 
 .help-title {
   font-weight: 300;
-  /*color: #3B3C59;*/
   text-align: left;
   color: white;
   font-size: 95px;
@@ -50,7 +48,6 @@
   font-weight: 300;
   font-size: 25px;
   padding-bottom: 10px;
-  /*border-bottom: 1px solid #3B3C59;*/
   padding-left: 205px;
   text-align: center;
   height: 65px;
@@ -71,7 +68,6 @@
   color: #ffffff;
   font-size: 16px;
   border-bottom: none;
-  /*display: none;*/
   opacity: 0;
   padding-left: 205px;
   height: 25px;
@@ -102,10 +98,8 @@
   background: -o-linear-gradient(135deg, #036564, #3B3C59);
   background: -moz-linear-gradient(135deg, #036564, #3B3C59);
   background: linear-gradient(135deg, #036564, #3B3C59);
-  /*background-color: #ffffff;*/
   position: fixed;
   width: 200px;
-  /*border-right: 1px solid #3B3C59;*/
   height: 100%;
   top: 0px;
   padding-left: 5px;
@@ -287,13 +281,9 @@
   border: 1px solid white;
   border-radius: 5px;
   padding: 3px;
-  /*transition-duration: 0.4s;*/
-  /*-webkit-transition-duration: 0.4s;*/
 }
 
 .login-button:hover {
-  /*border: 2px solid #3B3C59;*/
-  /*box-shadow: 0 2px 15px #dbe1ff;*/
   color: #3B3C59;
   background-color: white;
 }
@@ -328,17 +318,9 @@
   resize: none;
 }
 
-input {
-  autocomplete: "off";
-}
-
 body {
   font-family: 'Raleway', sans-serif;
   margin-right:0px;
-  /*background: -webkit-linear-gradient(left, #ffffff, #e2e7ff);
-  background: -o-linear-gradient(left, #ffffff, #e2e7ff);
-  background: -moz-linear-gradient(left, #ffffff, #e2e7ff);
-  background: linear-gradient(left, #ffffff, #e2e7ff);*/
 }
 
 .splash-body {

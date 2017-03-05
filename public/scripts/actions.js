@@ -1,22 +1,7 @@
 var fadeInInterval;
 var fadeOutInterval;
 
-function addItemTest() {
-    axios.post('/saveItem', {
-        email: localStorage.getItem('email'),
-        url: "http://dartmouth.edu/sites/default/files/styles/header_image/public/2009-1035500133.jpg?itok=LlpoUNH9",
-        space: "CS98"
-    }, {
-        headers: {
-            authorization: localStorage.getItem('token')
-        }
-    }).then(function (resp) {
-        loadMessage(true, "saved successfully")
-    }).catch(function (error) {
-        loadMessage(false, "error saving - try again")
-    });
-}
-
+//sign in using username and pass
 function signIn() {
     var email = document.getElementById("email").value;
     var password = document.getElementById("password").value;
@@ -38,7 +23,7 @@ function signIn() {
 
 }
 
-//
+//SIGN UP LOCALLY
 function signUp() {
     var name = document.getElementById("name").value;
     var email = document.getElementById("email").value;
@@ -58,6 +43,7 @@ function signUp() {
 
 }
 
+//check if user really wants to clear space or not
 function clearSpace(spaceName) {
     var popoverValue = "Are you sure you want to delete " + spaceName + "?<br />" +
         "<div style='text-align: center'><button type='button' style='background-color: transparent; cursor: pointer; border: none' onclick='clearSpaceConfirmed(\"" + spaceName + "\")'>YES</button>" +
@@ -65,6 +51,8 @@ function clearSpace(spaceName) {
     showPopover(popoverValue);
 }
 
+
+//clear space when confirmed
 function clearSpaceConfirmed(spaceName) {
     closePopover();
     axios.post('/clearSpace', {
@@ -81,6 +69,7 @@ function clearSpaceConfirmed(spaceName) {
     });
 }
 
+//gerneates device id given a device name and space
 function generateDeviceId(device, space) {
     axios.post('/generateDeviceId', {
         params: {
@@ -99,6 +88,7 @@ function generateDeviceId(device, space) {
     });
 }
 
+//edit the device given a token and a new name/space
 function editDeviceAction(deviceToken, deviceSpace, deviceName) {
     axios.post('/editDevice', {
         params: {
@@ -122,6 +112,7 @@ function editDeviceAction(deviceToken, deviceSpace, deviceName) {
     });
 }
 
+//load all spaces
 function loadSpaces() {
     axios.get('/getSpaces', {
         params: {
@@ -137,6 +128,7 @@ function loadSpaces() {
     });
 }
 
+//save the userDoc
 function saveSpaces(userDoc) {
     axios.post('/saveSpaces', {
         userDoc: userDoc
@@ -151,11 +143,12 @@ function saveSpaces(userDoc) {
     });
 }
 
+//get a signed URL given the userdoc and the file
 function getSignedUrl(userDoc, spaceRow, row, file, fileBytes, width, height) {
     axios.post('/sign-s3', {
         headers: {
             'content-type': 'application/json'
-        }, file: file.name
+        }, file: userDoc.email + "/" + userDoc.spaces[spaceRow].name + "/" + file.name
     }).then(function (resp) {
         userDoc.spaces[spaceRow].items[row].media = {'media_url': resp.data.url, 'type': file.type, 'width': width, 'height': height};
         saveSpaces(userDoc);
@@ -165,6 +158,7 @@ function getSignedUrl(userDoc, spaceRow, row, file, fileBytes, width, height) {
     });
 }
 
+//put the actual media file in S3
 function putS3Media(file, fileBytes, resp) {
     axios.put(resp.data.signedUrl, fileBytes, {
         headers: {
@@ -179,6 +173,7 @@ function putS3Media(file, fileBytes, resp) {
     });
 }
 
+//save devices
 function saveDevices(userDoc) {
     axios.post('/saveDevices', {
         userDoc: userDoc
@@ -193,22 +188,35 @@ function saveDevices(userDoc) {
     });
 }
 
+
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//                                                                        MESSAGES TO USER
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+//generate a QR code and show the user
 function generateQR(deviceTokenJSON) {
     showPopover("QR Code<button class='qr-close-button' type='button' onclick='closePopover()'>X</button><br />");
     var qrCode = new QRCode(document.getElementById('popover'), deviceTokenJSON);
 }
 
+//show popover
 function showPopover(value) {
     document.getElementById('popover').innerHTML = value;
     document.getElementById('popover').style.display = 'block';
     document.getElementById('overlay').style.display = 'block';
 }
 
+//close popover
 function closePopover() {
     document.getElementById('popover').style.display = 'none';
     document.getElementById('overlay').style.display = 'none';
 }
 
+//load a message to the user - false means red, true means green
 function loadMessage(success, message) {
     if (!success) document.getElementById("db-messages").style.backgroundColor = "#ff7f7f"
     else document.getElementById("db-messages").style.backgroundColor = "#84BE6A"
@@ -242,26 +250,20 @@ function loadMessage(success, message) {
 }
 
 
-/*
- *
- * Sign up checking functions below
- *
- *
- */
-
-function checkAll() {
-    document.getElementById("errors").innerHTML = ""
-    var pass = checkPasswords()
-    pass = checkName() && pass
-    pass = checkEmail() && pass
-    return pass;
-}
-
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //                                                                        SIGN UP CHECKS
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+
+
+function checkAll() {
+   document.getElementById("errors").innerHTML = ""
+   var pass = checkPasswords()
+   pass = checkName() && pass
+   pass = checkEmail() && pass
+   return pass;
+}
 
 function checkPasswords() {
     var pass1 = document.getElementById("pass1");
