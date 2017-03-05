@@ -48,6 +48,12 @@ function displayData(user) {
     //set up sidebar and welcome div
     document.getElementById("welcome").innerHTML = "Welcome, " + userDoc.name + "!";
     document.getElementById("space-links").innerHTML = "";
+
+    if (userDoc.spaces.length == 0) {
+      document.getElementById("db-table").style.border = "none";
+      document.getElementById("db-table").innerHTML = "<div style='text-align: center'>You haven't set up a space yet - click on the plus sign in the sidebar or visit the <a href='/help'>help page</a> to get started!</div>";
+      return;
+    }
     for (var space in userDoc.spaces) {
         document.getElementById("space-links").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this," + space + ")'>" + userDoc.spaces[space].name + "</a><button class='delete-space-button' onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'><img src='assets/close.png'></button><br/>"
     }
@@ -330,13 +336,28 @@ function uploadMedia(spaceRow, row) {
         loadMessage(false, "file type unsupported - try again");
         return;
       }
+
       fileReader.readAsArrayBuffer(fileObject.files[0]);
       fileReader.onload = function() {
-        var data = fileReader.result;
-        getSignedUrl(userDoc, spaceRow, row, fileObject.files[0], data);
+
+        if (fileObject.files[0].type.includes("jpeg") || fileObject.files[0].type.includes("png")) {
+          var image = new Image;
+
+          var data = fileReader.result;
+
+          image.onload = function() {
+            getSignedUrl(userDoc, spaceRow, row, fileObject.files[0], data, image.width, image.height);
+          }
+
+          image.src = URL.createObjectURL(fileObject.files[0]);
+        }
+        else {
+          var data = fileReader.result;
+          getSignedUrl(userDoc, spaceRow, row, fileObject.files[0], data, 300, 300);
+        }
       };
     }
-    console.log(fileObject);
+
 }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -369,7 +390,7 @@ function loadDevices() {
 
   for (var row = 1; row <= userDoc.devices.length; row++) {
       var rowV = table.insertRow(row);
-      console.log(userDoc.devices[row - 1])
+
       rowV.insertCell(0).innerHTML = userDoc.devices[row - 1].deviceName;
       rowV.insertCell(1).innerHTML = userDoc.devices[row - 1].spaceName;
       rowV.insertCell(2).innerHTML = "<a style='cursor: pointer;' onclick='generateQR(\"" + userDoc.devices[row - 1]._id + "\")'>qr</a> | <a style='cursor: pointer;' onclick='editDevice(" + (row - 1) + ")'>edit</a> | <a style='cursor: pointer;' onclick='deleteDevice(" + (row - 1) + ")'>delete</a>";
@@ -546,8 +567,6 @@ function loadMeshes() {
         var scene = new THREE.Scene();
 
         var camera = new THREE.PerspectiveCamera(35, 1, 1, 10000);
-        // camera.position.z = 1000;
-        // scene.userData.camera = camera;
 
         camera.position.z = 5;
         scene.userData.camera = camera;
@@ -571,7 +590,6 @@ function animate() {
     for (var i in scenes) {
         var mesh = scenes[i].children[0];
 
-        // mesh.rotation.x += 0.01;
         mesh.rotation.y += 0.015;
 
         var cell = scenes[i].userData.element;

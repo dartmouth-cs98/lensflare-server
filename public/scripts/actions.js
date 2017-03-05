@@ -33,7 +33,6 @@ function signIn() {
 
     }).catch((err) => {
         // alert the failure to the user
-        console.log(err);
         document.getElementById("message").innerHTML = "Authentication failed: " + err;
     })
 
@@ -44,20 +43,15 @@ function signUp() {
     var name = document.getElementById("name").value;
     var email = document.getElementById("email").value;
     var password = document.getElementById("pass1").value
-    console.log(name + " " + email + " " + password);
     if (checkAll()) {
         axios.post('/signUp', {
             'username': email,
             'password': password,
             'name': name
         }).then((res) => {
-
             window.location.href = "/";
-            console.log("Signup Complete");
-
         }).catch((err) => {
             // alert the failure to the user
-            console.log(err);
             document.getElementById("message").innerHTML = "Signup failed: " + err;
         })
     }
@@ -124,7 +118,6 @@ function editDeviceAction(deviceToken, deviceSpace, deviceName) {
             userDoc.devices[deviceInd].spaceName = deviceSpace
           }
         }
-        console.log(userDoc)
         loadDevices();
     });
 }
@@ -140,7 +133,7 @@ function loadSpaces() {
     }).then(function (resp) {
         displayData(resp.request.response);
     }).catch(function (error) {
-        console.log(error);
+        loadMessage(false, error)
     });
 }
 
@@ -158,14 +151,13 @@ function saveSpaces(userDoc) {
     });
 }
 
-function getSignedUrl(userDoc, spaceRow, row, file, fileBytes) {
+function getSignedUrl(userDoc, spaceRow, row, file, fileBytes, width, height) {
     axios.post('/sign-s3', {
         headers: {
             'content-type': 'application/json'
         }, file: file.name
     }).then(function (resp) {
-        console.log(resp);
-        userDoc.spaces[spaceRow].items[row].media = {'media_url': resp.data.url, 'type': file.type, 'width': 300, 'height': 300};
+        userDoc.spaces[spaceRow].items[row].media = {'media_url': resp.data.url, 'type': file.type, 'width': width, 'height': height};
         saveSpaces(userDoc);
         putS3Media(file, fileBytes, resp)
     }).catch(function (error) {
@@ -174,19 +166,15 @@ function getSignedUrl(userDoc, spaceRow, row, file, fileBytes) {
 }
 
 function putS3Media(file, fileBytes, resp) {
-    console.log("Trying to genrate a signed url");
-
     axios.put(resp.data.signedUrl, fileBytes, {
         headers: {
             'Content-Type': ''
         }
     }).then(function (resp) {
-        console.log(resp);
         closePopover();
         location.reload();
         // now save the url in the userDoc
     }).catch(function (error) {
-        console.log(error);
         loadMessage(false, "error uploading - try again")
     });
 }
@@ -268,6 +256,12 @@ function checkAll() {
     pass = checkEmail() && pass
     return pass;
 }
+
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//                                                                        SIGN UP CHECKS
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
+//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 function checkPasswords() {
     var pass1 = document.getElementById("pass1");
