@@ -36,11 +36,11 @@ window.addEventListener('resize', function () {
 function displayData(user) {
 
     //set up animation scene
-    canvas = document.getElementById("c");
-    renderer = new THREE.WebGLRenderer({canvas: canvas, alpha: true});
-    renderer.setSize(100, window.innerHeight);
-    renderer.setClearColor(0xffffff, 0);
-    canvas.style.left = (window.innerWidth - 120) + "px";
+    // canvas = document.getElementById("c");
+    // renderer = new THREE.WebGLRenderer({canvas: canvas, alpha: true});
+    // renderer.setSize(100, window.innerHeight);
+    // renderer.setClearColor(0xffffff, 0);
+    // canvas.style.left = (window.innerWidth - 120) + "px";
 
     //parse the userdoc
     userDoc = JSON.parse(user).local;
@@ -59,7 +59,7 @@ function displayData(user) {
     }
 
     //start animation with meshes
-    animate();
+    // animate();
 
     //if the URL has space in it already, load that space (or manage devuces)
     if (window.location.href.includes("/database?=")) {
@@ -127,7 +127,7 @@ function loadDatabaseInfo(space, spaceRow) {
     headerRow.insertCell(0).innerHTML = "Image"
     headerRow.insertCell(1).innerHTML = "Title"
     headerRow.insertCell(2).innerHTML = "Text"
-    headerRow.insertCell(3).innerHTML = "Mesh"
+    // headerRow.insertCell(3).innerHTML = "Mesh"
     for (var row = 1; row <= userDoc.spaces[spaceRow].items.length; row++) {
         var rowV = table.insertRow(row);
         rowV.insertCell(0).innerHTML = "<img height='auto' width='350px' src='" + userDoc.spaces[spaceRow].items[row - 1].url + "'>"
@@ -150,18 +150,18 @@ function loadDatabaseInfo(space, spaceRow) {
                                         "<br /><br /><br /><br /><div style='font-size: 12px'>current file: " + mediaUrl + "<br /><button class='upload-button' onclick='showPopover(\"" + popoverText + "\")'>edit media</button></div>";
 
 
-        rowV.insertCell(3);
+        // rowV.insertCell(3);
 
         rowV.style.height = "100px";
         rowV.cells[0].style.width = "175px";
         rowV.cells[1].style.width = "175px";
-        rowV.cells[3].style.width = "100px";
-        rowV.cells[3].setAttribute("name", "mesh");
-        rowV.cells[3].style.background = "none"
+        // rowV.cells[3].style.width = "100px";
+        // rowV.cells[3].setAttribute("name", "mesh");
+        // rowV.cells[3].style.background = "none"
     }
 
-    scenes = [];
-    loadMeshes();
+    // scenes = [];
+    // loadMeshes();
 }
 
 
@@ -329,7 +329,8 @@ function uploadMedia(spaceRow, row) {
     var fileReader = new FileReader();
     if (fileObject.files.length > 0) {
 
-      if (!(fileObject.files[0].type.includes("jpeg") || fileObject.files[0].type.includes("png") || fileObject.files[0].type.includes("ogg"))) {
+      console.log(fileObject.files[0].type)
+      if (!(fileObject.files[0].type.includes("text/plain") || fileObject.files[0].type.includes("jpeg") || fileObject.files[0].type.includes("png") || fileObject.files[0].type.includes("ogg"))) {
         loadMessage(false, "file type unsupported - try again");
         return;
       }
@@ -354,7 +355,6 @@ function uploadMedia(spaceRow, row) {
         }
       };
     }
-
 }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -550,53 +550,52 @@ function saveEditDevice(row) {
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
-function loadMeshes() {
-
-    var cells = document.getElementsByName('mesh');
-
-    var loader = new THREE.JSONLoader();
-    loader.load("scripts/gem.json", function(geometry) {
-      for (var i = 0; i < cells.length; i++) {
-        var cell = cells[i];
-
-        var scene = new THREE.Scene();
-
-        var camera = new THREE.PerspectiveCamera(35, 1, 1, 10000);
-
-        camera.position.z = 5;
-        scene.userData.camera = camera;
-        var material = new THREE.MeshBasicMaterial( {color: 0x3B3C59, wireframe: true} );
-        var mesh = new THREE.Mesh(geometry, material);
-        scene.add(mesh);
-        scene.userData.element = cell;
-        scenes.push(scene);
-        readyForAnimation = true;
-      }
-    })
-
-}
-
-function animate() {
-
-    renderer.setScissorTest(false);
-    renderer.clear();
-    renderer.setScissorTest(true);
-
-    for (var i in scenes) {
-        var mesh = scenes[i].children[0];
-
-        mesh.rotation.y += 0.015;
-
-        var cell = scenes[i].userData.element;
-
-        var rect = cell.getBoundingClientRect();
-
-        renderer.setViewport(0, renderer.domElement.clientHeight - rect.bottom + rect.height - 100, 100, 100);
-        renderer.setScissor(0, renderer.domElement.clientHeight - rect.bottom + rect.height - 100, 100, 100);
-
-        renderer.render(scenes[i], scenes[i].userData.camera)
-    }
-
-    requestAnimationFrame(animate);
-
-}
+// function loadMeshes() {
+//
+//     var cells = document.getElementsByName('mesh');
+//
+//     var loader = new THREE.JSONLoader();
+//     loader.load("scripts/gem.json", function(geometry) {
+//       for (var i = 0; i < cells.length; i++) {
+//         var cell = cells[i];
+//         var scene = new THREE.Scene();
+//         var camera = new THREE.PerspectiveCamera(35, 1, 1, 10000);
+//
+//         camera.position.z = 5;
+//         scene.userData.camera = camera;
+//         var material = new THREE.MeshBasicMaterial( {color: 0x3B3C59, wireframe: true} );
+//         var mesh = new THREE.Mesh(geometry, material);
+//
+//         scene.add(mesh);
+//         scene.userData.element = cell;
+//         scenes.push(scene);
+//         readyForAnimation = true;
+//       }
+//     })
+//
+// }
+//
+// function animate() {
+//
+//     renderer.setScissorTest(false);
+//     renderer.clear();
+//     renderer.setScissorTest(true);
+//
+//     for (var i in scenes) {
+//         var mesh = scenes[i].children[0];
+//
+//         mesh.rotation.y += 0.015;
+//
+//         var cell = scenes[i].userData.element;
+//
+//         var rect = cell.getBoundingClientRect();
+//
+//         renderer.setViewport(0, renderer.domElement.clientHeight - rect.bottom + rect.height - 100, 100, 100);
+//         renderer.setScissor(0, renderer.domElement.clientHeight - rect.bottom + rect.height - 100, 100, 100);
+//
+//         renderer.render(scenes[i], scenes[i].userData.camera)
+//     }
+//
+//     requestAnimationFrame(animate);
+//
+// }
