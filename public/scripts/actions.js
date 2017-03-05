@@ -122,7 +122,7 @@ function loadSpaces() {
             authorization: localStorage.getItem('token')
         }
     }).then(function (resp) {
-        displayData(resp.request.response);
+        displayWelcome(resp.request.response);
     }).catch(function (error) {
         loadMessage(false, error)
     });

@@ -32,6 +32,31 @@ window.addEventListener('resize', function () {
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 
 
+function displayWelcome(user) {
+    //parse the userdoc
+    userDoc = JSON.parse(user).local;
+
+    document.getElementById("welcome").innerHTML = "Welcome to Lensflare, " + userDoc.name + "!";
+
+}
+
+function displaySpaces() {
+    document.getElementById("welcome").innerHTML = ""
+    document.getElementById("db-name").innerHTML = "Spaces";
+    document.getElementById("db-table").innerHTML = "";
+    if (userDoc.spaces.length == 0) {
+      document.getElementById("db-table").style.border = "none";
+      document.getElementById("db-table").innerHTML = "<div style='text-align: center'>You haven't set up a space yet - click on the plus sign in the sidebar or visit the <a href='/help'>help page</a> to get started!</div>";
+    }
+
+    else {
+        document.getElementById("db-table").style.border = "none";
+        for (var space in userDoc.spaces) {
+            document.getElementById("db-table").innerHTML += "<div class='space-blocks'><a class='space-link' onclick='loadDatabaseInfo(this," + space + ")'>" + userDoc.spaces[space].name + "</a><button class='delete-space-button' onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'><img src='assets/close.png'></button></div>"
+        }
+    }
+}
+
 //displays the userdoc
 function displayData(user) {
 
@@ -42,21 +67,13 @@ function displayData(user) {
     // renderer.setClearColor(0xffffff, 0);
     // canvas.style.left = (window.innerWidth - 120) + "px";
 
-    //parse the userdoc
-    userDoc = JSON.parse(user).local;
 
     //set up sidebar and welcome div
-    document.getElementById("welcome").innerHTML = "Welcome, " + userDoc.name + "!";
-    document.getElementById("space-links").innerHTML = "";
+    // document.getElementById("space-links").innerHTML = "";
 
-    if (userDoc.spaces.length == 0) {
-      document.getElementById("db-table").style.border = "none";
-      document.getElementById("db-table").innerHTML = "<div style='text-align: center'>You haven't set up a space yet - click on the plus sign in the sidebar or visit the <a href='/help'>help page</a> to get started!</div>";
-      return;
-    }
-    for (var space in userDoc.spaces) {
-        document.getElementById("space-links").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this," + space + ")'>" + userDoc.spaces[space].name + "</a><button class='delete-space-button' onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'><img src='assets/close.png'></button><br/>"
-    }
+    // for (var space in userDoc.spaces) {
+    //     document.getElementById("space-links").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this," + space + ")'>" + userDoc.spaces[space].name + "</a><button class='delete-space-button' onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'><img src='assets/close.png'></button><br/>"
+    // }
 
     //start animation with meshes
     // animate();
@@ -122,8 +139,9 @@ function loadDatabaseInfo(space, spaceRow) {
     var table = document.getElementById("db-table");
     var header = table.createTHead();
     var headerRow = header.insertRow(0);
-    headerRow.style.backgroundColor = "#3B3C59";
-    headerRow.style.color = "#ffffff";
+    headerRow.style.background = "-webkit-linear-gradient(135deg, #4952FF, #88B7FF, #FDF6C0, #FFFFFF)"
+    headerRow.style.backgroundAttachment = "fixed"
+    headerRow.style.color = "black";
     headerRow.insertCell(0).innerHTML = "Image"
     headerRow.insertCell(1).innerHTML = "Title"
     headerRow.insertCell(2).innerHTML = "Text"
@@ -173,8 +191,8 @@ function manageDevices() {
 }
 
 function manageDevicesLoad() {
-      canvas = document.getElementById("c");
-      canvas.style.display = 'none';
+
+      document.getElementById("welcome").innerHTML = ""
       document.getElementById("db-name").innerHTML = "My Devices"
       document.getElementById("db-table").style.border = "none";
       loadDevices()
@@ -182,7 +200,7 @@ function manageDevicesLoad() {
 
 
 function reloadSidebar() {
-    document.getElementById("welcome").innerHTML = "Welcome, " + userDoc.name + "!";
+    // document.getElementById("welcome").innerHTML = "Welcome, " + userDoc.name + "!";
     document.getElementById("space-links").innerHTML = "";
     for (var space in userDoc.spaces) {
         document.getElementById("space-links").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this," + space + ")'>" + userDoc.spaces[space].name + "</a><button class='delete-space-button' onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'><img src='assets/close.png'></button><br/>"

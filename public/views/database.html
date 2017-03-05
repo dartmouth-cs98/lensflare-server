@@ -18,6 +18,7 @@
 
 <body onload="loadSpaces()">
 
+  <div class="topbar"><div class="topbar-color"></div>Lensflare</div>
 
   <div id='overlay' class='overlay'></div>
   <canvas id="c" style="z-index: 0"></canvas>
@@ -26,15 +27,17 @@
 
   <div id="db-messages" class="db-messages"></div>
   <div id="sidebar" class="sidebar">
-    <div class="spaces-title">Lensflare<img style="padding: 5px; padding-right: 10px; float: right" onclick="window.location.href = '/help'" src="assets/question.png"></div>
+    <!-- <div class="spaces-title">Lensflare<img style="padding: 5px; padding-right: 10px; float: right" onclick="window.location.href = '/help'" src="assets/question.png"></div> -->
 
-    <div id="welcome"></div>
-    <div style='font-size:12px; text-align:left'><a style='cursor: pointer;' onclick='manageDevices()'>manage my devices</a></div><br /><br />
+    <!-- <div id="welcome"></div> -->
+    <div style='font-size:14px; text-align:center'><a style='cursor: pointer;' onclick='displaySpaces()'><img style="padding-top: 40px;" src='assets/spaces.png'><br />Spaces</a></div><br />
+    <div style='font-size:14px; text-align:center'><a style='cursor: pointer;' onclick='manageDevicesLoad()'><img style="padding-top: 20px;" src='assets/devices.png'><br />Devices</a></div><br />
+    <div style='font-size:14px; text-align:center'><a style='cursor: pointer;' onclick='logout()'><img style="padding-top: 20px;" src='assets/logout.png'><br />Logout</a></div><br /><br />
     <div id="space-links"></div>
     <div id="new-space"></div>
 
     <!-- <br /><br /> -->
-    <div style='font-size:12px; text-align:center'><a style='cursor: pointer;' onclick='addSpace()'><img src="assets/add.png"></a></div>
+    <!-- <div style='font-size:12px; text-align:center'><a style='cursor: pointer;' onclick='addSpace()'><img src="assets/add.png">add</a></div> -->
     <br />
     <!-- <div style='font-size:12px; text-align:center'><a style='cursor: pointer;' onclick="addItemTest()">load mock data</a></div> -->
   </div>
@@ -42,12 +45,13 @@
   <div id="db-name" class="db-title"></div>
 
   <div id="content" class="db-content">
+    <div id="welcome"></div>
     <table id="db-table" class="db-table"style="z-index: 10"/>
   </div>
 
 
-  <div class="footer-box">
+  <!-- <div class="footer-box">
     <button class="logout" onclick="logout()" value="logout">logout</button>
-  </div>
+  </div> -->
 
 </body>
