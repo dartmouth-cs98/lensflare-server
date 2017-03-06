@@ -12,6 +12,7 @@
 }
 
 .spaces-title {
+  font-family: 'HelveticaNeue-CondenseBold';
   font-weight: bolder;
   color: white;
   font-size: 35px;
@@ -113,6 +114,20 @@
   cursor: pointer;
 }
 
+.item-blocks {
+  height: 300px;
+  width: 800px;
+  text-align: left;
+  display: inline-block;
+  margin-right: 35px;
+  margin-bottom: 35px;
+  /*border: 1px solid black;*/
+}
+
+.image-blocks {
+
+}
+
 .device-blocks {
   height: 250px;
   width: 100%;
@@ -131,6 +146,7 @@
 
 .topbar {
   font-family: 'Helvetica Neue';
+  font-weight: bolder;
   padding-left: 15px;
   padding-top: 20px;
   background-color: white;
@@ -138,7 +154,7 @@
   height: 99px;
   font-size: 75px;
   color: black;
-  border-bottom: 1px solid #dedede;
+  border-bottom: 1px solid #979797;
   position: relative;
   z-index: 10;
   margin-top: 0px;
@@ -154,7 +170,7 @@
   line-height: 200%;
   left: 0px;
   color: black;
-  border-right: 1px solid #dedede;
+  border-right: 1px solid #979797;
   padding-top: 120px;
   z-index: 0;
 }
@@ -270,19 +286,20 @@
   width: 100%;
   font-size: inherit;
   white-space: pre-wrap;
-  border: 1px solid #dbe1ff;
+  border: 1px solid #979797;
   border-radius: 4px;
   padding: 2px;
 }
 
 .input-text {
   font-family: 'Helvetica Neue', sans-serif;
-  width: 100%;
+  width: 92%;
   font-size: inherit;
   white-space: pre-wrap;
-  border: 1px solid #dbe1ff;
+  border: 1px solid #979797;
   border-radius: 4px;
   resize: none;
+  margin-right: 10px;
 }
 
 .delete-space-button {
@@ -350,7 +367,7 @@
   height: 100%;
 }
 
-#device-space-entry {
+.device-space-entry {
   font-family: 'Helvetica Neue', sans-serif;
   font-size: inherit;
   border: 1px solid #dbe1ff;
@@ -358,7 +375,7 @@
   resize: none;
 }
 
-#device-name-entry {
+.device-name-entry {
   font-family: 'Helvetica Neue', sans-serif;
   font-size: inherit;
   border: 1px solid #dbe1ff;

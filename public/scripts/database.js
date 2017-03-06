@@ -135,49 +135,57 @@ function loadDatabaseInfo(space, spaceRow) {
 
     //set up table with styling
     var table = document.getElementById("db-table");
-    // var header = table.createTHead();
-    // var headerRow = header.insertRow(0);
-    // headerRow.style.background = "-webkit-linear-gradient(135deg, #4952FF, #88B7FF, #FDF6C0, #FFFFFF)"
-    // headerRow.style.backgroundAttachment = "fixed"
-    // headerRow.style.color = "black";
-    // headerRow.insertCell(0).innerHTML = "Image"
-    // headerRow.insertCell(1).innerHTML = "Title"
-    // headerRow.insertCell(2).innerHTML = "Text"
-    // headerRow.insertCell(3).innerHTML = "Mesh"
+
     for (var row = 0; row < userDoc.spaces[spaceRow].items.length; row++) {
-        var rowV = table.insertRow(row);
-        rowV.insertCell(0).innerHTML = "<img height='auto' width='350px' src='" + userDoc.spaces[spaceRow].items[row].url + "'>"
-        rowV.insertCell(1).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row) + "," + 1 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].title;
-        rowV.insertCell(2).innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row) + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].text +
-                                        "<br /><br /><br /><br /><input class='upload-button' id='upload-" + spaceRow + "-" + (row) + "' type='file'><button class='upload-button' type='button' onclick='uploadMedia(" + spaceRow + "," + (row) + ")'>upload media</button>";
+      var mediaUrl = "none"
 
-        var mediaUrl = "none currently uploaded"
+      var popoverText = "<button class=\\\"qr-close-button\\\" type=\\\"button\\\" onclick=\\\"closePopover()\\\">X</button>" +
+                    "Upload New Media<br /><br /><div style=\\\"font-size: 12px\\\">supported file types:<br />jpeg & png images, " +
+                    "ogg videos</div><div style=\\\"text-align: center\\\"><br /><label class=\\\"upload-button\\\"><input accept=\\\"image/png, " +
+                    "image/jpeg, video/ogg\\\" onchange=\\\"uploadMedia(" + spaceRow + "," + row + ")\\\" style=\\\"border: none\\\" class=\\\"upload-button\\\" id=\\\"upload-" +
+                    spaceRow + "-" + row + "\\\" type=\\\"file\\\">choose file</label>";
 
-        if (userDoc.spaces[spaceRow].items[row].media != null && typeof(userDoc.spaces[spaceRow].items[row].media.media_url) != 'undefined') {
+      if (userDoc.spaces[spaceRow].items[row].media == null || typeof(userDoc.spaces[spaceRow].items[row].media.media_url) == 'undefined') {
+
+        var uploadButton = "<label class='upload-button'><input accept='image/png, " +
+        "image/jpeg, video/ogg' onchange='uploadMedia(" + spaceRow + "," + row + ")' style='border: none' class='upload-button' id='upload-" +
+        spaceRow + "-" + row + "' type='file'>switch to media</label>"
+        // table.innerHTML += "<div class='item-blocks'><div style='width: 533px; height: 300px; float: left' id='space-" + spaceRow + "-item-" + row + "-image'></div>" +
+        //                   "<div style='width: 200px; height: 300px; padding-left: 25px; display: inline-block; position: relative'>current media:<br /><br />" + mediaUrl + "<input class='upload-button' id='upload-" + spaceRow + "-" + row + "' type='file'><button class='upload-button' type='button' onclick='showPopover(\"" + popoverText + "\")'>upload new media</button><div style='position: absolute; bottom: 0'><button class='upload-button' type='button' onclick='deleteMedia(" + spaceRow + "," + row + ")'>delete media & switch to text</button></div>" +
+        //               "</div></div>"
+
+        table.innerHTML += "<div class='item-blocks'><div style='width: 533px; height: 300px; float: left' id='space-" + spaceRow + "-item-" + row + "-image'></div>" + //<img style='float: left' height='auto' width='400px' src='" + userDoc.spaces[spaceRow].items[row].url +
+                          "<div style='width: 200px; height: 300px; padding-left: 25px; display: inline-block; position: relative'>" +
+                            "<div id='space-" + spaceRow + "-item-" + row + "-titleActions'>" +
+                              "<button class='edit-button' type='button' onclick='editTitle(" + spaceRow + "," + row + ")'>edit</button>" +
+                            "</div>" +
+                            "<br /><div style='padding-bottom: 30px;' id='space-" + spaceRow + "-item-" + row + "-title'>" + userDoc.spaces[spaceRow].items[row].title + "</div>" +
+                          "<div id='space-" + spaceRow + "-item-" + row + "-textActions'>" +
+                            "<button class='edit-button' type='button' onclick='editText(" + spaceRow + "," + row + ")'>edit</button>" +
+                          "</div>" +
+                          "<br /><div id='space-" + spaceRow + "-item-" + row + "-text'>"
+                            + userDoc.spaces[spaceRow].items[row].text +
+                          "</div><br /><br /><div style='position: absolute; bottom: 0'>" + uploadButton + "</div>" +
+                          "</div></div>"
+        }
+        else {
           var split = userDoc.spaces[spaceRow].items[row].media.media_url.split('/');
           if (split.length > 0) {
-            mediaUrl = "<a href=\"" + userDoc.spaces[spaceRow].items[row].media.media_url + "\">" + split[split.length - 1] + "</a>"
+            mediaUrl = "<div style='display: inline-block;'><img width='100%' src=\"" + userDoc.spaces[spaceRow].items[row].media.media_url + "\"></div>"
           }
+
+          table.innerHTML += "<div class='item-blocks'><div style='display: inline-block; width: 533px; height: 300px; float: left' id='space-" + spaceRow + "-item-" + row + "-image'></div>" +
+                            "<div style='width: 200px; height: 300px; padding-left: 25px; display: inline-block; position: relative'>current media:<br />" + mediaUrl + "<input class='upload-button' id='upload-" + spaceRow + "-" + row + "' type='file'><button class='upload-button' type='button' onclick='showPopover(\"" + popoverText + "\")'>upload new media</button><div style='position: absolute; bottom: 0'><button class='upload-button' type='button' onclick='deleteMedia(" + spaceRow + "," + row + ")'>delete media & switch to text</button></div>" +
+                        "</div></div>"
         }
 
-        var popoverText = "<button class=\\\"qr-close-button\\\" type=\\\"button\\\" onclick=\\\"closePopover()\\\">X</button>" +
-                      "Upload New Media<br /><br /><div style=\\\"font-size: 12px\\\">supported file types:<br />jpeg & png images, ogg videos</div><div style=\\\"text-align: center\\\"><br /><label class=\\\"upload-button\\\"><input accept=\\\"image/png, image/jpeg, video/ogg\\\" onchange=\\\"updateFileName(this)\\\" style=\\\"border: none\\\" class=\\\"upload-button\\\" id=\\\"upload-" + spaceRow + "-" + (row) + "\\\" type=\\\"file\\\">choose file</label> | <button class=\\\"upload-button\\\" type=\\\"button\\\" onclick=\\\"uploadMedia(" + spaceRow + "," + (row) + ")\\\">upload</button><div id=\\\"file-name\\\"></div></div>";
-        rowV.cells[2].innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + (row) + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].text +
-                                        "<br /><br /><br /><br /><div style='font-size: 12px'>current file: " + mediaUrl + "<br /><button class='upload-button' onclick='showPopover(\"" + popoverText + "\")'>edit media</button></div>";
+      var image = document.getElementById("space-" + spaceRow + "-item-" + row + "-image");
+      image.style.backgroundImage = "url('" + userDoc.spaces[spaceRow].items[row].url + "')";
+      image.style.backgroundSize = "cover";
+      image.style.backgroundPosition = "center";
 
-
-        // rowV.insertCell(3);
-
-        rowV.style.height = "100px";
-        rowV.cells[0].style.width = "175px";
-        rowV.cells[1].style.width = "175px";
-        // rowV.cells[3].style.width = "100px";
-        // rowV.cells[3].setAttribute("name", "mesh");
-        // rowV.cells[3].style.background = "none"
     }
 
-    // scenes = [];
-    // loadMeshes();
 }
 
 
@@ -235,6 +243,55 @@ function saveNewSpace() {
     displaySpaces();
 }
 
+function editTitle(spaceRow, row) {
+  var item = document.getElementById("space-" + spaceRow + "-item-" + row + "-title");
+  var actions = document.getElementById("space-" + spaceRow + "-item-" + row + "-titleActions");
+  actions.innerHTML = "<button class='edit-button' type='button' onclick='saveTitle(" + spaceRow + "," + row + ")'>done</button> <button class='edit-button' type='button' onclick='cancelTitle(" + spaceRow + "," + row + ")'>cancel</button>";
+  item.innerHTML = "<input type='text' class='input-text' name='input-box' rows='3' id='space-" + spaceRow + "-item-" + row + "-input-title' value=''>" + startText + "</input>";
+}
+
+function saveTitle(spaceRow, row) {
+  var item = document.getElementById("space-" + spaceRow + "-item-" + row + "-title");
+  var actions = document.getElementById("space-" + spaceRow + "-item-" + row + "-titleActions");
+  var inputBox = document.getElementById("space-" + spaceRow + "-item-" + row + "-input-title")
+  userDoc.spaces[spaceRow].items[row].title = inputBox.value;
+  item.innerHTML = inputBox.value;
+  actions.innerHTML = "<button class='edit-button' type='button' onclick='editTitle(" + spaceRow + "," + row + ")'>edit</button>";
+  saveSpaces(userDoc);
+}
+
+function cancelTitle(spaceRow, row) {
+  var item = document.getElementById("space-" + spaceRow + "-item-" + row + "-title");
+  var actions = document.getElementById("space-" + spaceRow + "-item-" + row + "-titleActions");
+  item.innerHTML = userDoc.spaces[spaceRow].items[row].title;
+  actions.innerHTML = "<button class='edit-button' type='button' onclick='editTitle(" + spaceRow + "," + row + ")'>edit</button>";
+}
+
+function saveText(spaceRow, row) {
+  var item = document.getElementById("space-" + spaceRow + "-item-" + row + "-text");
+  var actions = document.getElementById("space-" + spaceRow + "-item-" + row + "-textActions");
+  var inputBox = document.getElementById("space-" + spaceRow + "-item-" + row + "-input-text")
+  userDoc.spaces[spaceRow].items[row].text = inputBox.value;
+  item.innerHTML = inputBox.value;
+  actions.innerHTML = "<button class='edit-button' type='button' onclick='editText(" + spaceRow + "," + row + ")'>edit</button>";
+  saveSpaces(userDoc);
+}
+
+function editText(spaceRow, row) {
+  var item = document.getElementById("space-" + spaceRow + "-item-" + row + "-text");
+  var actions = document.getElementById("space-" + spaceRow + "-item-" + row + "-textActions");
+  actions.innerHTML = "<button class='edit-button' type='button' onclick='saveText(" + spaceRow + "," + row + ")'>done</button> <button class='edit-button' type='button' onclick='cancelText(" + spaceRow + "," + row + ")'>cancel</button>";
+  item.innerHTML = "<textarea class='input-text' name='input-box' rows='3' id='space-" + spaceRow + "-item-" + row + "-input-text' value=''>" + startText + "</textarea>";
+}
+
+function cancelText(spaceRow, row) {
+  var item = document.getElementById("space-" + spaceRow + "-item-" + row + "-text");
+  var actions = document.getElementById("space-" + spaceRow + "-item-" + row + "-textActions");
+  item.innerHTML = userDoc.spaces[spaceRow].items[row].text;
+  actions.innerHTML = "<button class='edit-button' type='button' onclick='editText(" + spaceRow + "," + row + ")'>edit</button>";
+}
+
+
 function edit(spaceRow, row, col) {
     if (currCellRow != -1) {
         cancel(spaceRow, currCellRow, currCellCol)
@@ -245,7 +302,6 @@ function edit(spaceRow, row, col) {
     startText = cell.innerText;
     if (col == 1) startText = userDoc.spaces[spaceRow].items[row].title;
     else startText = userDoc.spaces[spaceRow].items[row].text;
-
 
     cell.innerHTML = "<form action='/save' method='post'><button class='edit-button' type='button' onclick='save(" + spaceRow + "," + row + "," + col + ")'>done</button> <button class='edit-button' type='button' onclick='cancel(" + spaceRow + "," + row + "," + col + ")'>cancel</button><textarea class='input-text' name='input-box' rows='3' id='input-box' value=''>" + startText + "</textarea></form>";
 
@@ -357,6 +413,12 @@ function uploadMedia(spaceRow, row) {
     }
 }
 
+function deleteMedia(spaceRow, row) {
+  userDoc.spaces[spaceRow].items[row].media = null;
+  saveSpaces(userDoc);
+  loadDatabaseInfo(userDoc.spaces[spaceRow].name, spaceRow);
+}
+
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //                                                                        DEVICE MANAGEMENT
@@ -374,18 +436,6 @@ function loadDevices() {
       return;
   }
 
-  // else {
-  //     document.getElementById("db-table").style.border = "none";
-  //     for (var row in userDoc.devices) {
-  //       document.getElementById("db-table").innerHTML += "<div class='space-blocks'><img width='100%' src='assets/device.png'>" +
-  //       "<br />" + userDoc.devices[row].deviceName + " for " + userDoc.devices[row].spaceName + "<br /><a style='cursor: pointer;' onclick='generateQR(\"" + userDoc.devices[row]._id + "\")'>qr</a> | <a style='cursor: pointer;' onclick='editDevice(" + row +
-  //       ")'>edit</a> | <a style='cursor: pointer;' onclick='deleteDevice(" + row + ")'>delete</a></div>";
-  //
-  //     }
-  //     document.getElementById("db-table").innerHTML += "<div id='new-space-block' class='space-blocks'><img onclick='addSpace()' width='100%' style='padding-bottom: 21px' src='assets/addholder.png'></div>"
-  //
-  // }
-
   var table = document.getElementById("db-table");
 
   for (var row = 0; row < userDoc.devices.length; row++) {
@@ -393,9 +443,11 @@ function loadDevices() {
       var rowW = table.insertRow(row * 2 + 1);
       rowV.insertCell(0);
       rowW.insertCell(0);
-      rowV.cells[0].innerHTML = "<img src='assets/dev.svg' height='100%'>";
+      rowV.cells[0].style.backgroundImage = "url('assets/dev.svg')";
+      rowV.cells[0].style.backgroundSize = "cover";
+      rowV.cells[0].style.backgroundPosition = "center";
       rowV.cells[0].style.textAlign = "center"
-      rowW.cells[0].innerHTML = "Name: <div style='display: inline-block' id='device-name-row-" + row + "'>" + userDoc.devices[row].deviceName + "</div>" +
+      rowW.cells[0].innerHTML = "<div style='padding-top: 30px; width: 400px; display: inline-block'>Name: <div style='display: inline-block' id='device-name-row-" + row + "'>" + userDoc.devices[row].deviceName + "</div></div>" +
                         "<div style='display: inline-block; float: right' id='device-actions-row-" + row + "'><a style='cursor: pointer;' onclick='generateQR(\"" + userDoc.devices[row]._id +
                         "\")'><figure style='font-size: 14px; text-align:center; display: inline-block'><img src='assets/qr.png'><figcaption>QR</figcaption></figure></a><a style='cursor: pointer;' onclick='editDevice(" + row +
                         ")'><figure style='font-size: 14px; text-align:center; display: inline-block'><img src='assets/edit.png'><figcaption>Edit</figcaption></figure></a><a style='cursor: pointer;' onclick='deleteDevice(" + row +
@@ -457,7 +509,9 @@ function addNewDevice(row) {
 
   rowV.insertCell(0);
   rowW.insertCell(0);
-  rowV.cells[0].innerHTML = "<img src='assets/dev.svg' height='100%'>";
+  rowV.cells[0].style.backgroundImage = "url('assets/dev.svg')";
+  rowV.cells[0].style.backgroundSize = "cover";
+  rowV.cells[0].style.backgroundPosition = "center";
   rowV.cells[0].style.textAlign = "center"
 
   var options = "<select id='device-space-entry' name='spaces'>";
@@ -472,7 +526,7 @@ function addNewDevice(row) {
                     "</a><a style='cursor: pointer;' onclick='cancelNewDevice(" + row + ")'><figure style='font-size: 14px; text-align:center; display: inline-block'><img src='assets/delete.png'><figcaption>Cancel</figcaption></figure></a>" +
                     "</div><div style='display: inline-block; padding-left: 150px;'>Space: <div style='display: inline-block' id='device-space-row-" + row + "'>" + options + "</div></div>";
 
-  rowV.style.backgroundColor = "#dedede"
+  // rowV.style.backgroundColor = "#dedede"
   rowW.style.backgroundColor = "white"
   rowV.cells[0].style.height = "150px"
   rowW.cells[0].style.height = "50px"
@@ -532,9 +586,9 @@ function editDevice(row) {
   var initName = deviceName.innerHTML;
   var initSpace = deviceSpace.innerHTML;
 
-  deviceName.innerHTML = "<input maxlength='18' id='device-name-entry' type='text' value='" + deviceName.innerHTML + "'>";
+  deviceName.innerHTML = "<input maxlength='18' class='device-name-entry' id='device-name-entry-row-" + row + "' type='text' value='" + deviceName.innerHTML + "'>";
 
-  var options = "<select id='device-space-entry' name='spaces'>";
+  var options = "<select class='device-space-entry' id='device-space-entry-row-" + row + "' name='spaces'>";
   for (var space in userDoc.spaces) {
       options += "<option value=\"" + userDoc.spaces[space].name + "\">" + userDoc.spaces[space].name + "</option>";
   }
@@ -558,13 +612,13 @@ function cancelEditDevice(row, name, space) {
   deviceActions.innerHTML = "<a style='cursor: pointer;' onclick='generateQR(\"" + userDoc.devices[row]._id +
                 "\")'><figure style='font-size: 14px; text-align:center; display: inline-block'><img src='assets/qr.png'><figcaption>QR</figcaption></figure></a><a style='cursor: pointer;' onclick='editDevice(" + row +
                 ")'><figure style='font-size: 14px; text-align:center; display: inline-block'><img src='assets/edit.png'><figcaption>Edit</figcaption></figure></a><a style='cursor: pointer;' onclick='deleteDevice(" + row +
-                ")'><figure style='font-size: 14px; text-align:center; display: inline-block'><img src='assets/delete.png'><figcaption>Delete</figcaption></figure></a></div><div style='display: inline-block; padding-left: 150px;'>Space: <div style='display: inline-block' id='device-space-row-" + row + "'>" + userDoc.devices[row].spaceName + "</div>";
+                ")'><figure style='font-size: 14px; text-align:center; display: inline-block'><img src='assets/delete.png'><figcaption>Delete</figcaption></figure></a></div>";
 
 }
 
 function saveEditDevice(row) {
-  var name = document.getElementById("device-name-entry").value;
-  var space = document.getElementById("device-space-entry").value;
+  var name = document.getElementById("device-name-entry-row-" + row).value;
+  var space = document.getElementById("device-space-entry-row-" + row).value;
 
   if (name == "") {
       loadMessage(false, "please enter a name and try again")

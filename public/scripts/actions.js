@@ -116,6 +116,9 @@ function editDeviceAction(deviceToken, deviceSpace, deviceName) {
           }
         }
         loadDevices();
+        loadMessage(true, "device saved")
+    }).catch(function (error) {
+        loadMessage(false, error)
     });
 }
 
@@ -159,22 +162,23 @@ function getSignedUrl(userDoc, spaceRow, row, file, fileBytes, width, height) {
     }).then(function (resp) {
         userDoc.spaces[spaceRow].items[row].media = {'media_url': resp.data.url, 'type': file.type, 'width': width, 'height': height};
         saveSpaces(userDoc);
-        putS3Media(file, fileBytes, resp)
+        putS3Media(file, fileBytes, resp, spaceRow)
     }).catch(function (error) {
         loadMessage(false, "error uploading - try again")
     });
 }
 
 //put the actual media file in S3
-function putS3Media(file, fileBytes, resp) {
+function putS3Media(file, fileBytes, resp, spaceRow) {
     axios.put(resp.data.signedUrl, fileBytes, {
         headers: {
             'Content-Type': ''
         }
     }).then(function (resp) {
-        closePopover();
-        location.reload();
         // now save the url in the userDoc
+        loadDatabaseInfo(userDoc.spaces[spaceRow].name, spaceRow);
+        closePopover();
+        loadMessage(true, "saved successfully")
     }).catch(function (error) {
         loadMessage(false, "error uploading - try again")
     });
