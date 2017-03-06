@@ -392,33 +392,27 @@ function loadDevices() {
       var rowV = table.insertRow(row * 2);
       var rowW = table.insertRow(row * 2 + 1);
       rowV.insertCell(0);
-      // rowW.insertCell(0);
-      rowV.insertCell(1).innerHTML = "Name:";
-      rowW.insertCell(0).innerHTML = "Space:";
-      rowV.insertCell(2).innerHTML = "<div id='device-name-row-" + row + "'>" + userDoc.devices[row].deviceName + "</div>";
-      rowW.insertCell(1).innerHTML = "<div id='device-space-row-" + row + "'>" + userDoc.devices[row].spaceName + "</div>";
-      rowV.insertCell(3).innerHTML = "<div id='device-actions-row-" + row + "'><a style='cursor: pointer;' onclick='generateQR(\"" + userDoc.devices[row]._id + "\")'><img src='assets/qr.png'><br />QR</a><br /><br /><a style='cursor: pointer;' onclick='editDevice(" + row + ")'><img src='assets/edit.png'><br />Edit</a><br /><br /><a style='cursor: pointer;' onclick='deleteDevice(" + row + ")'><img src='assets/delete.png'><br />Delete</a></div>";
-      // rowV.cells[0].style.width = "45%";
-      rowV.cells[0].innerHTML = "<img width='65%' src='assets/dev.svg'>";
-      rowV.cells[0].style.width = "600px";
-      rowV.cells[0].rowSpan = "2";
-      rowV.cells[1].style.width = "50px";
-      rowV.cells[3].style.width = "100px";
-      rowV.cells[3].rowSpan = "2";
-      rowV.cells[3].style.textAlign = "center";
+      rowW.insertCell(0);
+      rowV.cells[0].innerHTML = "<img src='assets/dev.svg' height='100%'>";
+      rowV.cells[0].style.textAlign = "center"
+      rowW.cells[0].innerHTML = "Name: <div style='display: inline-block' id='device-name-row-" + row + "'>" + userDoc.devices[row].deviceName + "</div>" +
+                        "<div style='display: inline-block; float: right' id='device-actions-row-" + row + "'><a style='cursor: pointer;' onclick='generateQR(\"" + userDoc.devices[row]._id +
+                        "\")'><figure style='font-size: 14px; text-align:center; display: inline-block'><img src='assets/qr.png'><figcaption>QR</figcaption></figure></a><a style='cursor: pointer;' onclick='editDevice(" + row +
+                        ")'><figure style='font-size: 14px; text-align:center; display: inline-block'><img src='assets/edit.png'><figcaption>Edit</figcaption></figure></a><a style='cursor: pointer;' onclick='deleteDevice(" + row +
+                        ")'><figure style='font-size: 14px; text-align:center; display: inline-block'><img src='assets/delete.png'><figcaption>Delete</figcaption></figure></a></div><div style='display: inline-block; padding-left: 150px;'>Space: <div style='display: inline-block' id='device-space-row-" + row + "'>" + userDoc.devices[row].spaceName + "</div></div>";
+
       rowV.style.backgroundColor = "#dedede"
-      rowW.style.backgroundColor = "#dedede"
-      rowW.style.borderBottom = "55px solid white"
-      rowW.style.height = "25px"
-      rowV.style.height = "25px"
-      rowW.style.fontSize = "20px"
-      rowV.style.fontSize = "20px"
-      rowV.cells[3].style.borderBottom = "55px solid white"
+      rowW.style.backgroundColor = "white"
+      rowV.cells[0].style.height = "150px"
+      rowW.cells[0].style.height = "50px"
+      rowW.cells[0].style.verticalAlign = "middle"
+      rowW.style.fontSize = "25px"
+      rowV.style.fontSize = "25px"
   }
 
 
   var rowV = table.insertRow(row * 2);
-  rowV.insertCell(0).innerHTML = "<div style='text-align: center'><button class='db-name-save-button' id='device-add-button' onclick='addNewDevice(" + (row * 2) + ")'><img src='assets/add.png'></button></div>";
+  rowV.insertCell(0).innerHTML = "<div style='text-align: center'><button class='db-name-save-button' id='device-add-button' onclick='addNewDevice(" + (row * 2) + ")'><img src='assets/addB.png'></button></div>";
   rowV.cells[0].style.border = "none";
   rowV.cells[0].colSpan = "4";
 
@@ -463,9 +457,8 @@ function addNewDevice(row) {
 
   rowV.insertCell(0);
   rowW.insertCell(0);
-  rowV.insertCell(1).innerHTML = "Name:";
-  rowW.insertCell(1).innerHTML = "Space:";
-  rowV.insertCell(2).innerHTML = "<input maxlength='15' id='device-name-entry' type='text' value=''>";
+  rowV.cells[0].innerHTML = "<img src='assets/dev.svg' height='100%'>";
+  rowV.cells[0].style.textAlign = "center"
 
   var options = "<select id='device-space-entry' name='spaces'>";
   for (var space in userDoc.spaces) {
@@ -473,27 +466,22 @@ function addNewDevice(row) {
   }
   options += "</select>"
 
-  rowW.insertCell(2).innerHTML = options;
-  rowV.insertCell(3).innerHTML = "<div id='device-actions-row-" + row + "'><a style='cursor: pointer;' onclick='saveNewDevice(" + row + ")'><img src='assets/save.png'><br />Save</a><br /><br /><a style='cursor: pointer;' onclick='cancelNewDevice(" + row + ")'><img src='assets/delete.png'><br />Cancel</a></div>";
-  // rowV.cells[0].style.width = "45%";
-  rowV.cells[0].innerHTML = "<img src='assets/devices.png'>";
-  rowV.cells[1].style.width = "50px";
-  rowV.cells[2].style.width = "50px";
-  rowV.cells[3].style.width = "100px";
-  rowV.cells[3].rowSpan = "2";
-  rowV.cells[3].style.textAlign = "center";
+  rowW.cells[0].innerHTML = "Name: <div style='display: inline-block' id='device-name-row-" + row + "'><input maxlength='15' id='device-name-entry' type='text' value=''></div>" +
+                    "<div style='display: inline-block; float: right' id='device-actions-row-" + row + "'>" +
+                    "<a style='cursor: pointer;' onclick='saveNewDevice(" + row + ")'><figure style='font-size: 14px; text-align:center; display: inline-block'><img src='assets/save.png'><figcaption>Save</figcaption></figure>" +
+                    "</a><a style='cursor: pointer;' onclick='cancelNewDevice(" + row + ")'><figure style='font-size: 14px; text-align:center; display: inline-block'><img src='assets/delete.png'><figcaption>Cancel</figcaption></figure></a>" +
+                    "</div><div style='display: inline-block; padding-left: 150px;'>Space: <div style='display: inline-block' id='device-space-row-" + row + "'>" + options + "</div></div>";
+
   rowV.style.backgroundColor = "#dedede"
-  rowW.style.backgroundColor = "#dedede"
-  rowW.style.borderBottom = "55px solid white"
-  rowW.style.height = "25px"
-  rowV.style.height = "25px"
-  rowW.style.fontSize = "20px"
-  rowV.style.fontSize = "20px"
-  rowV.cells[3].style.borderBottom = "55px solid white"
+  rowW.style.backgroundColor = "white"
+  rowV.cells[0].style.height = "150px"
+  rowW.cells[0].style.height = "50px"
+  rowW.cells[0].style.verticalAlign = "middle"
+  rowW.style.fontSize = "25px"
+  rowV.style.fontSize = "25px"
 
   document.getElementById("device-add-button").disabled = true;
 
-  rowV.cells[2].style.textAlign = "center";
 }
 
 function saveNewDevice(row) {
@@ -553,7 +541,11 @@ function editDevice(row) {
   options += "</select>"
   deviceSpace.innerHTML = options;
 
-  deviceActions.innerHTML = "<a style='cursor: pointer;' onclick='saveEditDevice(" + row + ")'><img src='assets/save.png'><br />Save</a><br /><br /><a style='cursor: pointer;' onclick='cancelEditDevice(" + row + ",\"" + initName + "\",\"" + initSpace + "\")'><img src='assets/delete.png'><br />Cancel</a>";
+
+  deviceActions.innerHTML = "<a style='cursor: pointer;' onclick='saveEditDevice(" + row + ")'><figure style='font-size: 14px; text-align:center; display: inline-block'><img src='assets/save.png'><figcaption>Save</figcaption></figure>" +
+                    "</a><a style='cursor: pointer;' onclick='cancelEditDevice(" + row + ",\"" + initName + "\",\"" + initSpace + "\")'><figure style='font-size: 14px; text-align:center; display: inline-block'><img src='assets/delete.png'><figcaption>Cancel</figcaption></figure></a>"
+                    "</div><div style='display: inline-block; padding-left: 150px;'>Space: <div style='display: inline-block' id='device-space-row-" + row + "'>" + options + "</div>";
+
 }
 
 function cancelEditDevice(row, name, space) {
@@ -563,7 +555,11 @@ function cancelEditDevice(row, name, space) {
 
   deviceName.innerHTML = name;
   deviceSpace.innerHTML = space;
-  deviceActions.innerHTML = "<div id='device-actions-row-" + row + "'><a style='cursor: pointer;' onclick='generateQR(\"" + userDoc.devices[row]._id + "\")'><img src='assets/qr.png'><br />QR</a><br /><br /><a style='cursor: pointer;' onclick='editDevice(" + row + ")'><img src='assets/edit.png'><br />Edit</a><br /><br /><a style='cursor: pointer;' onclick='deleteDevice(" + row + ")'><img src='assets/delete.png'><br />Delete</a></div>";
+  deviceActions.innerHTML = "<a style='cursor: pointer;' onclick='generateQR(\"" + userDoc.devices[row]._id +
+                "\")'><figure style='font-size: 14px; text-align:center; display: inline-block'><img src='assets/qr.png'><figcaption>QR</figcaption></figure></a><a style='cursor: pointer;' onclick='editDevice(" + row +
+                ")'><figure style='font-size: 14px; text-align:center; display: inline-block'><img src='assets/edit.png'><figcaption>Edit</figcaption></figure></a><a style='cursor: pointer;' onclick='deleteDevice(" + row +
+                ")'><figure style='font-size: 14px; text-align:center; display: inline-block'><img src='assets/delete.png'><figcaption>Delete</figcaption></figure></a></div><div style='display: inline-block; padding-left: 150px;'>Space: <div style='display: inline-block' id='device-space-row-" + row + "'>" + userDoc.devices[row].spaceName + "</div>";
+
 }
 
 function saveEditDevice(row) {
