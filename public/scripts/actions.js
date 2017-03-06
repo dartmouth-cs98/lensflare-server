@@ -65,7 +65,14 @@ function clearSpaceConfirmed(spaceName) {
             authorization: localStorage.getItem('token')
         }
     }).then(function (resp) {
-        window.location.reload();
+        // window.location.reload();
+        for (var space in userDoc.spaces) {
+          if (userDoc.spaces[space].name == spaceName) {
+            userDoc.spaces.splice(space, 1)
+            break;
+          }
+        }
+        displaySpaces();
     });
 }
 

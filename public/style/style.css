@@ -40,7 +40,6 @@
 
 .db-content {
   font-weight: 200;
-  padding-top: 15px;
   padding-left: 145px;
   padding-right: 45px;
 }
@@ -78,8 +77,7 @@
   font-weight: 300;
   color: black;
   font-size: inherit;
-  padding-bottom: 5px;
-  width: 135px;
+  width: 175px;
 }
 
 .db-name-save-button {
@@ -87,7 +85,6 @@
   font-weight: 300;
   color: black;
   font-size: 15px;
-  padding-bottom: 5px;
   cursor: pointer;
 }
 
@@ -109,13 +106,25 @@
   height: 250px;
   width: 350px;
   text-align: center;
-  background: #8c9eff;
+  display: inline-block;
+  margin-right: 35px;
+  margin-bottom: 35px;
+  cursor: pointer;
+}
+
+.device-blocks {
+  height: 250px;
+  width: 100%;
+  text-align: center;
+  display: inline-block;
+  margin: 15px;
+  cursor: pointer;
 }
 
 .space-link {
-  font-size: 50px;
+  font-size: 25px;
   top: 150px;
-  color: white;
+  color: black;
   cursor: pointer;
 }
 
@@ -128,7 +137,7 @@
   height: 99px;
   font-size: 75px;
   color: black;
-  border-bottom: 1px solid black;
+  border-bottom: 1px solid #dedede;
   position: relative;
   z-index: 10;
   margin-top: 0px;
@@ -144,7 +153,7 @@
   line-height: 200%;
   left: 0px;
   color: black;
-  border-right: 1px solid black;
+  border-right: 1px solid #dedede;
   padding-top: 120px;
   z-index: 0;
 }
@@ -156,8 +165,9 @@
 
 .db-table td {
   vertical-align: top;
-  padding: 7px;
-  border: 1px solid black;
+  padding: 25px;
+  padding-bottom: 80px;
+  border: none;
 }
 
 .db-table {
@@ -206,7 +216,7 @@
   background: white;
   border: 1px solid black;
   padding: 10px;
-  z-index: 10;
+  z-index: 150;
 }
 
 .overlay {
@@ -218,7 +228,7 @@
   opacity: 0.5;
   background: black;
   display: none;
-  z-index: 1;
+  z-index: 100;
 }
 
 .qr-close-button {
@@ -277,11 +287,6 @@
 .delete-space-button {
   background-color: inherit;
   border: none;
-  color: white;
-  font-family: 'Helvetica Neue', sans-serif;
-  font-size: 18px;
-  position: absolute;
-  /*top: 0px;*/
   float: right;
 }
 
