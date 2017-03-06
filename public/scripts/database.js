@@ -18,12 +18,6 @@ if (!localStorage.getItem("token")) {
     window.location.href = "/";
 }
 
-//for resizing and moving meshes to fit on screen
-window.addEventListener('resize', function () {
-    "use strict";
-    canvas.style.left = (window.innerWidth - 120) + "px";
-})
-
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -35,8 +29,8 @@ window.addEventListener('resize', function () {
 function displayWelcome(user) {
     //parse the userdoc
     userDoc = JSON.parse(user).local;
-
-    document.getElementById("db-name").innerHTML = "Welcome to Lensflare, " + userDoc.name + "!";
+    displaySpaces();
+    // document.getElementById("db-name").innerHTML = "Welcome to Lensflare, " + userDoc.name + "!";
 }
 
 function displaySpaces(addingBlock) {
@@ -54,7 +48,7 @@ function displaySpaces(addingBlock) {
             document.getElementById("db-table").innerHTML += "<div class='space-blocks'><img onclick='loadDatabaseInfo(\"" + userDoc.spaces[space].name + "\"," + space + ")' width='100%' src='" + userDoc.spaces[space].items[0].url + "'><br /><a onclick='loadDatabaseInfo(\"" + userDoc.spaces[space].name + "\"," + space + ")' class='space-link'>" + userDoc.spaces[space].name + "</a><button class='delete-space-button' onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'><img src='assets/close.png'></button></div>"
           }
           else {
-            document.getElementById("db-table").innerHTML += "<div class='space-blocks'><img onclick='loadDatabaseInfo(\"" + userDoc.spaces[space].name + "\"," + space + ")' width='100%' src='assets/spaceholder.png'><br /><a onclick='loadDatabaseInfo(\"" + userDoc.spaces[space].name + "\"," + space + ")' class='space-link'>" + userDoc.spaces[space].name + "</a><button class='delete-space-button' onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'><img src='assets/close.png'></button></div>"
+            document.getElementById("db-table").innerHTML += "<div class='space-blocks'><img onclick='loadDatabaseInfo(\"" + userDoc.spaces[space].name + "\"," + space + ")' width='100%' src='assets/pano.png'><br /><a onclick='loadDatabaseInfo(\"" + userDoc.spaces[space].name + "\"," + space + ")' class='space-link'>" + userDoc.spaces[space].name + "</a><button class='delete-space-button' onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'><img src='assets/close.png'></button></div>"
           }
         }
         document.getElementById("db-table").innerHTML += "<div id='new-space-block' class='space-blocks'><img onclick='addSpace()' width='100%' style='padding-bottom: 21px' src='assets/addholder.png'></div>"
@@ -377,47 +371,53 @@ function loadDevices() {
   if (userDoc.devices.length == 0) {
       document.getElementById("db-table").style.border = "none";
       document.getElementById("db-table").innerHTML = "You haven't added any devices yet! <button class='db-name-save-button' id='device-add-button' onclick='addFirstDevice()'>Click here to add a new device.</button>";
+      return;
   }
 
-  else {
-      document.getElementById("db-table").style.border = "none";
-      for (var row in userDoc.devices) {
-        document.getElementById("db-table").innerHTML += "<div class='space-blocks'><img width='100%' src='assets/device.png'>" +
-        "<br />" + userDoc.devices[row].deviceName + " for " + userDoc.devices[row].spaceName + "<br /><a style='cursor: pointer;' onclick='generateQR(\"" + userDoc.devices[row]._id + "\")'>qr</a> | <a style='cursor: pointer;' onclick='editDevice(" + row +
-        ")'>edit</a> | <a style='cursor: pointer;' onclick='deleteDevice(" + row + ")'>delete</a></div>";
-
-      }
-      document.getElementById("db-table").innerHTML += "<div id='new-space-block' class='space-blocks'><img onclick='addSpace()' width='100%' style='padding-bottom: 21px' src='assets/addholder.png'></div>"
-
-  }
-
-  // var table = document.getElementById("db-table");
-  // var header = table.createTHead();
-  // var headerRow = header.insertRow(0);
-  // headerRow.style.backgroundColor = "#3B3C59";
-  // headerRow.style.color = "#ffffff";
-  // headerRow.insertCell(0).innerHTML = "Device Name"
-  // headerRow.insertCell(1).innerHTML = "Space Associated"
-  // headerRow.insertCell(2).innerHTML = "Actions"
-
-
-
-  // for (var row = 1; row <= userDoc.devices.length; row++) {
-  //     var rowV = table.insertRow(row);
+  // else {
+  //     document.getElementById("db-table").style.border = "none";
+  //     for (var row in userDoc.devices) {
+  //       document.getElementById("db-table").innerHTML += "<div class='space-blocks'><img width='100%' src='assets/device.png'>" +
+  //       "<br />" + userDoc.devices[row].deviceName + " for " + userDoc.devices[row].spaceName + "<br /><a style='cursor: pointer;' onclick='generateQR(\"" + userDoc.devices[row]._id + "\")'>qr</a> | <a style='cursor: pointer;' onclick='editDevice(" + row +
+  //       ")'>edit</a> | <a style='cursor: pointer;' onclick='deleteDevice(" + row + ")'>delete</a></div>";
   //
-  //     rowV.insertCell(0).innerHTML = userDoc.devices[row - 1].deviceName;
-  //     rowV.insertCell(1).innerHTML = userDoc.devices[row - 1].spaceName;
-  //     rowV.insertCell(2).innerHTML = "<a style='cursor: pointer;' onclick='generateQR(\"" + userDoc.devices[row - 1]._id + "\")'>qr</a> | <a style='cursor: pointer;' onclick='editDevice(" + (row - 1) + ")'>edit</a> | <a style='cursor: pointer;' onclick='deleteDevice(" + (row - 1) + ")'>delete</a>";
-  //     rowV.cells[0].style.width = "45%";
-  //     rowV.cells[2].style.width = "200px";
-  //     rowV.cells[2].style.textAlign = "center";
+  //     }
+  //     document.getElementById("db-table").innerHTML += "<div id='new-space-block' class='space-blocks'><img onclick='addSpace()' width='100%' style='padding-bottom: 21px' src='assets/addholder.png'></div>"
+  //
   // }
-  //
-  //
-  // var rowV = table.insertRow(row);
-  // rowV.insertCell(0).innerHTML = "<div style='text-align: center'><button class='db-name-save-button' id='device-add-button' onclick='addNewDevice(" + row + ")'>add new device</button></div>";
-  // rowV.cells[0].style.border = "none";
-  // rowV.cells[0].colSpan = "3";
+
+  var table = document.getElementById("db-table");
+
+  for (var row = 0; row < userDoc.devices.length; row++) {
+      var rowV = table.insertRow(row * 2);
+      var rowW = table.insertRow(row * 2 + 1);
+      rowV.insertCell(0);
+      rowW.insertCell(0);
+      rowV.insertCell(1).innerHTML = "name:";
+      rowW.insertCell(1).innerHTML = "space:";
+      rowV.insertCell(2).innerHTML = "<div id='device-name-row-" + row + "'>" + userDoc.devices[row].deviceName + "</div>";
+      rowW.insertCell(2).innerHTML = "<div id='device-space-row-" + row + "'>" + userDoc.devices[row].spaceName + "</div>";
+      rowV.insertCell(3).innerHTML = "<div id='device-actions-row-" + row + "'><a style='cursor: pointer;' onclick='generateQR(\"" + userDoc.devices[row]._id + "\")'><img src='assets/qr.png'><br />QR</a><br /><br /><a style='cursor: pointer;' onclick='editDevice(" + row + ")'><img src='assets/edit.png'><br />Edit</a><br /><br /><a style='cursor: pointer;' onclick='deleteDevice(" + row + ")'><img src='assets/delete.png'><br />Delete</a></div>";
+      // rowV.cells[0].style.width = "45%";
+      rowV.cells[0].innerHTML = "<img src='assets/devices.png'>";
+      rowV.cells[1].style.width = "50px";
+      rowV.cells[2].style.width = "50px";
+      rowV.cells[3].style.width = "100px";
+      rowV.cells[3].rowSpan = "2";
+      rowV.cells[3].style.textAlign = "center";
+      rowV.style.backgroundColor = "#dedede"
+      rowW.style.backgroundColor = "#dedede"
+      rowW.style.borderBottom = "55px solid white"
+      rowW.style.height = "25px"
+      rowV.style.height = "25px"
+      rowV.cells[3].style.borderBottom = "55px solid white"
+  }
+
+
+  var rowV = table.insertRow(row * 2);
+  rowV.insertCell(0).innerHTML = "<div style='text-align: center'><button class='db-name-save-button' id='device-add-button' onclick='addNewDevice(" + (row * 2) + ")'><img src='assets/add.png'></button></div>";
+  rowV.cells[0].style.border = "none";
+  rowV.cells[0].colSpan = "4";
 
 }
 
@@ -455,18 +455,37 @@ function addFirstDevice() {
 
 function addNewDevice(row) {
   var table = document.getElementById("db-table");
-  var rowV = table.insertRow(row);
-  document.getElementById("device-add-button").disabled = true;
-  rowV.insertCell(0).innerHTML = "<input maxlength='18' id='device-name-entry' type='text' value=''>";
+  var rowV = table.insertRow(table.rows.length - 1);
+  var rowW = table.insertRow(table.rows.length - 1);
+
+  rowV.insertCell(0);
+  rowW.insertCell(0);
+  rowV.insertCell(1).innerHTML = "name:";
+  rowW.insertCell(1).innerHTML = "space:";
+  rowV.insertCell(2).innerHTML = "<input maxlength='15' id='device-name-entry' type='text' value=''>";
 
   var options = "<select id='device-space-entry' name='spaces'>";
   for (var space in userDoc.spaces) {
       options += "<option value=\"" + userDoc.spaces[space].name + "\">" + userDoc.spaces[space].name + "</option>";
   }
   options += "</select>"
-  rowV.insertCell(1).innerHTML = options;
 
-  rowV.insertCell(2).innerHTML = "<a style='cursor: pointer;' onclick='saveNewDevice(" + row + ")'>save</a> | <a style='cursor: pointer;' onclick='cancelNewDevice(" + row + ")'>cancel</a>";
+  rowW.insertCell(2).innerHTML = options;
+  rowV.insertCell(3).innerHTML = "<div id='device-actions-row-" + row + "'><a style='cursor: pointer;' onclick='saveNewDevice(" + row + ")'><img src='assets/save.png'><br />Save</a><br /><br /><a style='cursor: pointer;' onclick='cancelNewDevice(" + row + ")'><img src='assets/delete.png'><br />Cancel</a></div>";
+  // rowV.cells[0].style.width = "45%";
+  rowV.cells[0].innerHTML = "<img src='assets/devices.png'>";
+  rowV.cells[1].style.width = "50px";
+  rowV.cells[2].style.width = "50px";
+  rowV.cells[3].style.width = "100px";
+  rowV.cells[3].rowSpan = "2";
+  rowV.cells[3].style.textAlign = "center";
+  rowV.style.backgroundColor = "#dedede"
+  rowW.style.backgroundColor = "#dedede"
+  rowW.style.borderBottom = "55px solid white"
+  rowV.cells[3].style.borderBottom = "55px solid white"
+
+  document.getElementById("device-add-button").disabled = true;
+
   rowV.cells[2].style.textAlign = "center";
 }
 
@@ -485,8 +504,8 @@ function saveNewDevice(row) {
       return;
   }
 
-  var rowV = table.rows[row + 1];
-  rowV.cells[0].innerHTML = "<div style='text-align: center'><button class='db-name-save-button' id='device-add-button' onclick='addNewDevice(" + (row + 1) + ")'>add new device</button></div>";
+  var rowV = table.rows[row + 2];
+  rowV.cells[0].innerHTML = "<div style='text-align: center'><button class='db-name-save-button' id='device-add-button' onclick='addNewDevice(" + (row + 2) + ")'>add new device</button></div>";
 
   generateDeviceId(name, space);
 
@@ -495,11 +514,9 @@ function saveNewDevice(row) {
 
 function deleteDevice(row) {
   var table = document.getElementById("db-table");
-  var rowV = table.deleteRow(row);
   userDoc.devices.splice(row, 1);
 
   loadDevices();
-
   saveDevices(userDoc);
 
   document.getElementById("device-add-button").disabled = false;
@@ -507,43 +524,42 @@ function deleteDevice(row) {
 
 function cancelNewDevice(row) {
   var table = document.getElementById("db-table");
-  var rowV = table.deleteRow(row);
+  table.deleteRow(table.rows.length - 2);
+  table.deleteRow(table.rows.length - 2);
   document.getElementById("device-add-button").disabled = false;
 }
 
 function editDevice(row) {
-  var table = document.getElementById("db-table");
-  var rowV = table.rows[row + 1];
+  var deviceName = document.getElementById("device-name-row-" + row);
+  var deviceSpace = document.getElementById("device-space-row-" + row);
+  var deviceActions = document.getElementById("device-actions-row-" + row);
 
-  var initName = rowV.cells[0].innerHTML;
-  var initSpace = rowV.cells[1].innerHTML;
+  var initName = deviceName.innerHTML;
+  var initSpace = deviceSpace.innerHTML;
 
-  rowV.cells[0].innerHTML = "<input maxlength='18' id='device-name-entry' type='text' value='" + rowV.cells[0].innerHTML + "'>";
+  deviceName.innerHTML = "<input maxlength='18' id='device-name-entry' type='text' value='" + deviceName.innerHTML + "'>";
 
   var options = "<select id='device-space-entry' name='spaces'>";
   for (var space in userDoc.spaces) {
       options += "<option value=\"" + userDoc.spaces[space].name + "\">" + userDoc.spaces[space].name + "</option>";
   }
   options += "</select>"
-  rowV.cells[1].innerHTML = options;
+  deviceSpace.innerHTML = options;
 
-  rowV.cells[2].innerHTML = "<a style='cursor: pointer;' onclick='saveEditDevice(" + row + ")'>save</a> | <a style='cursor: pointer;' onclick='cancelEditDevice(" + row + ",\"" + initName + "\",\"" + initSpace + "\")'>cancel</a>";
-  rowV.cells[2].style.textAlign = "center";
+  deviceActions.innerHTML = "<a style='cursor: pointer;' onclick='saveEditDevice(" + row + ")'><img src='assets/save.png'><br />Save</a><br /><br /><a style='cursor: pointer;' onclick='cancelEditDevice(" + row + ",\"" + initName + "\",\"" + initSpace + "\")'><img src='assets/delete.png'><br />Cancel</a>";
 }
 
 function cancelEditDevice(row, name, space) {
-  var table = document.getElementById("db-table");
-  var rowV = table.rows[row + 1];
+  var deviceName = document.getElementById("device-name-row-" + row);
+  var deviceSpace = document.getElementById("device-space-row-" + row);
+  var deviceActions = document.getElementById("device-actions-row-" + row);
 
-  rowV.cells[0].innerHTML = name;
-  rowV.cells[1].innerHTML = space;
-  rowV.cells[2].innerHTML = "<a style='cursor: pointer;' onclick='generateQR(\"" + userDoc.devices[row]._id + "\")'>qr</a> | <a style='cursor: pointer;' onclick='editDevice(" + row + ")'>edit</a> | <a style='cursor: pointer;' onclick='deleteDevice(" + row + ")'>delete</a>";
-  rowV.cells[2].style.textAlign = "center";
+  deviceName.innerHTML = name;
+  deviceSpace.innerHTML = space;
+  deviceActions.innerHTML = "<div id='device-actions-row-" + row + "'><a style='cursor: pointer;' onclick='generateQR(\"" + userDoc.devices[row]._id + "\")'><img src='assets/qr.png'><br />QR</a><br /><br /><a style='cursor: pointer;' onclick='editDevice(" + row + ")'><img src='assets/edit.png'><br />Edit</a><br /><br /><a style='cursor: pointer;' onclick='deleteDevice(" + row + ")'><img src='assets/delete.png'><br />Delete</a></div>";
 }
 
 function saveEditDevice(row) {
-  var table = document.getElementById("db-table");
-  var rowV = table.rows[row + 1];
   var name = document.getElementById("device-name-entry").value;
   var space = document.getElementById("device-space-entry").value;
 
