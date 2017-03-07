@@ -38,7 +38,7 @@ function displaySpaces(addingBlock) {
     document.getElementById("db-table").innerHTML = "";
     if (userDoc.spaces.length == 0) {
       document.getElementById("db-table").style.border = "none";
-      document.getElementById("db-table").innerHTML = "<div style='text-align: center'>You haven't set up a space yet - click on the plus sign below or visit the <a href='/help'>help page</a> to get started!";
+      document.getElementById("db-table").innerHTML = "<div style='text-align: left'>You haven't set up a space yet - click on the plus sign below or visit the <a href='/help'>help page</a> to get started!";
       document.getElementById("db-table").innerHTML += "<div id='new-space-block' class='space-blocks'><img onclick='addSpace()' width='100%' style='padding-bottom: 21px' src='assets/addholder.png'></div></div>"
     }
 
