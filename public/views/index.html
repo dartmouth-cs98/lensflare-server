@@ -17,8 +17,10 @@ if (localStorage.getItem("token")) {
 <body>
   <div class="splash-body">
 
+    <div class="topbar-color" style='height: 25px'></div>
     <div class="login-box" id="login-box">
-      <div class="title">Lensflare<img style="float: right" onclick="window.location.href = '/help'" src="assets/question.png"></div>
+      <div class="title">Lensflare</div><br />
+      <!-- <img style="float: right" onclick="window.location.href = '/help'" src="assets/question.png"> -->
       <br/>
       Email:<br/><input class="text-box" id="email" type="text" autocomplete="off"></input><br/>
       Password:<br/><input class="text-box" id="password" type="password"></input>
@@ -28,7 +30,7 @@ if (localStorage.getItem("token")) {
       <br/>
       <button type="submit" class="login-button" onclick="signIn()">Submit</button>
       <br/><br/>
-      <a href="signup" style="font-size:11px; text-decoration:none; color:white;">create an account</a>
+      <a href="signup" style="font-size:11px; text-decoration:none; color:black;">create an account</a>
     </div>
   </div>
 </body>
