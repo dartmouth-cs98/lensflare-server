@@ -443,6 +443,7 @@ function addNewDevice(row) {
                     "</div><div style='display: inline-block; padding-left: 150px;'>Space: <div style='display: inline-block' id='device-space-row-" + row + "'>" + options + "</div></div>";
 
   // rowV.style.backgroundColor = "#dedede"
+  rowV.style.backgroundColor = "#dedede"
   rowW.style.backgroundColor = "white"
   rowV.cells[0].style.height = "150px"
   rowW.cells[0].style.height = "50px"

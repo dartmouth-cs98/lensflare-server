@@ -212,17 +212,14 @@ function saveDevices(userDoc) {
 
 //generate a QR code and show the user
 function generateQR(deviceTokenJSON) {
-    showPopover("QR Code<button class='qr-close-button' type='button' onclick='closePopover()'>X</button><br />");
-    // swal({
-    //   title: "QR Code",
-    //   text: "<div id='qr-popup'></div>",
-    //   showCancelButton: true,
-    //   closeOnConfirm: true,
-    //   type: "warning"
-    // }, function(isConfirmed) {
-    //       if (isConfirmed) clearSpaceConfirmed(spaceName)
-    // });
-    var qrCode = new QRCode(document.getElementById('popover'), deviceTokenJSON);
+    // showPopover("QR Code<button class='qr-close-button' type='button' onclick='closePopover()'>X</button><br />");
+    swal({
+      title: "QR Code",
+      text: "<div id='qr-popup'></div>",
+      closeOnConfirm: true,
+      html: true
+    });
+    var qrCode = new QRCode(document.getElementById('qr-popup'), deviceTokenJSON);
 }
 
 //show popover
