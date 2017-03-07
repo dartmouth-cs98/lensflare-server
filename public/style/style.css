@@ -13,7 +13,7 @@
 }
 
 .spaces-title {
-  font-family: 'HelveticaNeue-CondenseBold';
+  font-family: 'Helvetica Neue', sans-serif;
   font-weight: bolder;
   color: white;
   font-size: 35px;
@@ -152,7 +152,7 @@ input:-webkit-autofill {
 }
 
 .topbar {
-  font-family: 'Helvetica Neue';
+  font-family: 'Helvetica Neue', sans-serif;
   font-weight: bolder;
   padding-left: 15px;
   padding-top: 20px;
