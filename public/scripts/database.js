@@ -58,24 +58,6 @@ function displaySpaces(addingBlock) {
 //displays the userdoc
 function displayData(user) {
 
-    //set up animation scene
-    // canvas = document.getElementById("c");
-    // renderer = new THREE.WebGLRenderer({canvas: canvas, alpha: true});
-    // renderer.setSize(100, window.innerHeight);
-    // renderer.setClearColor(0xffffff, 0);
-    // canvas.style.left = (window.innerWidth - 120) + "px";
-
-
-    //set up sidebar and welcome div
-    // document.getElementById("space-links").innerHTML = "";
-
-    // for (var space in userDoc.spaces) {
-    //     document.getElementById("space-links").innerHTML += "<a style='cursor: pointer;' onclick='loadDatabase(this," + space + ")'>" + userDoc.spaces[space].name + "</a><button class='delete-space-button' onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'><img src='assets/close.png'></button><br/>"
-    // }
-
-    //start animation with meshes
-    // animate();
-
     //if the URL has space in it already, load that space (or manage devuces)
     if (window.location.href.includes("/database?=")) {
       var spaceName = window.location.href.split("/database?=")[1].replace("%20", " ")
@@ -141,7 +123,7 @@ function loadDatabaseInfo(space, spaceRow) {
       if (userDoc.spaces[spaceRow].items[row].media == null || typeof(userDoc.spaces[spaceRow].items[row].media.media_url) == 'undefined' || userDoc.spaces[spaceRow].items[row].media.selected == false) {
 
         var uploadButton = "<div style='font-size: 14px'>(accepts .ogv, .png, .jpg)</div><label class='upload-button'><input accept='image/png, " +
-        "image/jpeg, video/ogg' onchange='uploadMedia(" + spaceRow + "," + row + ")' style='border: none' class='upload-button' id='upload-" +
+        "image/jpeg, video/ogg, text/plain' onchange='uploadMedia(" + spaceRow + "," + row + ")' style='border: none' class='upload-button' id='upload-" +
         spaceRow + "-" + row + "' type='file'>switch to media<br /></label>"
 
         if (userDoc.spaces[spaceRow].items[row].media != null && typeof(userDoc.spaces[spaceRow].items[row].media.media_url) != 'undefined') {
@@ -171,7 +153,7 @@ function loadDatabaseInfo(space, spaceRow) {
           }
 
           var uploadButton = "<div style='font-size: 14px'>(accepts .ogv, .png, .jpg)</div><label class='upload-button'><input accept='image/png, " +
-          "image/jpeg, video/ogg' onchange='uploadMedia(" + spaceRow + "," + row + ")' style='border: none' class='upload-button' id='upload-" +
+          "image/jpeg, video/ogg, text/plain' onchange='uploadMedia(" + spaceRow + "," + row + ")' style='border: none' class='upload-button' id='upload-" +
           spaceRow + "-" + row + "' type='file'>change media<br /></label>"
 
 // <button class='upload-button' type='button' onclick='showPopover(\"" + popoverText + "\")'>Change Media</button>
@@ -292,80 +274,6 @@ function cancelText(spaceRow, row) {
   actions.innerHTML = "<button class='edit-button' type='button' onclick='editText(" + spaceRow + "," + row + ")'>edit</button>";
 }
 
-
-function edit(spaceRow, row, col) {
-    if (currCellRow != -1) {
-        cancel(spaceRow, currCellRow, currCellCol)
-    }
-    active = true;
-    var table = document.getElementById("db-table");
-    var cell = table.rows[row + 1].cells[col];
-    startText = cell.innerText;
-    if (col == 1) startText = userDoc.spaces[spaceRow].items[row].title;
-    else startText = userDoc.spaces[spaceRow].items[row].text;
-
-    cell.innerHTML = "<form action='/save' method='post'><button class='edit-button' type='button' onclick='save(" + spaceRow + "," + row + "," + col + ")'>done</button> <button class='edit-button' type='button' onclick='cancel(" + spaceRow + "," + row + "," + col + ")'>cancel</button><textarea class='input-text' name='input-box' rows='3' id='input-box' value=''>" + startText + "</textarea></form>";
-
-    currCellRow = row;
-    currCellCol = col;
-}
-
-function save(spaceRow, row, col) {
-    active = false;
-    var table = document.getElementById("db-table");
-    var cell = table.rows[row + 1].cells[col];
-    var inputBox = document.getElementById('input-box')
-    if (col == 1) userDoc.spaces[spaceRow].items[row].title = inputBox.value
-    else userDoc.spaces[spaceRow].items[row].text = inputBox.value
-
-    if (col == 1) cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + col + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].title;
-    else cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + col + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].text;
-
-    if (col != 1) {
-      var mediaUrl = "none currently uploaded"
-
-      if (userDoc.spaces[spaceRow].items[row].media != null && typeof(userDoc.spaces[spaceRow].items[row].media.media_url) != 'undefined') {
-        var split = userDoc.spaces[spaceRow].items[row].media.media_url.split('/');
-        if (split.length > 0) {
-          mediaUrl = "<a href=\"" + userDoc.spaces[spaceRow].items[row].media.media_url + "\">" + split[split.length - 1] + "</a>"
-        }
-      }
-
-      var popoverText = "<button class=\\\"qr-close-button\\\" type=\\\"button\\\" onclick=\\\"closePopover()\\\">X</button>" +
-                    "Change Media<br /><br /><div style=\\\"font-size: 12px\\\">supported file types:<br />jpeg & png images, ogg videos</div><div style=\\\"text-align: center\\\"><br /><label class=\\\"upload-button\\\"><input accept=\\\"image/png, image/jpeg, video/ogg\\\" onchange=\\\"updateFileName(this)\\\" style=\\\"border: none\\\" class=\\\"upload-button\\\" id=\\\"upload-" + spaceRow + "-" + row + "\\\" type=\\\"file\\\">choose file</label> | <button class=\\\"upload-button\\\" type=\\\"button\\\" onclick=\\\"uploadMedia(" + spaceRow + "," + row + ")\\\">upload</button><div id=\\\"file-name\\\"></div></div>";
-      cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row  + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].text +
-                                      "<br /><br /><br /><br /><div style='font-size: 12px'>current file: " + mediaUrl + "<br /><button class='upload-button' onclick='showPopover(\"" + popoverText + "\")'>edit media</button></div>";
-    }
-
-    saveSpaces(userDoc);
-}
-
-function cancel(spaceRow, row, col) {
-    var table = document.getElementById("db-table");
-    var cell = table.rows[row + 1].cells[col];
-
-    if (active) {
-      cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row + "," + col + ")'>edit</button><br />" + startText;
-
-      if (col != 1) {
-        var mediaUrl = "none currently uploaded"
-
-        if (userDoc.spaces[spaceRow].items[row].media != null && typeof(userDoc.spaces[spaceRow].items[row].media.media_url) != 'undefined') {
-          var split = userDoc.spaces[spaceRow].items[row].media.media_url.split('/');
-          if (split.length > 0) {
-            mediaUrl = "<a href=\"" + userDoc.spaces[spaceRow].items[row].media.media_url + "\">" + split[split.length - 1] + "</a>"
-          }
-        }
-
-        var popoverText = "<button class=\\\"qr-close-button\\\" type=\\\"button\\\" onclick=\\\"closePopover()\\\">X</button>" +
-                      "Upload New Media<br /><br /><div style=\\\"font-size: 12px\\\">supported file types:<br />jpeg & png images, ogg videos</div><div style=\\\"text-align: center\\\"><br /><label class=\\\"upload-button\\\"><input accept=\\\"image/png, image/jpeg, video/ogg\\\" onchange=\\\"updateFileName(this)\\\" style=\\\"border: none\\\" class=\\\"upload-button\\\" id=\\\"upload-" + spaceRow + "-" + row + "\\\" type=\\\"file\\\">choose file</label> | <button class=\\\"upload-button\\\" type=\\\"button\\\" onclick=\\\"uploadMedia(" + spaceRow + "," + row + ")\\\">upload</button><div id=\\\"file-name\\\"></div></div>";
-        cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row  + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].text +
-                                        "<br /><br /><br /><br /><div style='font-size: 12px'>current file: " + mediaUrl + "<br /><button class='upload-button' onclick='showPopover(\"" + popoverText + "\")'>edit media</button></div>";
-
-      }
-    }
-
-}
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //                                                                        MEDIA UPLOAD
@@ -633,61 +541,3 @@ function saveEditDevice(row) {
   editDeviceAction(userDoc.devices[row]._id, space, name);
 
 }
-
-
-//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-//                                                                        MESH/ANIMATION MANAGEMENT
-//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-//---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
-
-
-// function loadMeshes() {
-//
-//     var cells = document.getElementsByName('mesh');
-//
-//     var loader = new THREE.JSONLoader();
-//     loader.load("scripts/gem.json", function(geometry) {
-//       for (var i = 0; i < cells.length; i++) {
-//         var cell = cells[i];
-//         var scene = new THREE.Scene();
-//         var camera = new THREE.PerspectiveCamera(35, 1, 1, 10000);
-//
-//         camera.position.z = 5;
-//         scene.userData.camera = camera;
-//         var material = new THREE.MeshBasicMaterial( {color: 0x3B3C59, wireframe: true} );
-//         var mesh = new THREE.Mesh(geometry, material);
-//
-//         scene.add(mesh);
-//         scene.userData.element = cell;
-//         scenes.push(scene);
-//         readyForAnimation = true;
-//       }
-//     })
-//
-// }
-//
-// function animate() {
-//
-//     renderer.setScissorTest(false);
-//     renderer.clear();
-//     renderer.setScissorTest(true);
-//
-//     for (var i in scenes) {
-//         var mesh = scenes[i].children[0];
-//
-//         mesh.rotation.y += 0.015;
-//
-//         var cell = scenes[i].userData.element;
-//
-//         var rect = cell.getBoundingClientRect();
-//
-//         renderer.setViewport(0, renderer.domElement.clientHeight - rect.bottom + rect.height - 100, 100, 100);
-//         renderer.setScissor(0, renderer.domElement.clientHeight - rect.bottom + rect.height - 100, 100, 100);
-//
-//         renderer.render(scenes[i], scenes[i].userData.camera)
-//     }
-//
-//     requestAnimationFrame(animate);
-//
-// }

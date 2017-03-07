@@ -45,10 +45,14 @@ function signUp() {
 
 //check if user really wants to clear space or not
 function clearSpace(spaceName) {
-    var popoverValue = "Are you sure you want to delete " + spaceName + "?<br />" +
-        "<div style='text-align: center'><button type='button' style='background-color: transparent; cursor: pointer; border: none' onclick='clearSpaceConfirmed(\"" + spaceName + "\")'>YES</button>" +
-        "<button type='button' style='background-color: transparent; cursor: pointer; border: none' onclick='closePopover()'>NO</button></div>";
-    showPopover(popoverValue);
+  swal({
+    title: "Are you sure you want to delete the space \"" + spaceName + "\"?",
+    showCancelButton: true,
+    closeOnConfirm: true,
+    type: "warning"
+  }, function(isConfirmed) {
+        if (isConfirmed) clearSpaceConfirmed(spaceName)
+  });
 }
 
 

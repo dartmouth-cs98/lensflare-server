@@ -3,6 +3,7 @@
     <meta charset="utf-8">
     <link href="style/style.css" rel="stylesheet" type="text/css">
     <script src="scripts/actions.js"></script>
+    <script src="scripts/libraries/particles.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Raleway:300,900" rel="stylesheet">
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
 </head>
@@ -11,11 +12,14 @@
 if (localStorage.getItem("token")) {
     window.location.href = "/database";
 }
-
+particlesJS.load('particle-js', 'scripts/libraries/particles.json', function () {
+  console.log("Particles loaded")
+});
 </script>
 
 <body>
   <div class="splash-body">
+  <div id='particle-js'></div>
 
     <div class="topbar-color" style='height: 25px'></div>
     <div class="login-box" id="login-box">
