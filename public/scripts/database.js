@@ -120,7 +120,6 @@ function loadDatabaseInfo(space, spaceRow) {
     var table = document.getElementById("db-table");
 
     for (var row = 0; row < userDoc.spaces[spaceRow].items.length; row++) {
-
       if (userDoc.spaces[spaceRow].items[row].media == null || typeof(userDoc.spaces[spaceRow].items[row].media.media_url) == 'undefined' || userDoc.spaces[spaceRow].items[row].media.selected == false) {
 
         var uploadButton = "<div style='font-size: 14px'>(accepts .ogv, .png, .jpg, .txt)</div><label class='upload-button'><input accept='image/png, " +

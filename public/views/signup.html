@@ -4,31 +4,50 @@
     <meta charset="utf-8">
     <link href="style/style.css" rel="stylesheet" type="text/css">
     <script src="scripts/actions.js"></script>
+    <script src="scripts/libraries/particles.js"></script>
     <script src="https://unpkg.com/axios/dist/axios.min.js"></script>
     <link href="https://fonts.googleapis.com/css?family=Raleway:300,900" rel="stylesheet">
 </head>
 
+<script>
+particlesJS.load('particle-js', 'scripts/libraries/particles.json', function () {
+  console.log("Particles loaded")
+});
+</script>
+
 <body>
-<div class="splash-body">
+  <div class="splash-body">
+
+    <div id='particle-js'></div>
     <div class="topbar-color" style='height: 25px'></div>
-<div class="login-box" style="margin-top:-150px" id="login-box">
-    <div class="title">Create account</div>
-    <br/>
-    <br/>
-        Name*<br/><input class="text-box" name="name" id="name" type="text"></input><br/>
-        Email*<br/><input class="text-box" name="username" id="email" type="text"></input><br >
-        Password*<br/><input class="text-box" name="password" id="pass1" type="password"></input><br />
-        Re-enter password*<br/><input class="text-box" id="pass2" type="password"></input>
+    <div class="login-box" style='margin-top: -325px' id="login-box">
+      <div class="title">Lensflare</div><br />
+      <div class='form'>
+        <div style='text-align: left; padding-top: 7px'>Create new account</div>
+        <br/><br />
+        <input class="text-box" placeholder="name" name="name" id="name" type="text"></input><br/>
         <br/>
-        <div id="message" style="color:red; font-size:12px"></div>
+        <input class="text-box" placeholder="email" name="username" id="email" type="text"></input><br/>
         <br/>
-        <button class="login-button" onclick="signUp()" type="submit">Create</button>
-        <br/><br/>
-    <a href="/" style="font-size:11px; text-decoration:none; color:black;">back to login</a>
-    <br/>
-    <div id="errors" style="color:red; font-size:12px;"></div>
-    <div id="success" style="color:green; font-size:12px;"></div>
-</div>
-</div>
+        <input class="text-box" placeholder="password" name="password" id="pass1" type="password"></input><br/>
+        <br/>
+        <input class="text-box" placeholder="confirm password" id="pass2" type="password"></input>
+        <br/>
+        <div id="message" style="color:red; font-size:12px">
+        <br /><br />
+        <button class="login-button" onclick="signUp()" type="submit">SUBMIT</button>
+
+        <div style='text-align:center'>
+          <a href="/" style="font-size:11px; text-decoration:none; color:black;">back to login</a>
+        </div>
+        <div id="errors" style="color:red; font-size:12px;"></div>
+        <div id="success" style="color:green; font-size:12px;"></div>
+      </div>
+      <br/>
+    </div>
+
+    </div>
+  </div>
 </body>
+
 </html>
