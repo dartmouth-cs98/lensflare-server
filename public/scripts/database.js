@@ -122,7 +122,7 @@ function loadDatabaseInfo(space, spaceRow) {
 
       if (userDoc.spaces[spaceRow].items[row].media == null || typeof(userDoc.spaces[spaceRow].items[row].media.media_url) == 'undefined' || userDoc.spaces[spaceRow].items[row].media.selected == false) {
 
-        var uploadButton = "<div style='font-size: 14px'>(accepts .ogv, .png, .jpg)</div><label class='upload-button'><input accept='image/png, " +
+        var uploadButton = "<div style='font-size: 14px'>(accepts .ogv, .png, .jpg, .txt)</div><label class='upload-button'><input accept='image/png, " +
         "image/jpeg, video/ogg, text/plain' onchange='uploadMedia(" + spaceRow + "," + row + ")' style='border: none' class='upload-button' id='upload-" +
         spaceRow + "-" + row + "' type='file'>switch to media<br /></label>"
 
@@ -148,11 +148,19 @@ function loadDatabaseInfo(space, spaceRow) {
         }
         else {
           var split = userDoc.spaces[spaceRow].items[row].media.media_url.split('/');
-          if (split.length > 0) {
+          var url = split[split.length - 1]
+
+          if (url.includes(".jpg") || url.includes(".jpeg") || url.includes(".png")) {
             mediaUrl = "<div style='height: 30px; display: inline-block;'><img width='100%' src=\"" + userDoc.spaces[spaceRow].items[row].media.media_url + "\"></div>"
           }
+          else if (url.includes(".txt")) {
+            mediaUrl = "<div style='text-align: center; height: 30px; display: inline-block;'><img width='100%' src='assets/mesh.png'></div>"
+          }
+          else {
+            mediaUrl = "<div style='text-align: center; height: 30px; display: inline-block;'><img width='100%' src='assets/video.png'></div>"
+          }
 
-          var uploadButton = "<div style='font-size: 14px'>(accepts .ogv, .png, .jpg)</div><label class='upload-button'><input accept='image/png, " +
+          var uploadButton = "<div style='font-size: 14px'>(accepts .ogv, .png, .jpg, .txt)</div><label class='upload-button'><input accept='image/png, " +
           "image/jpeg, video/ogg, text/plain' onchange='uploadMedia(" + spaceRow + "," + row + ")' style='border: none' class='upload-button' id='upload-" +
           spaceRow + "-" + row + "' type='file'>change media<br /></label>"
 
@@ -470,13 +478,22 @@ function saveNewDevice(row) {
 }
 
 function deleteDevice(row) {
-  var table = document.getElementById("db-table");
-  userDoc.devices.splice(row, 1);
+  swal({
+    title: "Are you sure you want to delete this device?",
+    showCancelButton: true,
+    closeOnConfirm: true,
+    type: "warning"
+  }, function(isConfirmed) {
+        if (isConfirmed) {
+          var table = document.getElementById("db-table");
+          userDoc.devices.splice(row, 1);
 
-  loadDevices();
-  saveDevices(userDoc);
+          loadDevices();
+          saveDevices(userDoc);
 
-  document.getElementById("device-add-button").disabled = false;
+          document.getElementById("device-add-button").disabled = false;
+        }
+  });
 }
 
 function cancelNewDevice(row) {
