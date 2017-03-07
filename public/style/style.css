@@ -121,6 +121,7 @@
   display: inline-block;
   margin-right: 35px;
   margin-bottom: 35px;
+  font-size: 24px;
   /*border: 1px solid black;*/
 }
 
@@ -196,7 +197,7 @@
 .edit-button {
   font-family: 'Helvetica Neue', sans-serif;
   width: 50px;
-  font-size: 12px;
+  font-size: 14px;
   background-color: inherit;
   border: none;
   border-radius: 5px;
@@ -206,7 +207,7 @@
 
 .upload-button {
   font-family: 'Helvetica Neue', sans-serif;
-  font-size: 12px;
+  font-size: 14px;
   background-color: inherit;
   border: none;
   border-radius: 5px;
@@ -215,7 +216,7 @@
 
 .qr-button {
   font-family: 'Helvetica Neue', sans-serif;
-  font-size: 12px;
+  font-size: 14px;
   background-color: inherit;
   border: none;
   cursor: pointer;
@@ -299,7 +300,9 @@
   border: 1px solid #979797;
   border-radius: 4px;
   resize: none;
-  margin-right: 10px;
+  /*margin-right: 10px;*/
+  display: inline;
+
 }
 
 .delete-space-button {

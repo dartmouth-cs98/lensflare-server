@@ -149,7 +149,7 @@ function loadDatabaseInfo(space, spaceRow) {
 
         var uploadButton = "<label class='upload-button'><input accept='image/png, " +
         "image/jpeg, video/ogg' onchange='uploadMedia(" + spaceRow + "," + row + ")' style='border: none' class='upload-button' id='upload-" +
-        spaceRow + "-" + row + "' type='file'>switch to media</label>"
+        spaceRow + "-" + row + "' type='file'>switch to media<br /></label><div style='font-size: 14px'>(accepts .ogv, .png, .jpg)</div>"
         // table.innerHTML += "<div class='item-blocks'><div style='width: 533px; height: 300px; float: left' id='space-" + spaceRow + "-item-" + row + "-image'></div>" +
         //                   "<div style='width: 200px; height: 300px; padding-left: 25px; display: inline-block; position: relative'>current media:<br /><br />" + mediaUrl + "<input class='upload-button' id='upload-" + spaceRow + "-" + row + "' type='file'><button class='upload-button' type='button' onclick='showPopover(\"" + popoverText + "\")'>upload new media</button><div style='position: absolute; bottom: 0'><button class='upload-button' type='button' onclick='deleteMedia(" + spaceRow + "," + row + ")'>delete media & switch to text</button></div>" +
         //               "</div></div>"
@@ -159,11 +159,11 @@ function loadDatabaseInfo(space, spaceRow) {
                             "<div id='space-" + spaceRow + "-item-" + row + "-titleActions'>" +
                               "<button class='edit-button' type='button' onclick='editTitle(" + spaceRow + "," + row + ")'>edit</button>" +
                             "</div>" +
-                            "<br /><div style='padding-bottom: 30px;' id='space-" + spaceRow + "-item-" + row + "-title'>" + userDoc.spaces[spaceRow].items[row].title + "</div>" +
+                            "<br /><div style='height: 30px;' id='space-" + spaceRow + "-item-" + row + "-title'>" + userDoc.spaces[spaceRow].items[row].title + "</div>" +
                           "<div id='space-" + spaceRow + "-item-" + row + "-textActions'>" +
                             "<button class='edit-button' type='button' onclick='editText(" + spaceRow + "," + row + ")'>edit</button>" +
                           "</div>" +
-                          "<br /><div id='space-" + spaceRow + "-item-" + row + "-text'>"
+                          "<br /><div style='overflow-y: auto; height: 155px' id='space-" + spaceRow + "-item-" + row + "-text'>"
                             + userDoc.spaces[spaceRow].items[row].text +
                           "</div><br /><br /><div style='position: absolute; bottom: 0'>" + uploadButton + "</div>" +
                           "</div></div>"
@@ -171,7 +171,7 @@ function loadDatabaseInfo(space, spaceRow) {
         else {
           var split = userDoc.spaces[spaceRow].items[row].media.media_url.split('/');
           if (split.length > 0) {
-            mediaUrl = "<div style='display: inline-block;'><img width='100%' src=\"" + userDoc.spaces[spaceRow].items[row].media.media_url + "\"></div>"
+            mediaUrl = "<div style='height: 30px; display: inline-block;'><img width='100%' src=\"" + userDoc.spaces[spaceRow].items[row].media.media_url + "\"></div>"
           }
 
           table.innerHTML += "<div class='item-blocks'><div style='display: inline-block; width: 533px; height: 300px; float: left' id='space-" + spaceRow + "-item-" + row + "-image'></div>" +
