@@ -356,8 +356,7 @@ function loadDevices() {
   document.getElementById("db-table").innerHTML = "";
 
   if (userDoc.devices.length == 0) {
-      document.getElementById("db-table").style.border = "none";
-      var table = document.getElementById("db-table");// = "You haven't added any devices yet! <button class='db-name-save-button' id='device-add-button' onclick='addFirstDevice()'>Click here to add a new device.</button>";
+      var table = document.getElementById("db-table");
       var rowV = table.insertRow(0);
       rowV.insertCell(0).innerHTML = "<div style='text-align: center'><button class='db-name-save-button' id='device-add-button' onclick='addNewDevice(" + 0 + ")'><img src='assets/addB.png'></button></div>";
       rowV.cells[0].style.border = "none";
@@ -400,44 +399,6 @@ function loadDevices() {
 
 }
 
-function addFirstDevice() {
-  var table = document.getElementById("db-table");
-  table.innerHTML = "";
-  var rowV = table.insertRow(0);
-  var rowW = table.insertRow(0);
-
-  rowV.insertCell(0);
-  rowW.insertCell(0);
-  var devImage = "assets/holo1.jpg";
-  rowV.cells[0].style.backgroundImage = "url('" + devImage + "')";
-  rowV.cells[0].style.backgroundSize = "cover";
-  rowV.cells[0].style.backgroundPosition = "center";
-  rowV.cells[0].style.textAlign = "center"
-
-  var options = "<select class='device-space-entry' id='device-space-entry' name='spaces'>";
-  for (var space in userDoc.spaces) {
-      options += "<option value=\"" + userDoc.spaces[space].name + "\">" + userDoc.spaces[space].name + "</option>";
-  }
-  options += "</select>"
-
-  rowW.cells[0].innerHTML = "Name: <div style='display: inline-block' id='device-name-row-" + 0 + "'><input maxlength='15' class='device-name-entry' id='device-name-entry' type='text' value=''></div>" +
-                    "<div style='display: inline-block; float: right' id='device-actions-row-" + 0 + "'>" +
-                    "<a style='cursor: pointer;' onclick='saveNewDevice(" + 0 + ")'><figure style='font-size: 14px; text-align:center; display: inline-block'><img src='assets/save.png'><figcaption>Save</figcaption></figure>" +
-                    "</a><a style='cursor: pointer;' onclick='cancelNewDevice(" + 0 + ")'><figure style='font-size: 14px; text-align:center; display: inline-block'><img src='assets/delete.png'><figcaption>Cancel</figcaption></figure></a>" +
-                    "</div><div style='display: inline-block; padding-left: 150px;'>Space: <div style='display: inline-block' id='device-space-row-" + 0 + "'>" + options + "</div></div>";
-
-  // rowV.style.backgroundColor = "#dedede"
-  rowV.style.backgroundColor = "#dedede"
-  rowW.style.backgroundColor = "white"
-  rowV.cells[0].style.height = "150px"
-  rowW.cells[0].style.height = "50px"
-  rowW.cells[0].style.verticalAlign = "middle"
-  rowW.style.fontSize = "25px"
-  rowV.style.fontSize = "25px"
-
-  document.getElementById("device-add-button").disabled = true;
-}
-
 function addNewDevice(row) {
   var table = document.getElementById("db-table");
   var rowV = table.insertRow(table.rows.length - 1);
@@ -445,7 +406,7 @@ function addNewDevice(row) {
 
   rowV.insertCell(0);
   rowW.insertCell(0);
-  var devImage = "assets/holo" + (row%3 + 1) + ".jpg";
+  var devImage = "assets/holo" + (row%3) + ".jpg";
   rowV.cells[0].style.backgroundImage = "url('" + devImage + "')";
   rowV.cells[0].style.backgroundSize = "cover";
   rowV.cells[0].style.backgroundPosition = "center";
