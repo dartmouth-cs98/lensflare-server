@@ -10,19 +10,21 @@
 
 <body>
 <div class="splash-body">
+    <div class="topbar-color" style='height: 25px'></div>
 <div class="login-box" style="margin-top:-150px" id="login-box">
     <div class="title">Create account</div>
     <br/>
+    <br/>
         Name*<br/><input class="text-box" name="name" id="name" type="text"></input><br/>
-        Email*<br/><input class="text-box" name="username" id="email" type="text"></input>
-        Password*<br/><input class="text-box" name="password" id="pass1" type="password"></input>
+        Email*<br/><input class="text-box" name="username" id="email" type="text"></input><br >
+        Password*<br/><input class="text-box" name="password" id="pass1" type="password"></input><br />
         Re-enter password*<br/><input class="text-box" id="pass2" type="password"></input>
         <br/>
         <div id="message" style="color:red; font-size:12px"></div>
         <br/>
         <button class="login-button" onclick="signUp()" type="submit">Create</button>
         <br/><br/>
-    <a href="/" style="font-size:11px; text-decoration:none; color:white;">back to login</a>
+    <a href="/" style="font-size:11px; text-decoration:none; color:black;">back to login</a>
     <br/>
     <div id="errors" style="color:red; font-size:12px;"></div>
     <div id="success" style="color:green; font-size:12px;"></div>

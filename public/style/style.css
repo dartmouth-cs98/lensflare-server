@@ -1,7 +1,7 @@
 .title {
-  font-weight: 300;
-  color: white;
-  font-size: 40px;
+  font-weight: 600;
+  color: black;
+  font-size: 95px;
 }
 
 .help-title {
@@ -12,7 +12,8 @@
 }
 
 .spaces-title {
-  font-weight: 300;
+  font-family: 'HelveticaNeue-CondenseBold';
+  font-weight: bolder;
   color: white;
   font-size: 35px;
   padding-top: 15px;
@@ -25,10 +26,10 @@
   position: absolute;
   top: 50%;
   left: 50%;
-  height: 205px;
-  width: 300px;
-  margin-top: -105px;
-  margin-left: -160px;
+  height: 400px;
+  width: 500px;
+  margin-top: -200px;
+  margin-left: -250px;
   line-height: 150%;
 }
 
@@ -39,20 +40,20 @@
 }
 
 .db-content {
-  padding-top: 15px;
-  padding-left: 205px;
-  padding-right: 10px;
+  font-weight: 200;
+  padding-left: 145px;
+  padding-right: 45px;
 }
 
 .db-title {
-  font-weight: 300;
-  font-size: 25px;
+  font-weight: 900;
+  font-size: 35px;
   padding-bottom: 10px;
-  padding-left: 205px;
-  text-align: center;
+  text-align: left;
   height: 65px;
-  color: #3B3C59;
-  padding-top: 10px;
+  color: black;
+  padding: 45px;
+  padding-left: 145px;
   height: 40px;
 }
 
@@ -75,37 +76,104 @@
 
 .db-name-entry {
   font-weight: 300;
-  color: #3B3C59;
+  color: black;
   font-size: inherit;
-  padding-bottom: 5px;
-  width: 135px;
+  width: 175px;
 }
 
 .db-name-save-button {
   background: inherit;
   font-weight: 300;
-  color: #3B3C59;
+  color: black;
   font-size: 15px;
-  padding-bottom: 5px;
+  cursor: pointer;
   border: none;
+}
+
+.topbar-color {
+  background: #8c9eff;
+  background: -webkit-linear-gradient(135deg, #4952FF, #88B7FF, #FDF6C0, #FFFFFF);
+  background: -o-linear-gradient(135deg, #4952FF, #88B7FF, #FDF6C0, #FFFFFF);
+  background: -moz-linear-gradient(135deg, #4952FF, #88B7FF, #FDF6C0, #FFFFFF);
+  background: linear-gradient(135deg, #4952FF, #88B7FF, #FDF6C0, #FFFFFF);
+  top: 0;
+  left: 0;
+  position: absolute;
+  width: 100%;
+  height: 15px;
+  z-index: 1;
+}
+
+.space-blocks {
+  height: 250px;
+  width: 350px;
+  text-align: center;
+  display: inline-block;
+  margin-right: 35px;
+  margin-bottom: 35px;
   cursor: pointer;
 }
 
-.sidebar {
-  background-color: #3B3C59;
+.item-blocks {
+  height: 300px;
+  width: 800px;
+  text-align: left;
+  display: inline-block;
+  margin-right: 35px;
+  margin-bottom: 35px;
+  font-size: 22px;
+  /*border: 1px solid black;*/
+}
 
-  background: -webkit-linear-gradient(135deg, #036564, #3B3C59);
-  background: -o-linear-gradient(135deg, #036564, #3B3C59);
-  background: -moz-linear-gradient(135deg, #036564, #3B3C59);
-  background: linear-gradient(135deg, #036564, #3B3C59);
+.image-blocks {
+
+}
+
+.device-blocks {
+  height: 250px;
+  width: 100%;
+  text-align: center;
+  display: inline-block;
+  margin: 15px;
+  cursor: pointer;
+}
+
+.space-link {
+  font-size: 25px;
+  top: 150px;
+  color: black;
+  cursor: pointer;
+}
+
+.topbar {
+  font-family: 'Helvetica Neue';
+  font-weight: bolder;
+  padding-left: 15px;
+  padding-top: 20px;
+  background-color: white;
+  width: 100%;
+  height: 99px;
+  font-size: 75px;
+  color: black;
+  border-bottom: 1px solid #979797;
+  position: relative;
+  z-index: 10;
+  margin-top: 0px;
+}
+
+.sidebar {
+  background-color: white;
   position: fixed;
-  width: 200px;
+  width: 100px;
   height: 100%;
   top: 0px;
   padding-left: 5px;
   line-height: 200%;
   left: 0px;
-  color: white;
+  color: black;
+  border-right: 1px solid #979797;
+  padding-top: 120px;
+  z-index: 0;
 }
 
 .db-table th {
@@ -115,39 +183,49 @@
 
 .db-table td {
   vertical-align: top;
-  padding: 7px;
-  border: 1px solid #3B3C59;
+  padding: 25px;
+  padding-bottom: 80px;
+  border: none;
 }
 
 .db-table {
   width: 100%;
-  border: 1px solid #3B3C59;
+  border: 1px solid black;
   border-collapse: collapse;
 }
 
 .edit-button {
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Helvetica Neue', sans-serif;
   width: 50px;
-  font-size: 12px;
+  font-size: 14px;
   background-color: inherit;
   border: none;
-  border-radius: 5px;
-  padding: 3px;
   float: right;
 }
 
+.title-text-label {
+  font-family: 'Helvetica Neue', sans-serif;
+  font-size: 14px;
+  background-color: inherit;
+  font-weight: bold;
+  float: left;
+}
+
 .upload-button {
-  font-family: 'Raleway', sans-serif;
-  font-size: 12px;
+  font-family: 'Helvetica Neue', sans-serif;
+  font-size: 22px;
+  font-weight:300;
   background-color: inherit;
   border: none;
   border-radius: 5px;
   padding: 0px;
+  text-align: left;
+
 }
 
 .qr-button {
-  font-family: 'Raleway', sans-serif;
-  font-size: 12px;
+  font-family: 'Helvetica Neue', sans-serif;
+  font-size: 14px;
   background-color: inherit;
   border: none;
   cursor: pointer;
@@ -165,7 +243,7 @@
   background: white;
   border: 1px solid black;
   padding: 10px;
-  z-index: 10;
+  z-index: 150;
 }
 
 .overlay {
@@ -177,11 +255,11 @@
   opacity: 0.5;
   background: black;
   display: none;
-  z-index: 1;
+  z-index: 100;
 }
 
 .qr-close-button {
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Helvetica Neue', sans-serif;
   font-size: 12px;
   background-color: inherit;
   border: none;
@@ -193,18 +271,18 @@
 .logout {
   background-color: inherit;
   border: none;
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Helvetica Neue', sans-serif;
   cursor: pointer;
-  color: white;
+  color: black;
   font-size: 14px;
 }
 
 .footer-box {
   position: fixed;
   bottom: 0;
-  width: 203px;
-  /*background-color: #3B3C59;*/
-  color: white;
+  width: 103px;
+  /*background-color: black;*/
+  color: black;
   text-align: center;
   left: 0;
   font-size: 16px;
@@ -213,41 +291,39 @@
 }
 
 .text-box {
-  width: 100%;
-  font-family: 'Raleway', sans-serif;
-  width: 100%;
+  width: 75%;
+  font-family: 'Helvetica Neue', sans-serif;
   font-size: inherit;
   white-space: pre-wrap;
-  border: 1px solid #dbe1ff;
+  border: 1px solid #979797;
   border-radius: 4px;
   padding: 2px;
 }
 
 .input-text {
-  font-family: 'Raleway', sans-serif;
-  width: 100%;
+  font-family: 'Helvetica Neue', sans-serif;
+  width: 92%;
   font-size: inherit;
   white-space: pre-wrap;
-  border: 1px solid #dbe1ff;
+  border: 1px solid #979797;
   border-radius: 4px;
   resize: none;
+  /*margin-right: 10px;*/
+  display: inline;
+
 }
 
 .delete-space-button {
   background-color: inherit;
   border: none;
-  color: white;
-  font-family: 'Raleway', sans-serif;
-  font-size: 18px;
-  position: absolute;
-  right: 0px;
+  float: right;
 }
 
 .save-space-button {
   background-color: inherit;
   border: none;
-  color: white;
-  font-family: 'Raleway', sans-serif;
+  color: black;
+  font-family: 'Helvetica Neue', sans-serif;
   font-size: 18px;
   position: absolute;
   right: 25px;
@@ -262,7 +338,7 @@
 .test-button {
   background-color: inherit;
   border: none;
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Helvetica Neue', sans-serif;
   font-size: 13px;
   color: white;
   text-align: center;
@@ -273,18 +349,18 @@
 }
 
 .login-button {
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Helvetica Neue', sans-serif;
   width: 100px;
   font-size: 12px;
   background-color: transparent;
-  color: white;
-  border: 1px solid white;
+  color: black;
+  border: 1px solid black;
   border-radius: 5px;
   padding: 3px;
 }
 
 .login-button:hover {
-  color: #3B3C59;
+  color: black;
   background-color: white;
 }
 
@@ -302,16 +378,16 @@
   height: 100%;
 }
 
-#device-space-entry {
-  font-family: 'Raleway', sans-serif;
+.device-space-entry {
+  font-family: 'Helvetica Neue', sans-serif;
   font-size: inherit;
   border: 1px solid #dbe1ff;
   border-radius: 4px;
   resize: none;
 }
 
-#device-name-entry {
-  font-family: 'Raleway', sans-serif;
+.device-name-entry {
+  font-family: 'Helvetica Neue', sans-serif;
   font-size: inherit;
   border: 1px solid #dbe1ff;
   border-radius: 4px;
@@ -319,37 +395,38 @@
 }
 
 body {
-  font-family: 'Raleway', sans-serif;
-  margin-right:0px;
+  font-family: 'Helvetica Neue', sans-serif;
+  margin: 0px;
 }
 
 .splash-body {
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Helvetica Neue', sans-serif;
   margin-right:0px;
-  background: -webkit-linear-gradient(135deg, #036564, #3B3C59);
-  background: -o-linear-gradient(135deg, #036564, #3B3C59);
-  background: -moz-linear-gradient(135deg, #036564, #3B3C59);
-  background: linear-gradient(135deg, #036564, #3B3C59);
+  background: white;
+  /*background: -webkit-linear-gradient(135deg, #8c9eff, #f9cbc6, #faf6e7);
+  background: -o-linear-gradient(135deg, #8c9eff, #f9cbc6, #faf6e7);
+  background: -moz-linear-gradient(135deg, #8c9eff, #f9cbc6, #faf6e7);
+  background: linear-gradient(135deg, #8c9eff, #f9cbc6, #faf6e7);*/
   width: 100%;
   height: 100%;
   position: absolute;
   top: 0;
   left: 0;
-  color: white;
+  color: black;
 }
 
 .help-body {
-  font-family: 'Raleway', sans-serif;
+  font-family: 'Helvetica Neue', sans-serif;
   margin-right:0px;
-  background: -webkit-linear-gradient(135deg, #036564, #3B3C59);
-  background: -o-linear-gradient(135deg, #036564, #3B3C59);
-  background: -moz-linear-gradient(135deg, #036564, #3B3C59);
-  background: linear-gradient(135deg, #036564, #3B3C59);
+  background: -webkit-linear-gradient(135deg, #036564, black);
+  background: -o-linear-gradient(135deg, #036564, black);
+  background: -moz-linear-gradient(135deg, #036564, black);
+  background: linear-gradient(135deg, #036564, black);
   width: 100%;
   position: absolute;
   top: 0;
   left: 0;
-  color: white;
+  color: black;
 }
 
 button:focus {

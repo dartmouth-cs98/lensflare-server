@@ -65,7 +65,14 @@ function clearSpaceConfirmed(spaceName) {
             authorization: localStorage.getItem('token')
         }
     }).then(function (resp) {
-        window.location.reload();
+        // window.location.reload();
+        for (var space in userDoc.spaces) {
+          if (userDoc.spaces[space].name == spaceName) {
+            userDoc.spaces.splice(space, 1)
+            break;
+          }
+        }
+        displaySpaces();
     });
 }
 
@@ -109,6 +116,9 @@ function editDeviceAction(deviceToken, deviceSpace, deviceName) {
           }
         }
         loadDevices();
+        loadMessage(true, "device saved")
+    }).catch(function (error) {
+        loadMessage(false, error)
     });
 }
 
@@ -122,7 +132,7 @@ function loadSpaces() {
             authorization: localStorage.getItem('token')
         }
     }).then(function (resp) {
-        displayData(resp.request.response);
+        displayWelcome(resp.request.response);
     }).catch(function (error) {
         loadMessage(false, error)
     });
@@ -150,24 +160,23 @@ function getSignedUrl(userDoc, spaceRow, row, file, fileBytes, width, height) {
             'content-type': 'application/json'
         }, file: userDoc.email + "/" + userDoc.spaces[spaceRow].name + "/" + file.name
     }).then(function (resp) {
-        userDoc.spaces[spaceRow].items[row].media = {'media_url': resp.data.url, 'type': file.type, 'width': width, 'height': height};
+        userDoc.spaces[spaceRow].items[row].media = {'selected': true, 'media_url': resp.data.url, 'type': file.type, 'width': width, 'height': height};
         saveSpaces(userDoc);
-        putS3Media(file, fileBytes, resp)
+        putS3Media(file, fileBytes, resp, spaceRow)
     }).catch(function (error) {
         loadMessage(false, "error uploading - try again")
     });
 }
 
 //put the actual media file in S3
-function putS3Media(file, fileBytes, resp) {
+function putS3Media(file, fileBytes, resp, spaceRow) {
     axios.put(resp.data.signedUrl, fileBytes, {
         headers: {
             'Content-Type': ''
         }
     }).then(function (resp) {
-        closePopover();
-        location.reload();
         // now save the url in the userDoc
+        loadDatabaseInfo(userDoc.spaces[spaceRow].name, spaceRow);
     }).catch(function (error) {
         loadMessage(false, "error uploading - try again")
     });
