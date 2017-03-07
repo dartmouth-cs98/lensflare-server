@@ -160,7 +160,7 @@ function getSignedUrl(userDoc, spaceRow, row, file, fileBytes, width, height) {
             'content-type': 'application/json'
         }, file: userDoc.email + "/" + userDoc.spaces[spaceRow].name + "/" + file.name
     }).then(function (resp) {
-        userDoc.spaces[spaceRow].items[row].media = {'media_url': resp.data.url, 'type': file.type, 'width': width, 'height': height};
+        userDoc.spaces[spaceRow].items[row].media = {'selected': true, 'media_url': resp.data.url, 'type': file.type, 'width': width, 'height': height};
         saveSpaces(userDoc);
         putS3Media(file, fileBytes, resp, spaceRow)
     }).catch(function (error) {
@@ -177,8 +177,6 @@ function putS3Media(file, fileBytes, resp, spaceRow) {
     }).then(function (resp) {
         // now save the url in the userDoc
         loadDatabaseInfo(userDoc.spaces[spaceRow].name, spaceRow);
-        closePopover();
-        loadMessage(true, "saved successfully")
     }).catch(function (error) {
         loadMessage(false, "error uploading - try again")
     });

@@ -47,7 +47,7 @@
 
 .db-title {
   font-weight: 900;
-  font-size: 25px;
+  font-size: 35px;
   padding-bottom: 10px;
   text-align: left;
   height: 65px;
@@ -200,18 +200,27 @@
   font-size: 14px;
   background-color: inherit;
   border: none;
-  border-radius: 5px;
-  padding: 3px;
   float: right;
+}
+
+.title-text-label {
+  font-family: 'Helvetica Neue', sans-serif;
+  font-size: 14px;
+  background-color: inherit;
+  font-weight: bold;
+  float: left;
 }
 
 .upload-button {
   font-family: 'Helvetica Neue', sans-serif;
-  font-size: 14px;
+  font-size: 22px;
+  font-weight:300;
   background-color: inherit;
   border: none;
   border-radius: 5px;
   padding: 0px;
+  text-align: left;
+
 }
 
 .qr-button {

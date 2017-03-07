@@ -137,30 +137,26 @@ function loadDatabaseInfo(space, spaceRow) {
     var table = document.getElementById("db-table");
 
     for (var row = 0; row < userDoc.spaces[spaceRow].items.length; row++) {
-      var mediaUrl = "none"
 
-      var popoverText = "<button class=\\\"qr-close-button\\\" type=\\\"button\\\" onclick=\\\"closePopover()\\\">X</button>" +
-                    "Upload New Media<br /><br /><div style=\\\"font-size: 12px\\\">supported file types:<br />jpeg & png images, " +
-                    "ogg videos</div><div style=\\\"text-align: center\\\"><br /><label class=\\\"upload-button\\\"><input accept=\\\"image/png, " +
-                    "image/jpeg, video/ogg\\\" onchange=\\\"uploadMedia(" + spaceRow + "," + row + ")\\\" style=\\\"border: none\\\" class=\\\"upload-button\\\" id=\\\"upload-" +
-                    spaceRow + "-" + row + "\\\" type=\\\"file\\\">choose file</label>";
+      if (userDoc.spaces[spaceRow].items[row].media == null || typeof(userDoc.spaces[spaceRow].items[row].media.media_url) == 'undefined' || userDoc.spaces[spaceRow].items[row].media.selected == false) {
 
-      if (userDoc.spaces[spaceRow].items[row].media == null || typeof(userDoc.spaces[spaceRow].items[row].media.media_url) == 'undefined') {
-
-        var uploadButton = "<label class='upload-button'><input accept='image/png, " +
+        var uploadButton = "<div style='font-size: 14px'>(accepts .ogv, .png, .jpg)</div><label class='upload-button'><input accept='image/png, " +
         "image/jpeg, video/ogg' onchange='uploadMedia(" + spaceRow + "," + row + ")' style='border: none' class='upload-button' id='upload-" +
-        spaceRow + "-" + row + "' type='file'>switch to media<br /></label><div style='font-size: 14px'>(accepts .ogv, .png, .jpg)</div>"
-        // table.innerHTML += "<div class='item-blocks'><div style='width: 533px; height: 300px; float: left' id='space-" + spaceRow + "-item-" + row + "-image'></div>" +
-        //                   "<div style='width: 200px; height: 300px; padding-left: 25px; display: inline-block; position: relative'>current media:<br /><br />" + mediaUrl + "<input class='upload-button' id='upload-" + spaceRow + "-" + row + "' type='file'><button class='upload-button' type='button' onclick='showPopover(\"" + popoverText + "\")'>upload new media</button><div style='position: absolute; bottom: 0'><button class='upload-button' type='button' onclick='deleteMedia(" + spaceRow + "," + row + ")'>delete media & switch to text</button></div>" +
-        //               "</div></div>"
+        spaceRow + "-" + row + "' type='file'>switch to media<br /></label>"
 
-        table.innerHTML += "<div class='item-blocks'><div style='width: 533px; height: 300px; float: left' id='space-" + spaceRow + "-item-" + row + "-image'></div>" + //<img style='float: left' height='auto' width='400px' src='" + userDoc.spaces[spaceRow].items[row].url +
+        if (userDoc.spaces[spaceRow].items[row].media != null && typeof(userDoc.spaces[spaceRow].items[row].media.media_url) != 'undefined') {
+          uploadButton = "<div style='font-size: 14px'>(accepts .ogv, .png, .jpg)</div><button class='upload-button' onclick='setMediaSelected(" + spaceRow + ", " + row + ", true)'>switch to media<br /></label>"
+        }
+
+        table.innerHTML += "<div class='item-blocks'><div style='width: 533px; height: 300px; float: left' id='space-" + spaceRow + "-item-" + row + "-image'></div>" +
                           "<div style='width: 200px; height: 300px; padding-left: 25px; display: inline-block; position: relative'>" +
+                            "<div class='title-text-label'>Title</div>" +
                             "<div id='space-" + spaceRow + "-item-" + row + "-titleActions'>" +
                               "<button class='edit-button' type='button' onclick='editTitle(" + spaceRow + "," + row + ")'>edit</button>" +
                             "</div>" +
                             "<br /><div style='height: 30px;' id='space-" + spaceRow + "-item-" + row + "-title'>" + userDoc.spaces[spaceRow].items[row].title + "</div>" +
-                          "<div id='space-" + spaceRow + "-item-" + row + "-textActions'>" +
+                          "<br /><div class='title-text-label'>Text</div>" +
+                          "<div style='float: right' id='space-" + spaceRow + "-item-" + row + "-textActions'>" +
                             "<button class='edit-button' type='button' onclick='editText(" + spaceRow + "," + row + ")'>edit</button>" +
                           "</div>" +
                           "<br /><div style='overflow-y: auto; height: 155px' id='space-" + spaceRow + "-item-" + row + "-text'>"
@@ -174,8 +170,13 @@ function loadDatabaseInfo(space, spaceRow) {
             mediaUrl = "<div style='height: 30px; display: inline-block;'><img width='100%' src=\"" + userDoc.spaces[spaceRow].items[row].media.media_url + "\"></div>"
           }
 
+          var uploadButton = "<div style='font-size: 14px'>(accepts .ogv, .png, .jpg)</div><label class='upload-button'><input accept='image/png, " +
+          "image/jpeg, video/ogg' onchange='uploadMedia(" + spaceRow + "," + row + ")' style='border: none' class='upload-button' id='upload-" +
+          spaceRow + "-" + row + "' type='file'>change media<br /></label>"
+
+// <button class='upload-button' type='button' onclick='showPopover(\"" + popoverText + "\")'>Change Media</button>
           table.innerHTML += "<div class='item-blocks'><div style='display: inline-block; width: 533px; height: 300px; float: left' id='space-" + spaceRow + "-item-" + row + "-image'></div>" +
-                            "<div style='width: 200px; height: 300px; padding-left: 25px; display: inline-block; position: relative'>current media:<br />" + mediaUrl + "<input class='upload-button' id='upload-" + spaceRow + "-" + row + "' type='file'><button class='upload-button' type='button' onclick='showPopover(\"" + popoverText + "\")'>upload new media</button><div style='position: absolute; bottom: 0'><button class='upload-button' type='button' onclick='deleteMedia(" + spaceRow + "," + row + ")'>delete media & switch to text</button></div>" +
+                            "<div style='width: 200px; height: 300px; padding-left: 25px; display: inline-block; position: relative'>" + mediaUrl + uploadButton + "<div style='position: absolute; bottom: 0'><button class='upload-button' type='button' onclick='setMediaSelected(" + spaceRow + "," + row + ", false)'>switch to text</button></div>" +
                         "</div></div>"
         }
 
@@ -331,7 +332,7 @@ function save(spaceRow, row, col) {
       }
 
       var popoverText = "<button class=\\\"qr-close-button\\\" type=\\\"button\\\" onclick=\\\"closePopover()\\\">X</button>" +
-                    "Upload New Media<br /><br /><div style=\\\"font-size: 12px\\\">supported file types:<br />jpeg & png images, ogg videos</div><div style=\\\"text-align: center\\\"><br /><label class=\\\"upload-button\\\"><input accept=\\\"image/png, image/jpeg, video/ogg\\\" onchange=\\\"updateFileName(this)\\\" style=\\\"border: none\\\" class=\\\"upload-button\\\" id=\\\"upload-" + spaceRow + "-" + row + "\\\" type=\\\"file\\\">choose file</label> | <button class=\\\"upload-button\\\" type=\\\"button\\\" onclick=\\\"uploadMedia(" + spaceRow + "," + row + ")\\\">upload</button><div id=\\\"file-name\\\"></div></div>";
+                    "Change Media<br /><br /><div style=\\\"font-size: 12px\\\">supported file types:<br />jpeg & png images, ogg videos</div><div style=\\\"text-align: center\\\"><br /><label class=\\\"upload-button\\\"><input accept=\\\"image/png, image/jpeg, video/ogg\\\" onchange=\\\"updateFileName(this)\\\" style=\\\"border: none\\\" class=\\\"upload-button\\\" id=\\\"upload-" + spaceRow + "-" + row + "\\\" type=\\\"file\\\">choose file</label> | <button class=\\\"upload-button\\\" type=\\\"button\\\" onclick=\\\"uploadMedia(" + spaceRow + "," + row + ")\\\">upload</button><div id=\\\"file-name\\\"></div></div>";
       cell.innerHTML = "<button class='edit-button' type='button' onclick='edit(" + spaceRow + "," + row  + "," + 2 + ")'>edit</button><br />" + userDoc.spaces[spaceRow].items[row].text +
                                       "<br /><br /><br /><br /><div style='font-size: 12px'>current file: " + mediaUrl + "<br /><button class='upload-button' onclick='showPopover(\"" + popoverText + "\")'>edit media</button></div>";
     }
@@ -385,7 +386,6 @@ function uploadMedia(spaceRow, row) {
     var fileReader = new FileReader();
     if (fileObject.files.length > 0) {
 
-      console.log(fileObject.files[0].type)
       if (!(fileObject.files[0].type.includes("text/plain") || fileObject.files[0].type.includes("jpeg") || fileObject.files[0].type.includes("png") || fileObject.files[0].type.includes("ogg"))) {
         loadMessage(false, "file type unsupported - try again");
         return;
@@ -413,10 +413,10 @@ function uploadMedia(spaceRow, row) {
     }
 }
 
-function deleteMedia(spaceRow, row) {
-  userDoc.spaces[spaceRow].items[row].media = null;
+function setMediaSelected(spaceRow, row, selected) {
+  userDoc.spaces[spaceRow].items[row].media.selected = selected;
   saveSpaces(userDoc);
-  loadDatabaseInfo(userDoc.spaces[spaceRow].name, spaceRow);
+  loadDatabaseInfo(userDoc.spaces[spaceRow].name, spaceRow)
 }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -514,13 +514,13 @@ function addNewDevice(row) {
   rowV.cells[0].style.backgroundPosition = "center";
   rowV.cells[0].style.textAlign = "center"
 
-  var options = "<select id='device-space-entry' name='spaces'>";
+  var options = "<select class='device-space-entry' id='device-space-entry' name='spaces'>";
   for (var space in userDoc.spaces) {
       options += "<option value=\"" + userDoc.spaces[space].name + "\">" + userDoc.spaces[space].name + "</option>";
   }
   options += "</select>"
 
-  rowW.cells[0].innerHTML = "Name: <div style='display: inline-block' id='device-name-row-" + row + "'><input maxlength='15' id='device-name-entry' type='text' value=''></div>" +
+  rowW.cells[0].innerHTML = "Name: <div style='display: inline-block' id='device-name-row-" + row + "'><input maxlength='15' class='device-name-entry' id='device-name-entry' type='text' value=''></div>" +
                     "<div style='display: inline-block; float: right' id='device-actions-row-" + row + "'>" +
                     "<a style='cursor: pointer;' onclick='saveNewDevice(" + row + ")'><figure style='font-size: 14px; text-align:center; display: inline-block'><img src='assets/save.png'><figcaption>Save</figcaption></figure>" +
                     "</a><a style='cursor: pointer;' onclick='cancelNewDevice(" + row + ")'><figure style='font-size: 14px; text-align:center; display: inline-block'><img src='assets/delete.png'><figcaption>Cancel</figcaption></figure></a>" +
