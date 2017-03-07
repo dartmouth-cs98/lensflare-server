@@ -218,6 +218,12 @@ function addSpace() {
 function saveNewSpace() {
     var dbName = document.getElementById("db-name-entry").value;
 
+    for (var space in userDoc.spaces) {
+      if (userDoc.spaces[space].name == dbName) {
+        loadMessage(false, "can't have multiple spaces with the same name - try again")
+        return;
+      }
+    }
     if (dbName == "") {
       loadMessage(false, "please enter a name and try again")
       return;
@@ -441,6 +447,12 @@ function saveNewDevice(row) {
   var name = document.getElementById("device-name-entry").value;
   var space = document.getElementById("device-space-entry").value;
 
+  for (var device in userDoc.devices) {
+    if (userDoc.devices[device].deviceName == name) {
+      loadMessage(false, "can't have multiple devices with the same name - try again")
+      return;
+    }
+  }
   if (name == "") {
       loadMessage(false, "please enter a name and try again")
       return;
@@ -526,7 +538,13 @@ function cancelEditDevice(row, name, space) {
 function saveEditDevice(row) {
   var name = document.getElementById("device-name-entry-row-" + row).value;
   var space = document.getElementById("device-space-entry-row-" + row).value;
-
+  
+  for (var device in userDoc.devices) {
+    if (userDoc.devices[device].deviceName == name) {
+      loadMessage(false, "can't have multiple devices with the same name - try again")
+      return;
+    }
+  }
   if (name == "") {
       loadMessage(false, "please enter a name and try again")
       return;

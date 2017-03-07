@@ -215,7 +215,7 @@ function generateQR(deviceTokenJSON) {
     // showPopover("QR Code<button class='qr-close-button' type='button' onclick='closePopover()'>X</button><br />");
     swal({
       title: "QR Code",
-      text: "<div id='qr-popup'></div>",
+      text: "<div style='padding-left:110px' id='qr-popup'></div>",
       closeOnConfirm: true,
       html: true
     });
