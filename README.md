@@ -9,3 +9,6 @@ Server component of the [Lensflare](https://github.com/dartmouth-cs98/lensflare-
 - [QRCode.js](https://github.com/davidshimjs/qrcodejs)
 - [three.js](https://threejs.org/)
 - [Passport](http://passportjs.org/)
+
+## Assets
+- [Google Material Icons](https://material.io/icons/)
