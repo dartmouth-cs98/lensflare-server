@@ -357,7 +357,11 @@ function loadDevices() {
 
   if (userDoc.devices.length == 0) {
       document.getElementById("db-table").style.border = "none";
-      document.getElementById("db-table").innerHTML = "You haven't added any devices yet! <button class='db-name-save-button' id='device-add-button' onclick='addFirstDevice()'>Click here to add a new device.</button>";
+      var table = document.getElementById("db-table");// = "You haven't added any devices yet! <button class='db-name-save-button' id='device-add-button' onclick='addFirstDevice()'>Click here to add a new device.</button>";
+      var rowV = table.insertRow(0);
+      rowV.insertCell(0).innerHTML = "<div style='text-align: center'><button class='db-name-save-button' id='device-add-button' onclick='addNewDevice(" + 0 + ")'><img src='assets/addB.png'></button></div>";
+      rowV.cells[0].style.border = "none";
+      rowV.cells[0].colSpan = "4";
       return;
   }
 
@@ -397,34 +401,40 @@ function loadDevices() {
 }
 
 function addFirstDevice() {
-  document.getElementById("db-table").innerHTML = "";
-
   var table = document.getElementById("db-table");
-  var header = table.createTHead();
-  var headerRow = header.insertRow(0);
-  headerRow.style.backgroundColor = "#3B3C59";
-  headerRow.style.color = "#ffffff";
-  headerRow.insertCell(0).innerHTML = "Device Name"
-  headerRow.insertCell(1).innerHTML = "Space Associated"
-  headerRow.insertCell(2).innerHTML = "Actions"
+  table.innerHTML = "";
+  var rowV = table.insertRow(0);
+  var rowW = table.insertRow(0);
 
-  var rowV = table.insertRow(1);
-  rowV.insertCell(0).innerHTML = "<input maxlength='18' id='device-name-entry' type='text' value=''>";
+  rowV.insertCell(0);
+  rowW.insertCell(0);
+  var devImage = "assets/holo1.jpg";
+  rowV.cells[0].style.backgroundImage = "url('" + devImage + "')";
+  rowV.cells[0].style.backgroundSize = "cover";
+  rowV.cells[0].style.backgroundPosition = "center";
+  rowV.cells[0].style.textAlign = "center"
 
-  var options = "<select id='device-space-entry' name='spaces'>";
+  var options = "<select class='device-space-entry' id='device-space-entry' name='spaces'>";
   for (var space in userDoc.spaces) {
       options += "<option value=\"" + userDoc.spaces[space].name + "\">" + userDoc.spaces[space].name + "</option>";
   }
   options += "</select>"
-  rowV.insertCell(1).innerHTML = options;
 
-  rowV.insertCell(2).innerHTML = "<a style='cursor: pointer;' onclick='saveNewDevice(" + 1 + ")'>save</a> | <a style='cursor: pointer;' onclick='cancelNewDevice(" + 0 + ")'>cancel</a>";
-  rowV.cells[2].style.textAlign = "center";
+  rowW.cells[0].innerHTML = "Name: <div style='display: inline-block' id='device-name-row-" + 0 + "'><input maxlength='15' class='device-name-entry' id='device-name-entry' type='text' value=''></div>" +
+                    "<div style='display: inline-block; float: right' id='device-actions-row-" + 0 + "'>" +
+                    "<a style='cursor: pointer;' onclick='saveNewDevice(" + 0 + ")'><figure style='font-size: 14px; text-align:center; display: inline-block'><img src='assets/save.png'><figcaption>Save</figcaption></figure>" +
+                    "</a><a style='cursor: pointer;' onclick='cancelNewDevice(" + 0 + ")'><figure style='font-size: 14px; text-align:center; display: inline-block'><img src='assets/delete.png'><figcaption>Cancel</figcaption></figure></a>" +
+                    "</div><div style='display: inline-block; padding-left: 150px;'>Space: <div style='display: inline-block' id='device-space-row-" + 0 + "'>" + options + "</div></div>";
 
-  var rowV = table.insertRow(2);
-  rowV.insertCell(0).innerHTML = "<div style='text-align: center'><button class='db-name-save-button' id='device-add-button' onclick='addNewDevice(" + 2 + ")'>add new device</button></div>";
-  rowV.cells[0].style.border = "none";
-  rowV.cells[0].colSpan = "3";
+  // rowV.style.backgroundColor = "#dedede"
+  rowV.style.backgroundColor = "#dedede"
+  rowW.style.backgroundColor = "white"
+  rowV.cells[0].style.height = "150px"
+  rowW.cells[0].style.height = "50px"
+  rowW.cells[0].style.verticalAlign = "middle"
+  rowW.style.fontSize = "25px"
+  rowV.style.fontSize = "25px"
+
   document.getElementById("device-add-button").disabled = true;
 }
 
