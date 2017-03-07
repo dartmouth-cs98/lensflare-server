@@ -38,7 +38,8 @@ function displaySpaces(addingBlock) {
     document.getElementById("db-table").innerHTML = "";
     if (userDoc.spaces.length == 0) {
       document.getElementById("db-table").style.border = "none";
-      document.getElementById("db-table").innerHTML = "<div style='text-align: center'>You haven't set up a space yet - click on the plus sign in the sidebar or visit the <a href='/help'>help page</a> to get started!</div>";
+      document.getElementById("db-table").innerHTML = "<div style='text-align: center'>You haven't set up a space yet - click on the plus sign below or visit the <a href='/help'>help page</a> to get started!";
+      document.getElementById("db-table").innerHTML += "<div id='new-space-block' class='space-blocks'><img onclick='addSpace()' width='100%' style='padding-bottom: 21px' src='assets/addholder.png'></div></div>"
     }
 
     else {
@@ -151,23 +152,31 @@ function loadDatabaseInfo(space, spaceRow) {
           var url = split[split.length - 1]
 
           if (url.includes(".jpg") || url.includes(".jpeg") || url.includes(".png")) {
-            mediaUrl = "<div style='height: 30px; display: inline-block;'><img width='100%' src=\"" + userDoc.spaces[spaceRow].items[row].media.media_url + "\"></div>"
+            mediaUrl = "<img width='100%' src=\"" + userDoc.spaces[spaceRow].items[row].media.media_url + "\">"
           }
           else if (url.includes(".txt")) {
-            mediaUrl = "<div style='text-align: center; height: 30px; display: inline-block;'><img width='100%' src='assets/mesh.png'></div>"
+            mediaUrl = "<img height='100px' src='assets/mesh.png'>"
           }
           else {
-            mediaUrl = "<div style='text-align: center; height: 30px; display: inline-block;'><img width='100%' src='assets/video.png'></div>"
+            mediaUrl = "<img height='100px' src='assets/video.png'>"
           }
 
           var uploadButton = "<div style='font-size: 14px'>(accepts .ogv, .png, .jpg, .txt)</div><label class='upload-button'><input accept='image/png, " +
           "image/jpeg, video/ogg, text/plain' onchange='uploadMedia(" + spaceRow + "," + row + ")' style='border: none' class='upload-button' id='upload-" +
           spaceRow + "-" + row + "' type='file'>change media<br /></label>"
 
-// <button class='upload-button' type='button' onclick='showPopover(\"" + popoverText + "\")'>Change Media</button>
           table.innerHTML += "<div class='item-blocks'><div style='display: inline-block; width: 533px; height: 300px; float: left' id='space-" + spaceRow + "-item-" + row + "-image'></div>" +
-                            "<div style='width: 200px; height: 300px; padding-left: 25px; display: inline-block; position: relative'>" + mediaUrl + uploadButton + "<div style='position: absolute; bottom: 0'><button class='upload-button' type='button' onclick='setMediaSelected(" + spaceRow + "," + row + ", false)'>switch to text</button></div>" +
-                        "</div></div>"
+          "<div style='width: 200px; height: 300px; padding-left: 25px; display: inline-block; position: relative'>" +
+            "<div class='title-text-label'>Media</div>" +
+            "<div id='space-" + spaceRow + "-item-" + row + "-titleActions'>" +
+            "</div>" +
+            "<br /><div style='height: 30px;' id='space-" + spaceRow + "-item-" + row + "-title'>" + mediaUrl + "</div>" +
+          "<br /><div class='title-text-label'></div>" +
+          "<div style='float: right' id='space-" + spaceRow + "-item-" + row + "-textActions'>" +
+          "</div>" +
+          "<br /><div style='overflow-y: auto; height: 155px' id='space-" + spaceRow + "-item-" + row + "-text'>" +
+          "</div><br /><br /><div style='position: absolute; bottom: 0'>" + uploadButton + "<br /><button class='upload-button' type='button' onclick='setMediaSelected(" + spaceRow + "," + row + ", false)'>switch to text</button></div>" +
+          "</div></div>"
         }
 
       var image = document.getElementById("space-" + spaceRow + "-item-" + row + "-image");
@@ -359,7 +368,8 @@ function loadDevices() {
       var rowW = table.insertRow(row * 2 + 1);
       rowV.insertCell(0);
       rowW.insertCell(0);
-      rowV.cells[0].style.backgroundImage = "url('assets/dev.svg')";
+      var devImage = "assets/holo" + (row%3 + 1) + ".jpg";
+      rowV.cells[0].style.backgroundImage = "url('" + devImage + "')";
       rowV.cells[0].style.backgroundSize = "cover";
       rowV.cells[0].style.backgroundPosition = "center";
       rowV.cells[0].style.textAlign = "center"
@@ -425,7 +435,8 @@ function addNewDevice(row) {
 
   rowV.insertCell(0);
   rowW.insertCell(0);
-  rowV.cells[0].style.backgroundImage = "url('assets/dev.svg')";
+  var devImage = "assets/holo" + (row%3 + 1) + ".jpg";
+  rowV.cells[0].style.backgroundImage = "url('" + devImage + "')";
   rowV.cells[0].style.backgroundSize = "cover";
   rowV.cells[0].style.backgroundPosition = "center";
   rowV.cells[0].style.textAlign = "center"

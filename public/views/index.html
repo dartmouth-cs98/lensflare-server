@@ -24,16 +24,24 @@ particlesJS.load('particle-js', 'scripts/libraries/particles.json', function () 
     <div class="topbar-color" style='height: 25px'></div>
     <div class="login-box" id="login-box">
       <div class="title">Lensflare</div><br />
-      <br/>
-      Email:<br/><input class="text-box" id="email" type="text" autocomplete="off"></input><br/>
-      Password:<br/><input class="text-box" id="password" type="password"></input>
-      <br/>
-      <div id="message" style="color:red; font-size:12px">
+      <div class='form'>
+        <div style='text-align: left; padding-top: 7px'>Annotate your world</div>
+        <br/>
+        <input class="text-box" id="email" placeholder="email" type="text"></input><br/>
+        <br/>
+        <input class="text-box" id="password" placeholder="password" type="password"></input>
+        <br/>
+        <div id="message" style="color:red; font-size:12px">
+        <br /><br />
+        <button type="submit" class="login-button" onclick="signIn()">LOG IN</button><br />
+
+        <div style='text-align:center'>
+          <a href="signup" style="font-size:11px; text-decoration:none; color:black;">create an account</a>
+        </div>
       </div>
       <br/>
-      <button type="submit" class="login-button" onclick="signIn()">Submit</button>
-      <br/><br/>
-      <a href="signup" style="font-size:11px; text-decoration:none; color:black;">create an account</a>
+    </div>
+
     </div>
   </div>
 </body>
