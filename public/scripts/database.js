@@ -125,7 +125,7 @@ function loadDatabaseInfo(space, spaceRow) {
     for (var row = 0; row < userDoc.spaces[spaceRow].items.length; row++) {
       if (userDoc.spaces[spaceRow].items[row].media == null || typeof(userDoc.spaces[spaceRow].items[row].media.media_url) == 'undefined' || userDoc.spaces[spaceRow].items[row].media.selected == false) {
 
-        var uploadButton = "<div style='font-size: 14px'>(accepts .ogv, .png, .jpg, .txt)</div><label class='upload-button'><input accept='image/png, " +
+        var uploadButton = "<div style='font-size: 14px'>(accepts .ogv, .png, .jpg)</div><label class='upload-button'><input accept='image/png, " +
         "image/jpeg, video/ogg, text/plain' onchange='uploadMedia(" + spaceRow + "," + row + ")' style='border: none' class='upload-button' id='upload-" +
         spaceRow + "-" + row + "' type='file'>switch to media<br /></label>"
 
