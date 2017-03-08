@@ -46,10 +46,13 @@ function displaySpaces(addingBlock) {
         document.getElementById("db-table").style.border = "none";
         for (var space in userDoc.spaces) {
           if (typeof(userDoc.spaces[space].items[0]) != 'undefined') {
-            document.getElementById("db-table").innerHTML += "<div class='space-blocks'><img onclick='loadDatabaseInfo(\"" + userDoc.spaces[space].name + "\"," + space + ")' width='100%' src='" + userDoc.spaces[space].items[0].url + "'><br /><a onclick='loadDatabaseInfo(\"" + userDoc.spaces[space].name + "\"," + space + ")' class='space-link'>" + userDoc.spaces[space].name + "</a><button class='delete-space-button' onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'><img src='assets/close.png'></button></div>"
+            document.getElementById("db-table").innerHTML += "<div class='space-blocks'><img onclick='loadDatabaseInfo(\"" + userDoc.spaces[space].name + "\"," + space + ")' width='100%' src='" + userDoc.spaces[space].items[0].url + "'><br /><a onclick='loadDatabaseInfo(\"" + userDoc.spaces[space].name + "\"," + space + ")' class='space-link'>" +
+            userDoc.spaces[space].name + "</a><button class='delete-space-button' onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'><img src='assets/close.png'></button></div>"
+
           }
           else {
-            document.getElementById("db-table").innerHTML += "<div class='space-blocks'><img onclick='loadDatabaseInfo(\"" + userDoc.spaces[space].name + "\"," + space + ")' width='100%' src='assets/pano.png'><br /><a onclick='loadDatabaseInfo(\"" + userDoc.spaces[space].name + "\"," + space + ")' class='space-link'>" + userDoc.spaces[space].name + "</a><button class='delete-space-button' onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'><img src='assets/close.png'></button></div>"
+            document.getElementById("db-table").innerHTML += "<div class='space-blocks'><img onclick='loadDatabaseInfo(\"" + userDoc.spaces[space].name + "\"," + space + ")' width='100%' src='assets/pano.png'><br /><a onclick='loadDatabaseInfo(\"" + userDoc.spaces[space].name + "\"," + space + ")' class='space-link'>" +
+            userDoc.spaces[space].name + "</a><button class='delete-space-button' onclick='clearSpace(\"" + userDoc.spaces[space].name + "\")'><img src='assets/close.png'></button></div>"
           }
         }
         document.getElementById("db-table").innerHTML += "<div id='new-space-block' class='space-blocks'><img onclick='addSpace()' width='100%' style='padding-bottom: 21px' src='assets/addholder.png'></div>"
@@ -207,7 +210,13 @@ function manageDevicesLoad() {
 
 
 function loadHelp() {
-  document.getElementById("db-table").innerHTML = "<div style='width: 100%; height: 200px;'>  <div style='float:right; text-align:right; width: 65%; padding-top: 150px'>    <!-- <img width='100%' src='assets/Splash.jpg'> -->    <div style='font-size: 25px;'>      Start by creating a Lensflare account. Once it's made, add a new space by clicking 'add new space' in the sidebar and then create your first device by navigating to 'manage my devices' and clicking 'new device' -      select the space you just made, add a name, and save the device.    </div>  </div>  <div style='float:left; text-align: left; width: 35%'>    <div style='font-size: 75px; text-decoration: italic; padding-top:135px'><i>Set up your account</i></div><br /><br />    <div style='font-size: 25px;'></div>  </div></div><div style='width: 100%; height: 200px;'>  <div style='float:right; text-align: right; width: 40%'>    <div style='font-size: 75px; text-decoration: italic; padding-top:135px'><i>Switch to the HoloLens</i></div><br /><br />    <div style='font-size: 25px;'></div>  </div>  <div style='float:left; text-align:left; width: 60%; padding-top: 115px'>    <!-- <img width='100%' src='assets/Splash.jpg'> -->    <div style='font-size: 25px;'>      Put on your HoloLens and open the Lensflare app. Once it enters scanning mode, display the QR code on your devices page and say 'Scan' - once paired, the device is connected to the space you just made!    </div>  </div></div><div style='width: 100%; height: 200px;'>  <div style='float:left; text-align: left; width: 45%'>    <div style='font-size: 75px; text-decoration: italic; padding-top:155px'><i>Create your first scene</i></div><br /><br />    <div style='font-size: 25px;'></div>  </div>  <div style='float:right; text-align:right; width: 55%; padding-top: 100px;'>    <!-- <img width='100%' src='assets/Splash.jpg'> -->    <div style='font-size: 25px;'>      After you've paired your device, say 'Create Scene' to enter the scene setup mode; a mesh will appear around you and you can click points of interest to drop gems.      Once you're done dropping pins, say 'Done' and the HoloLens will begin uploading the spatial mapping and locations of each gem. Hang tight - your HoloLens will automatically transition when it's done uploading!    </div>  </div></div><div style='width: 100%; height: 200px;'>  <div style='float:right; text-align: right; width: 60%; padding-top: 100px'>    <div style='font-size: 75px; text-decoration: italic; padding-top: 110px'><i>Edit your space</i></div>  </div>  <div style='float:left; text-align:left; width: 40%; padding-top: 150px; padding-bottom: 125px'>    <!-- <img width='100%' src='assets/Splash.jpg'> -->    <div style='font-size: 25px;'>      Once the scene is uploaded, you can edit it directly on your Lensflare account page. Log in and select the space you just set up. Go through each item and      add a title, text, and/or a media item as you wish. As you edit the items, they will be loaded live to your HoloLens so you can see how it looks!    </div>  </div></div>"
+  document.getElementById("db-name").innerHTML = "Help"
+  document.getElementById("db-table").innerHTML = "<div class='help-step'>1. First do thist</div>" +
+                                                  "<div class='help-step'>2. Second do thist</div>" +
+                                                  "<div class='help-step'>3. Third do thist</div>" +
+                                                  "<div class='help-step'>4. Fourth do thist</div>";
+
+
 }
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -239,6 +248,11 @@ function saveNewSpace() {
 
     if (dbName.includes("?=")) {
       loadMessage(false, "space name cannot contain \"?=\"")
+      return;
+    }
+
+    if (dbName.includes('\'') || dbName.includes("\"")) {
+      loadMessage(false, "space name cannot contain quote marks")
       return;
     }
 
@@ -462,6 +476,12 @@ function saveNewDevice(row) {
       return;
     }
   }
+
+  if (name.includes('\'') || name.includes("\"")) {
+    loadMessage(false, "device name cannot contain quote marks")
+    return;
+  }
+
   if (name == "") {
       loadMessage(false, "please enter a name and try again")
       return;

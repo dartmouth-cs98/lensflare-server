@@ -135,6 +135,10 @@ input:-webkit-autofill {
 
 }
 
+.help-step {
+  font-size: 25px;
+}
+
 .device-blocks {
   height: 250px;
   width: 100%;
