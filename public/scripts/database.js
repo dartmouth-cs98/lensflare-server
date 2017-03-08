@@ -38,7 +38,7 @@ function displaySpaces(addingBlock) {
     document.getElementById("db-table").innerHTML = "";
     if (userDoc.spaces.length == 0) {
       document.getElementById("db-table").style.border = "none";
-      document.getElementById("db-table").innerHTML = "<div style='text-align: left'>You haven't set up a space yet - click on the plus sign below or visit the <a href='/help'>help page</a> to get started!";
+      document.getElementById("db-table").innerHTML = "<div style='text-align: left'>You haven't set up a space yet - click on the plus sign below to get started!";
       document.getElementById("db-table").innerHTML += "<div id='new-space-block' class='space-blocks'><img onclick='addSpace()' width='100%' style='padding-bottom: 21px' src='assets/addholder.png'></div></div>"
     }
 
@@ -111,7 +111,7 @@ function loadDatabaseInfo(space, spaceRow) {
     //if no items present, tell user what to do
     if (userDoc.spaces[spaceRow].items.length == 0) {
         document.getElementById("db-table").style.border = "none";
-        document.getElementById("db-table").innerHTML = "There appears to be no photos taken - visit the <a href='/help'>help page</a> to get started!";
+        document.getElementById("db-table").innerHTML = "There appears to be no photos taken - load up the HoloLens to get started!";
         scenes = [];
         return;
     }
@@ -205,6 +205,10 @@ function manageDevicesLoad() {
       loadDevices()
 }
 
+
+function loadHelp() {
+  document.getElementById("db-table").innerHTML = "<div style='width: 100%; height: 200px;'>  <div style='float:right; text-align:right; width: 65%; padding-top: 150px'>    <!-- <img width='100%' src='assets/Splash.jpg'> -->    <div style='font-size: 25px;'>      Start by creating a Lensflare account. Once it's made, add a new space by clicking 'add new space' in the sidebar and then create your first device by navigating to 'manage my devices' and clicking 'new device' -      select the space you just made, add a name, and save the device.    </div>  </div>  <div style='float:left; text-align: left; width: 35%'>    <div style='font-size: 75px; text-decoration: italic; padding-top:135px'><i>Set up your account</i></div><br /><br />    <div style='font-size: 25px;'></div>  </div></div><div style='width: 100%; height: 200px;'>  <div style='float:right; text-align: right; width: 40%'>    <div style='font-size: 75px; text-decoration: italic; padding-top:135px'><i>Switch to the HoloLens</i></div><br /><br />    <div style='font-size: 25px;'></div>  </div>  <div style='float:left; text-align:left; width: 60%; padding-top: 115px'>    <!-- <img width='100%' src='assets/Splash.jpg'> -->    <div style='font-size: 25px;'>      Put on your HoloLens and open the Lensflare app. Once it enters scanning mode, display the QR code on your devices page and say 'Scan' - once paired, the device is connected to the space you just made!    </div>  </div></div><div style='width: 100%; height: 200px;'>  <div style='float:left; text-align: left; width: 45%'>    <div style='font-size: 75px; text-decoration: italic; padding-top:155px'><i>Create your first scene</i></div><br /><br />    <div style='font-size: 25px;'></div>  </div>  <div style='float:right; text-align:right; width: 55%; padding-top: 100px;'>    <!-- <img width='100%' src='assets/Splash.jpg'> -->    <div style='font-size: 25px;'>      After you've paired your device, say 'Create Scene' to enter the scene setup mode; a mesh will appear around you and you can click points of interest to drop gems.      Once you're done dropping pins, say 'Done' and the HoloLens will begin uploading the spatial mapping and locations of each gem. Hang tight - your HoloLens will automatically transition when it's done uploading!    </div>  </div></div><div style='width: 100%; height: 200px;'>  <div style='float:right; text-align: right; width: 60%; padding-top: 100px'>    <div style='font-size: 75px; text-decoration: italic; padding-top: 110px'><i>Edit your space</i></div>  </div>  <div style='float:left; text-align:left; width: 40%; padding-top: 150px; padding-bottom: 125px'>    <!-- <img width='100%' src='assets/Splash.jpg'> -->    <div style='font-size: 25px;'>      Once the scene is uploaded, you can edit it directly on your Lensflare account page. Log in and select the space you just set up. Go through each item and      add a title, text, and/or a media item as you wish. As you edit the items, they will be loaded live to your HoloLens so you can see how it looks!    </div>  </div></div>"
+}
 
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
 //---------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------------
@@ -385,6 +389,7 @@ function loadDevices() {
       rowV.cells[0].style.backgroundSize = "cover";
       rowV.cells[0].style.backgroundPosition = "center";
       rowV.cells[0].style.textAlign = "center"
+      console.log(userDoc.devices[row])
       rowW.cells[0].innerHTML = "<div style='padding-top: 30px; width: 400px; display: inline-block'>Name: <div style='display: inline-block' id='device-name-row-" + row + "'>" + userDoc.devices[row].deviceName + "</div></div>" +
                         "<div style='display: inline-block; float: right' id='device-actions-row-" + row + "'><a style='cursor: pointer;' onclick='generateQR(\"" + userDoc.devices[row]._id +
                         "\")'><figure style='font-size: 14px; text-align:center; display: inline-block'><img src='assets/qr.png'><figcaption>QR</figcaption></figure></a><a style='cursor: pointer;' onclick='editDevice(" + row +
@@ -544,6 +549,7 @@ function saveEditDevice(row) {
   var space = document.getElementById("device-space-entry-row-" + row).value;
 
   for (var device in userDoc.devices) {
+    if (userDoc.devices[row].deviceName == name) continue;
     if (userDoc.devices[device].deviceName == name) {
       loadMessage(false, "can't have multiple devices with the same name - try again")
       return;
