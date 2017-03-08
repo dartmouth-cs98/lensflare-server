@@ -179,9 +179,17 @@ userSchema.statics.updateDevices = function (email, devices) {
     this.getUser(email, function (err, user) {
         if (err) throw err;
 
+
+        var deviceIds = [];
+
+        devices.forEach((device) => {
+            deviceIds.push(device._id);
+        });
+
         user.local.devices.forEach((device) => {
-            if (devices.indexOf(device) == -1) {
-                Device.removeDevice(device.id, () => {
+            if (deviceIds.indexOf(device._id) == -1) {
+                console.log("Could not find device, deleting");
+                Device.removeDevice(device._id, () => {
                 });
             }
         });
