@@ -130,18 +130,18 @@ function loadDatabaseInfo(space, spaceRow) {
           uploadButton = "<div style='font-size: 14px'>(accepts .ogv, .png, .jpg)</div><button class='upload-button' onclick='setMediaSelected(" + spaceRow + ", " + row + ", true)'>switch to media<br /></label>"
         }
 
-        table.innerHTML += "<div class='item-blocks'><div style='width: 533px; height: 300px; float: left' id='space-" + spaceRow + "-item-" + row + "-image'></div>" +
-                          "<div style='width: 200px; height: 300px; padding-left: 25px; display: inline-block; position: relative'>" +
+        table.innerHTML += "<div class='item-blocks'><div style='width: 444px; height: 250px; float: left' id='space-" + spaceRow + "-item-" + row + "-image'></div>" +
+                          "<div style='width: 200px; height: 250px; padding-left: 25px; display: inline-block; position: relative'>" +
                             "<div class='title-text-label'>Title</div>" +
                             "<div id='space-" + spaceRow + "-item-" + row + "-titleActions'>" +
                               "<button class='edit-button' type='button' onclick='editTitle(" + spaceRow + "," + row + ")'>edit</button>" +
                             "</div>" +
-                            "<br /><div style='height: 30px;' id='space-" + spaceRow + "-item-" + row + "-title'>" + userDoc.spaces[spaceRow].items[row].title + "</div>" +
+                            "<br /><div style='overflow-y: auto; height: 30px;' id='space-" + spaceRow + "-item-" + row + "-title'>" + userDoc.spaces[spaceRow].items[row].title + "</div>" +
                           "<br /><div class='title-text-label'>Text</div>" +
                           "<div style='float: right' id='space-" + spaceRow + "-item-" + row + "-textActions'>" +
                             "<button class='edit-button' type='button' onclick='editText(" + spaceRow + "," + row + ")'>edit</button>" +
                           "</div>" +
-                          "<br /><div style='overflow-y: auto; height: 155px' id='space-" + spaceRow + "-item-" + row + "-text'>"
+                          "<br /><div style='overflow-y: auto; height: 105px' id='space-" + spaceRow + "-item-" + row + "-text'>"
                             + userDoc.spaces[spaceRow].items[row].text +
                           "</div><br /><br /><div style='position: absolute; bottom: 0'>" + uploadButton + "</div>" +
                           "</div></div>"
@@ -151,31 +151,35 @@ function loadDatabaseInfo(space, spaceRow) {
           var url = split[split.length - 1]
 
           if (url.includes(".jpg") || url.includes(".jpeg") || url.includes(".png")) {
-            mediaUrl = "<img width='100%' src=\"" + userDoc.spaces[spaceRow].items[row].media.media_url + "\">"
+            mediaUrl = userDoc.spaces[spaceRow].items[row].media.media_url;
           }
           else if (url.includes(".txt")) {
-            mediaUrl = "<img height='100px' src='assets/mesh.png'>"
+            mediaUrl = "assets/mesh.svg"
           }
           else {
-            mediaUrl = "<img height='100px' src='assets/video.png'>"
+            mediaUrl = "assets/video.svg"
           }
 
-          var uploadButton = "<div style='font-size: 14px'>(accepts .ogv, .png, .jpg, .txt)</div><label class='upload-button'><input accept='image/png, " +
+          var uploadButton = "<label style='font-weight: normal' class='edit-button'><input accept='image/png, " +
           "image/jpeg, video/ogg, text/plain' onchange='uploadMedia(" + spaceRow + "," + row + ")' style='border: none' class='upload-button' id='upload-" +
-          spaceRow + "-" + row + "' type='file'>change media<br /></label>"
+          spaceRow + "-" + row + "' type='file'>edit</label>"
 
-          table.innerHTML += "<div class='item-blocks'><div style='display: inline-block; width: 533px; height: 300px; float: left' id='space-" + spaceRow + "-item-" + row + "-image'></div>" +
-          "<div style='width: 200px; height: 300px; padding-left: 25px; display: inline-block; position: relative'>" +
-            "<div class='title-text-label'>Media</div>" +
+          table.innerHTML += "<div class='item-blocks'><div style='display: inline-block; width: 444px; height: 250px; float: left' id='space-" + spaceRow + "-item-" + row + "-image'></div>" +
+          "<div style='width: 200px; height: 250px; padding-left: 25px; display: inline-block; position: relative'>" +
+            "<div class='title-text-label'>File</div>" +
             "<div id='space-" + spaceRow + "-item-" + row + "-titleActions'>" +
             "</div>" +
-            "<br /><div style='height: 30px;' id='space-" + spaceRow + "-item-" + row + "-title'>" + mediaUrl + "</div>" +
-          "<br /><div class='title-text-label'></div>" +
-          "<div style='float: right' id='space-" + spaceRow + "-item-" + row + "-textActions'>" +
+            "<br /><div style='overflow-y: auto; height: 30px;' id='space-" + spaceRow + "-item-" + row + "-title'>" + url + "</div>" +
+          "<br /><div class='title-text-label'>Media</div>" +
+          "<div style='float: right' id='space-" + spaceRow + "-item-" + row + "-textActions'>" + uploadButton +
           "</div>" +
-          "<br /><div style='overflow-y: auto; height: 155px' id='space-" + spaceRow + "-item-" + row + "-text'>" +
-          "</div><br /><br /><div style='position: absolute; bottom: 0'>" + uploadButton + "<br /><button class='upload-button' type='button' onclick='setMediaSelected(" + spaceRow + "," + row + ", false)'>switch to text</button></div>" +
+          "<br /><div style='overflow-y: auto; height: 105px' id='space-" + spaceRow + "-item-" + row + "-text'>" +
+          "</div><br /><br /><div style='position: absolute; bottom: 0'>" + "<br /><button class='upload-button' type='button' onclick='setMediaSelected(" + spaceRow + "," + row + ", false)'>switch to text</button></div>" +
           "</div></div>"
+          var mediaUpload = document.getElementById("space-" + spaceRow + "-item-" + row + "-text");
+          mediaUpload.style.backgroundImage = "url('" + mediaUrl + "')";
+          mediaUpload.style.backgroundSize = "cover";
+          mediaUpload.style.backgroundPosition = "center";
         }
 
       var image = document.getElementById("space-" + spaceRow + "-item-" + row + "-image");
@@ -538,7 +542,7 @@ function cancelEditDevice(row, name, space) {
 function saveEditDevice(row) {
   var name = document.getElementById("device-name-entry-row-" + row).value;
   var space = document.getElementById("device-space-entry-row-" + row).value;
-  
+
   for (var device in userDoc.devices) {
     if (userDoc.devices[device].deviceName == name) {
       loadMessage(false, "can't have multiple devices with the same name - try again")
