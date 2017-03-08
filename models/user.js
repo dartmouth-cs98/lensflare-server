@@ -205,10 +205,20 @@ userSchema.statics.editDevice = function (email, id, name, space) {
         if (err) throw err;
 
         for (var deviceInd in user.local.devices) {
-          if (id == user.local.devices[deviceInd]._id) {
-            user.local.devices[deviceInd].deviceName = name;
-            user.local.devices[deviceInd].spaceName = space;
-          }
+            if (id == user.local.devices[deviceInd]._id) {
+                user.local.devices[deviceInd].deviceName = name;
+                user.local.devices[deviceInd].spaceName = space;
+                Device.getDevice(id, (err, device) => {
+                    device.deviceName = name;
+                    device.spaceName = space;
+                    device.markModified('deviceName');
+                    device.markModified('spaceName');
+
+                    device.save((err) => {
+                        if (err) throw err;
+                    });
+                });
+            }
         }
 
         user.markModified('local.devices')
