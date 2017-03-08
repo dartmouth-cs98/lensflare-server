@@ -179,6 +179,13 @@ userSchema.statics.updateDevices = function (email, devices) {
     this.getUser(email, function (err, user) {
         if (err) throw err;
 
+        user.local.devices.forEach((device) => {
+            if (devices.indexOf(device) == -1) {
+                Device.removeDevice(device.id, () => {
+                });
+            }
+        });
+
         user.local.devices = devices;
 
         user.save(function (err) {

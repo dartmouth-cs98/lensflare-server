@@ -23,6 +23,12 @@ deviceSchema.statics.setSpace = function (deviceId, spaceName, cb) {
     });
 };
 
+
+deviceSchema.statics.removeDevice = function (deviceId, cb) {
+    return this.findOneAndRemove({'_id': deviceId}, cb);
+};
+
+
 deviceSchema.statics.setName = function (deviceId, name, cb) {
     return this.findOne({'_id': deviceId}, (err, device) => {
         device.spaceName = name;
