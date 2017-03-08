@@ -131,7 +131,7 @@ function loadDatabaseInfo(space, spaceRow) {
         }
 
         table.innerHTML += "<div class='item-blocks'><div style='width: 444px; height: 250px; float: left' id='space-" + spaceRow + "-item-" + row + "-image'></div>" +
-                          "<div style='width: 200px; height: 250px; padding-left: 25px; display: inline-block; position: relative'>" +
+                          "<div style='width: 175px; height: 250px; padding-left: 15px; display: inline-block; position: relative'>" +
                             "<div class='title-text-label'>Title</div>" +
                             "<div id='space-" + spaceRow + "-item-" + row + "-titleActions'>" +
                               "<button class='edit-button' type='button' onclick='editTitle(" + spaceRow + "," + row + ")'>edit</button>" +
@@ -165,7 +165,7 @@ function loadDatabaseInfo(space, spaceRow) {
           spaceRow + "-" + row + "' type='file'>edit</label>"
 
           table.innerHTML += "<div class='item-blocks'><div style='display: inline-block; width: 444px; height: 250px; float: left' id='space-" + spaceRow + "-item-" + row + "-image'></div>" +
-          "<div style='width: 200px; height: 250px; padding-left: 25px; display: inline-block; position: relative'>" +
+          "<div style='width: 175px; height: 250px; padding-left: 15px; display: inline-block; position: relative'>" +
             "<div class='title-text-label'>File</div>" +
             "<div id='space-" + spaceRow + "-item-" + row + "-titleActions'>" +
             "</div>" +
