@@ -14,6 +14,11 @@ deviceSchema.statics.getDevice = function (deviceId, cb) {
     return this.findOne({'_id': deviceId}, cb);
 };
 
+
+deviceSchema.statics.deleteDevice = function (deviceId, cb) {
+    return this.findOneAndRemove({'_id': deviceId}, cb);
+};
+
 deviceSchema.statics.setSpace = function (deviceId, spaceName, cb) {
     return this.findOne({'_id': deviceId}, (err, device) => {
         device.spaceName = spaceName;

@@ -179,6 +179,16 @@ userSchema.statics.updateDevices = function (email, devices) {
     this.getUser(email, function (err, user) {
         if (err) throw err;
 
+        user.local.devices.forEach((device) => {
+            if (!devices.contains(device)) {
+                Device.getDevice(device.token, (device, err) => {
+                    if (err) throw err;
+                    Device.deleteDevice(device._id, () => {
+                    });
+                });
+            }
+        });
+
         user.local.devices = devices;
 
         user.save(function (err) {
