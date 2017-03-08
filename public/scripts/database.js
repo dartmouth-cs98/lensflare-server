@@ -211,10 +211,17 @@ function manageDevicesLoad() {
 
 function loadHelp() {
   document.getElementById("db-name").innerHTML = "Help"
-  document.getElementById("db-table").innerHTML = "<div class='help-step'>1. First do thist</div>" +
-                                                  "<div class='help-step'>2. Second do thist</div>" +
-                                                  "<div class='help-step'>3. Third do thist</div>" +
-                                                  "<div class='help-step'>4. Fourth do thist</div>";
+  document.getElementById("db-table").innerHTML = "<div class='help-step'>To set up your first space, follow the following instructions:</div><br />" +
+                                                  "<div class='help-step'>1. Create a space with a name of your choosing</div>" +
+                                                  "<div class='help-step'>2. Create a device and associate it with the space made in Step #1</div>" +
+                                                  "<div class='help-step'>3. Open the QR code for the device</div>" +
+                                                  "<div class='help-step'>4. Open the Lensflare app on your Hololens</div>" +
+                                                  "<div class='help-step'>5. When prompted, look at QR code and say \"Scan\"</div>" +
+                                                  "<div class='help-step'>6. Say \"Lensflare Create Scene\" to start placing gems</div>" +
+                                                  "<div class='help-step'>7. Tap or say \"select\" to add gems, say \"delete\" while highlighting a gem to delete it, tap or select an existing gem to move it, tap again to place</div>" +
+                                                  "<div class='help-step'>8. When ready, say \"done\" and wait for the data to upload</div>" +
+                                                  "<div class='help-step'>9. Add text, photos, videos, or meshes to each gem on lensflare.space</div>" +
+                                                  "<div class='help-step'>10. Watch as the data updates in real time!</div>";
 
 
 }
