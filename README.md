@@ -6,30 +6,33 @@ The repo is the server component of the [Lensflare](https://github.com/dartmouth
 Visit [lensflare.space](http://www.lensflare.space) to try it out!
 
 ##Usage
-### Front-End
-#### Sign up for an account
+### Sign up for an account
 - This step is fairly straight forward - simply fill out the create account form and submit - the account is immediately created
+
 ![new account](https://github.com/dartmouth-cs98/lensflare-server/blob/master/newaccount.png)
 
-#### Sign in
+### Sign in
 - Simply enter your account information to sign in
+
 ![sign in](https://github.com/dartmouth-cs98/lensflare-server/blob/master/login.png)
 
-#### Add a space
+### Add a space
 - Click on “Spaces” in the sidebar and then click the plus sign to add a new space; enter a name and click the check mark to save it to the database
 
-#### Remove a space
+### Remove a space
 - Click on “Spaces” in the sidebar and then click the “x” next to the space you’d like to delete
+
 ![spaces](https://github.com/dartmouth-cs98/lensflare-server/blob/master/spaces.png)
 
-#### Add a device
+### Add a device
 - Click on “Devices” in the sidebar and then click the plus sign to add a new device; enter a name and choose a space, then click the save button to save
 
-#### Remove a device
+### Remove a device
 - Click on “Devices” in the sidebar and then click the “x” next to the device you’d like to delete
 
-#### Edit a device
+### Edit a device
 - Click on “Devices” in the sidebar and then click the edit button next to the device you’d like to edit; enter a new name/space and click save
+
 ![devices](https://github.com/dartmouth-cs98/lensflare-server/blob/master/devices.png)
 
 ## Deployment
