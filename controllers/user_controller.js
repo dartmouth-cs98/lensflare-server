@@ -1,3 +1,9 @@
+export const signin = (req, res, next) => {
+    res.send({
+        token: tokenForUser(req.user)
+    });
+}
+
 import jwt from 'jwt-simple';
 
 export const signup = (req, res, done) => {
@@ -8,15 +14,16 @@ export const signup = (req, res, done) => {
         return res.status(422).send('You must provide email and password');
     }
 
-    const User = require('../models/user');
+    var User = require('../models/user');
 
     // check if duplicate
     User.findOne({'local.email': email}, (err, user) => {
+        console.log("Checking for user")
         if (err) {
             return done(err);
         }
         if (!user) {
-            const newUser = new User();
+            var newUser = new User();
             newUser.local.name = req.param('name');
             newUser.local.email = email;
             newUser.local.password = newUser.generateHash(password);

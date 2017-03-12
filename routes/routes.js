@@ -1,12 +1,13 @@
 import * as UserController from '../controllers/user_controller';
 import {requireAuth, requireLogin} from '../config/passport';
 
-module.exports = function (app) {
-    const UserModel = require("../models/user");
-    const DeviceModel = require("../models/device");
+module.exports = function (app, passport) {
+    var UserModel = require("../models/user");
+    var SpaceModel = require("../models/space");
+    var DeviceModel = require("../models/device");
 
-    const jwt = require('jwt-simple');
-    const path = require('path');
+    var jwt = require('jwt-simple');
+    var path = require('path');
 
     const S3_BUCKET = process.env.S3_BUCKET;
 
@@ -18,10 +19,7 @@ module.exports = function (app) {
     const util = require('util');
     const aws = require('aws-sdk');
 
-    //////////////////////////////////////////////////////////////////////////////
-    // Page Rendering Endpoints
-    //////////////////////////////////////////////////////////////////////////////
-
+    // Page Rendering
     app.get('/', function (req, res) {
         res.sendFile(path.join(__dirname + '/../public/views/index.html'));
     });
@@ -38,21 +36,31 @@ module.exports = function (app) {
         res.sendFile(path.join(__dirname + '/../public/views/database.html'));
     });
 
-    //////////////////////////////////////////////////////////////////////////////
-    // FE Endpoints
-    //////////////////////////////////////////////////////////////////////////////
-
     app.get('/getSpaces', requireAuth, function (req, res) {
         UserModel.getSpaces(req.query.email, function (err, user) {
             res.send(user);
         });
     });
 
-    app.get('/getSpace', requireAuth, function (req, res) {
-        UserModel.getSpace(req.query.email, req.query.spaceName, function (err, space) {
-            res.send(space);
+    app.get('/getSpaceWithToken', function (req, res) {
+        if (req.query.token == null) {
+            res.status(400);
+            res.end();
+            return;
+        }
+        console.log(req.query.token)
+        // need to do something if the token is no longer valid
+        UserModel.getSpaceWithToken(req.query.token, function (err, user) {
+            if (err) throw err;
+
+            if (user == null) {
+                console.log("No user doc was not found with the token " + req.query.token)
+                res.status(401);
+            }
+            res.send(user);
         });
     });
+
     app.get('/getSpace', requireAuth, function (req, res) {
         UserModel.getSpace(req.query.email, req.query.spaceName, function (err, space) {
             res.send(space);
@@ -63,6 +71,7 @@ module.exports = function (app) {
         req.logout();
         res.redirect('/');
     });
+    //--------------------------------------------------------------------------------------------
     app.post('/signup', UserController.signup);
 
     // Login/ FE Auth
@@ -84,10 +93,13 @@ module.exports = function (app) {
 
     // backend
     app.post('/saveItem', requireAuth, function (req, res) {
-        const returnData = {files: []};
+
+        var returnData = {files: []};
         UserModel.addItems(req.body.email, req.body.space, [req.body.url], returnData, (rData) => {
             res.send();
         });
+        // UserModel.addItem(req.body.email, req.body.space, req.body.url);
+        // UserModel.addItem(req.body.userId, req.body.spaceId, req.body.url);
         res.send();
     });
 
@@ -103,12 +115,12 @@ module.exports = function (app) {
         res.send();
     });
 
-    //////////////////////////////////////////////////////////////////////////////
-    // DEVICE REGISTRATION ENDPOINTS
-    //////////////////////////////////////////////////////////////////////////////
+    ////////////////////////// DEVICE REGISTRATION
 
+    // WEB Endpoints
+    // need user email and space Name
     app.post('/generateDeviceId', requireAuth, function (req, res) {
-        const newDevice = new DeviceModel();
+        var newDevice = new DeviceModel();
 
         // validate the email
         // if (UserModel.hasUser(req.body.params.userEmail)) {
@@ -125,47 +137,41 @@ module.exports = function (app) {
             res.write(JSON.stringify("{ \"deviceToken\": \"" + newDevice.id + "\" }"));
             res.send();
         });
+        // } else {
+        //     res.status(400).send("User could not be found");
+        // }
     });
+
+    // needs to be tested.
+    // app.post('/setDeviceSpace', requireAuth, function (req, res) {
+    //     UserModel.getSpace(req.body.userEmail, req.body.spaceName, (err, space) => {
+    //         if (err) throw err;
+    //         if (space == null) res.status(400).send("Space could not be found");
+    //         DeviceModel.setSpace(req.body.deviceId, req.body.spaceName, (err) => {
+    //                 if (err) throw err;
+    //                 res.send();
+    //             }
+    //         );
+    //     });
+    //
+    // });
 
     app.post('/editDevice', requireAuth, function (req, res) {
         UserModel.editDevice(req.body.params.email, req.body.params.deviceId, req.body.params.name, req.body.params.space, (err) => {
                 if (err) throw err;
             }
         );
+
         res.send();
     });
 
-    //////////////////////////////////////////////////////////////////////////////
-    // HoloLens Endpoints
-    //////////////////////////////////////////////////////////////////////////////
+    // Hololens Endpoints
 
-    app.get('/getSpaceWithToken', function (req, res) {
-        if (req.query.token == null) {
-            res.status(400);
-            res.end();
-            return;
-        }
-        console.log(req.query.token);
-        // need to do something if the token is no longer valid
-        UserModel.getSpaceWithToken(req.query.token, function (err, user) {
-            if (err) throw err;
-
-            if (user == null) {
-                console.log("No user doc was not found with the token " + req.query.token);
-                res.status(401);
-            }
-            res.send(user);
-        });
-    });
+    /////////////////////// END DEVICE REGISTRATION
 
     app.post('/clearSpace', function (req, res) {
         console.log(req.body);
         UserModel.removeSpace(req.body.params.email, req.body.params.space);
-        res.send();
-    });
-
-    app.post("/addAnchors", function (req, res) {
-        UserModel.setAnchors(req.body.token, req.body.anchors);
         res.send();
     });
 
@@ -179,12 +185,13 @@ module.exports = function (app) {
     // assumes access to the relevant Space object
     app.post("/sign-s3-photos", function (req, res) {
         const s3 = new aws.S3();
-        const files = req.body.files;
-        const returnData = {files: []};
+        var files = req.body.files;
+        var returnData = {files: []};
         if (req.body.token == null) {
             res.status(400);
             res.end();
         }
+
 
         // associate the space with the user if not already
         DeviceModel.getDevice(req.body.token, (err, device) => {
@@ -196,7 +203,7 @@ module.exports = function (app) {
             }
 
             UserModel.clearSpace(device.userEmail, device.spaceName, (err) => {
-                let itemList = [];
+                var itemList = [];
                 files.forEach((file) => {
                     s3.getSignedUrl('putObject',
                         {
@@ -222,13 +229,19 @@ module.exports = function (app) {
                     res.write(JSON.stringify(rData));
                     res.end();
                 });
-            });
+            })
         });
 
     });
 
+    //Takes:
+    // token:
+    // file:
+    //Returns:
+    //  signedUrl
     app.post("/sign-s3", function (req, res) {
         const s3 = new aws.S3();
+        console.log(req.body);
         s3.getSignedUrl('putObject',
             {
                 Bucket: S3_BUCKET,
@@ -238,9 +251,10 @@ module.exports = function (app) {
             },
             (err, data) => {
                 if (err) throw err;
+                console.log(req.body.file);
+                console.log(data);
 
-
-                const rData = {
+                var rData = {
                     signedUrl: data,
                     url: util.format('https://%s.s3.amazonaws.com/%s', S3_BUCKET, req.body.file),
                     fileName: req.body.file
@@ -250,6 +264,12 @@ module.exports = function (app) {
                 res.end();
 
             });
+        console.log("Done generating Signed URL")
+    });
+
+    app.post("/addAnchors", function (req, res) {
+        UserModel.setAnchors(req.body.token, req.body.anchors);
+        res.send();
     });
 
 };
