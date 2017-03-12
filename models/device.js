@@ -1,7 +1,7 @@
-var mongoose = require('mongoose');
-var uniqueValidator = require('mongoose-unique-validator');
+const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
 
-var deviceSchema = mongoose.Schema({
+const deviceSchema = mongoose.Schema({
     deviceName: {type: String, required: true},
     spaceName: {type: String, required: true},
     userEmail: {type: String, required: true}
@@ -23,18 +23,16 @@ deviceSchema.statics.setSpace = function (deviceId, spaceName, cb) {
     });
 };
 
-
 deviceSchema.statics.removeDevice = function (deviceId, cb) {
     return this.findOneAndRemove({'_id': deviceId}, cb);
 };
-
 
 deviceSchema.statics.setName = function (deviceId, name, cb) {
     return this.findOne({'_id': deviceId}, (err, device) => {
         device.spaceName = name;
 
         device.save((err) => {
-            console.log("HERE " + name)
+            console.log("HERE " + name);
             cb(err);
         });
     });

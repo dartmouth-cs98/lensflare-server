@@ -1,12 +1,10 @@
-var mongoose = require('mongoose');
-var uniqueValidator = require('mongoose-unique-validator');
-var bcrypt = require('bcrypt-nodejs');
-var Space = require('./space.js');
-var Item = require('./item')
-var Device = require('./device')
-var User = require('./../models/user')
+const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
+const bcrypt = require('bcrypt-nodejs');
+const Device = require('./device');
+const User = require('./../models/user');
 
-var userSchema = mongoose.Schema({
+const userSchema = mongoose.Schema({
     local: {
         name: {type: String, required: true},
         email: {type: String, required: true, unique: true},
@@ -44,8 +42,8 @@ userSchema.statics.hasUser = function (email) {
 
     this.findOne({'local.email': new RegExp(email, 'i')}, (err, user) => {
         if (err) throw err;
-        if (user) return true;
-        return false;
+        return !!user;
+
     });
 };
 
@@ -76,14 +74,12 @@ userSchema.statics.getSpaces = function (email, cb) {
 userSchema.statics.getSpaceWithToken = function (token, cb) {
     Device.getDevice(token, function (err, device) {
         if (err) throw err;
-        var User = require('./user')
+        const User = require('./user');
         if (device == null) {
             cb(err, null);
-            return;
         } else {
             User.getSpace(device.userEmail, device.spaceName, function (err, user) {
                 cb(err, user)
-                return;
             });
         }
 
@@ -92,14 +88,13 @@ userSchema.statics.getSpaceWithToken = function (token, cb) {
 
 userSchema.statics.getSpace = function (email, spaceName, cb) {
     this.findOne({'local.email': email}, function (err, user) {
-        for (var space in user.local.spaces) {
+        for (let space in user.local.spaces) {
             if (user.local.spaces[space].name == spaceName) {
                 cb(err, user.local.spaces[space]);
                 return;
             }
         }
         cb(err, null);
-        return;
     });
 };
 
@@ -108,8 +103,8 @@ userSchema.statics.clearSpace = function (email, spaceName, cb) {
     console.log("trying to clear space");
     this.findOne({'local.email': email}, function (err, user) {
         if (err) throw err;
-        var found = false;
-        for (var space in user.local.spaces) {
+        let found = false;
+        for (let space in user.local.spaces) {
             if (user.local.spaces[space].name == spaceName) {
                 found = true;
                 if (user.local.spaces[space].items.length == 0) {
@@ -118,14 +113,12 @@ userSchema.statics.clearSpace = function (email, spaceName, cb) {
                     return;
                 }
 
-                var objects = [];
-                for (var i in user.local.spaces[space].items) {
+                const objects = [];
+                for (let i in user.local.spaces[space].items) {
                     objects.push({Key: user.local.spaces[space].items[i].url})
                 }
 
-                console.log(objects);
-
-                var params = {
+                const params = {
                     Bucket: process.env.S3_BUCKET, /* required */
                     Delete: {
                         /* required */
@@ -143,7 +136,6 @@ userSchema.statics.clearSpace = function (email, spaceName, cb) {
                         cb(err);
                     }
                 );
-
             }
         }
         if (!found) {
@@ -180,7 +172,7 @@ userSchema.statics.updateDevices = function (email, devices) {
         if (err) throw err;
 
 
-        var deviceIds = [];
+        const deviceIds = [];
 
         devices.forEach((device) => {
             deviceIds.push(device._id);
@@ -203,7 +195,7 @@ userSchema.statics.updateDevices = function (email, devices) {
 };
 
 userSchema.statics.addDevice = function (device) {
-    var email = device.userEmail;
+    const email = device.userEmail;
     this.getUser(email, function (err, user) {
         if (err) throw err;
         user.local.devices.push(device);
@@ -219,7 +211,7 @@ userSchema.statics.editDevice = function (email, id, name, space) {
     this.getUser(email, function (err, user) {
         if (err) throw err;
 
-        for (var deviceInd in user.local.devices) {
+        for (let deviceInd in user.local.devices) {
             if (id == user.local.devices[deviceInd]._id) {
                 user.local.devices[deviceInd].deviceName = name;
                 user.local.devices[deviceInd].spaceName = space;
@@ -247,13 +239,13 @@ userSchema.statics.setAnchors = function (token, anchors) {
     console.log("This is the token:  " + token);
     Device.getDevice(token, function (err, device) {
         if (err) throw err;
-        var User = require('./user')
+        const User = require('./user');
 
         User.getUser(device.userEmail, (err, user) => {
             if (err) throw err;
 
             console.log(user.local.email + " was found - looking for space " + device.spaceName);
-            for (var space in user.local.spaces) {
+            for (let space in user.local.spaces) {
                 if (user.local.spaces[space].name == device.spaceName) {
                     console.log(anchors + " is being added to " + user.local.spaces[space].name);
                     user.local.spaces[space].anchors = anchors;
@@ -272,7 +264,7 @@ userSchema.statics.setAnchors = function (token, anchors) {
 };
 
 userSchema.statics.addSpace = function (email, spaceName) {
-    var space = new Space({
+    const space = new Space({
         name: spaceName
     });
 
@@ -288,8 +280,8 @@ userSchema.statics.addSpace = function (email, spaceName) {
 userSchema.statics.addItems = function (email, spaceName, urls, returnData, cb) {
     this.getUser(email, function (err, user) {
         if (err) throw err;
-        for (var i in urls) {
-            for (var space in user.local.spaces) {
+        for (let i in urls) {
+            for (let space in user.local.spaces) {
                 if (user.local.spaces[space].name == spaceName) {
                     user.local.spaces[space].items.push(new Item({
                         title: "[add title]",
@@ -316,7 +308,7 @@ userSchema.statics.removeSpace = function (email, space) {
     this.getUser(email, function (err, user) {
         if (err) throw err;
         console.log(space);
-        for (var s = 0; s < user.local.spaces.length; s++) {
+        for (let s = 0; s < user.local.spaces.length; s++) {
             if (user.local.spaces[s].name == space) {
                 console.log("Foudn the space to be reomoved");
                 user.local.spaces.splice(s, 1);
@@ -327,14 +319,14 @@ userSchema.statics.removeSpace = function (email, space) {
             if (err) throw err;
         });
     });
-}
+};
 
 userSchema.statics.removeSpaceById = function (email, id) {
     console.log("Removing the Sapce");
     this.getUser(email, function (err, user) {
         if (err) throw err;
 
-        for (var s = 0; s < user.local.spaces.length; s++) {
+        for (let s = 0; s < user.local.spaces.length; s++) {
             if (user.local.spaces[s]._id == id) {
                 console.log("Foudn the space to be reomoved");
                 user.local.spaces.splice(s, 1);
@@ -368,30 +360,3 @@ userSchema.pre("save", function beforeUserSave(next) {
 });
 
 module.exports = mongoose.model('User', userSchema);
-
-
-// for (var i in urls) {
-//     console.log("Saving " + urls[i]);
-//     var url = urls[i];
-//     for (var space in user.local.spaces) {
-//         var alreadyThere = false;
-//         if (user.local.spaces[space].name == spaceName) {
-//             console.log(user.local.spaces[space].name + "Space Items: ");
-//             for (var i in user.local.spaces[space].items) {
-//                 console.log("THe URL is: " + user.local.spaces[space].items[i].url);
-//                 if (user.local.spaces[space].items[i].url == url) {
-//                     // console.log("found duplicate " + url);
-//                     alreadyThere = true;
-//                     break;
-//                 }
-//             }
-//             if (!alreadyThere) {
-//                 user.local.spaces[space].items.push(new Item({
-//                     title: "[add title]",
-//                     text: "[add text]",
-//                     url: url
-//                 }));
-//             }
-//         }
-//     }
-// }

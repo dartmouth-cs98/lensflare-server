@@ -1,10 +1,8 @@
-var mongoose = require('mongoose');
-var uniqueValidator = require('mongoose-unique-validator');
-var bcrypt = require('bcrypt-nodejs');
-var Space = require('./space.js');
-var Item = require('./item')
+const mongoose = require('mongoose');
+const uniqueValidator = require('mongoose-unique-validator');
+const bcrypt = require('bcrypt-nodejs');
 
-var userSchema = mongoose.Schema({
+const userSchema = mongoose.Schema({
     local: {
         name: {type: String, required: true},
         email: {type: String, required: true, unique: true},
@@ -62,7 +60,7 @@ userSchema.statics.getSpaces = function (email, cb) {
 
 userSchema.statics.getSpace = function (email, spaceName, cb) {
     this.findOne({'local.email': email}, function (err, user) {
-        for (var space in user.local.spaces) {
+        for (let space in user.local.spaces) {
             if (user.local.spaces[space].name == spaceName) {
                 cb(err, space);
                 break;
@@ -72,22 +70,11 @@ userSchema.statics.getSpace = function (email, spaceName, cb) {
     });
 };
 
-// userSchema.statics.hasSpace = function (email, searchSpace) {
-//     console.log("In Has space");
-//     this.getUser(email, function (err, user) {
-//         // check by space.name instead?
-//         user.local.spaces.some(function (space) {
-//             console.log(space);
-//             return space.equals(searchSpace); // compares by ObjectID
-//         });
-//     });
-// };
-
 userSchema.statics.hasSpace = function (email, spaceName) {
     return this.getUser(email, function (err, user) {
         if (err) throw err;
 
-        for (var i in user.local.spaces) {
+        for (let i in user.local.spaces) {
             if (user.local.spaces[i].name == spaceName) {
                 return true;
             }
@@ -109,7 +96,7 @@ userSchema.statics.updateSpaces = function (email, spaces) {
 };
 
 userSchema.statics.addSpace = function (email, spaceName) {
-    var space = new Space({
+    const space = new Space({
         name: spaceName
     });
 
@@ -124,15 +111,15 @@ userSchema.statics.addSpace = function (email, spaceName) {
 
 userSchema.statics.addItems = function (email, spaceName, urls) {
     this.getUser(email, function (err, user) {
-        for (var i in urls) {
-            var url = urls[i];
+        for (let i in urls) {
+            const url = urls[i];
             console.log("Saving " + url);
             if (err) throw err;
-            for (var space in user.local.spaces) {
-                var alreadyThere = false;
+            for (let space in user.local.spaces) {
+                let alreadyThere = false;
                 if (user.local.spaces[space].name == spaceName) {
                     console.log(user.local.spaces[space].name + "Space Items: ");
-                    for (var i in user.local.spaces[space].items) {
+                    for (i in user.local.spaces[space].items) {
                         console.log("THe URL is: " + user.local.spaces[space].items[i].url);
                         if (user.local.spaces[space].items[i].url == url) {
                             console.log("found duplicate " + url);
@@ -164,7 +151,7 @@ userSchema.statics.removeSpace = function (email, space) {
     this.getUser(email, function (err, user) {
         if (err) throw err;
         console.log(space);
-        for (var s = 0; s < user.local.spaces.length; s++) {
+        for (let s = 0; s < user.local.spaces.length; s++) {
             if (user.local.spaces[s].name == space) {
                 console.log("Foudn the space to be reomoved");
                 user.local.spaces.splice(s, 1);
