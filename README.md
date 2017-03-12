@@ -24,6 +24,11 @@ Visit [lensflare.space](http://www.lensflare.space) to try it out!
 
 ![spaces](https://github.com/dartmouth-cs98/lensflare-server/blob/master/spaces.png)
 
+### Editing space items
+- Enter the space you would like to edit and click "edit" next to the text you want to change; if you would like to upload media instead, click "switch to media" and upload your file
+
+![items](https://github.com/dartmouth-cs98/lensflare-server/blob/master/items.png)
+
 ### Add a device
 - Click on “Devices” in the sidebar and then click the plus sign to add a new device; enter a name and choose a space, then click the save button to save
 
