@@ -2,6 +2,7 @@ const mongoose = require('mongoose');
 const uniqueValidator = require('mongoose-unique-validator');
 const bcrypt = require('bcrypt-nodejs');
 const Device = require('./device');
+var Item = require('./item')
 const User = require('./../models/user');
 
 const userSchema = mongoose.Schema({
